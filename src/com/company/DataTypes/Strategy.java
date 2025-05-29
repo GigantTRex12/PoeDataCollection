@@ -1,0 +1,181 @@
+package com.company.DataTypes;
+
+import com.company.Exceptions.StrategyCreationInterruptedException;
+import com.company.FileOrganizer;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+import java.io.IOException;
+import java.util.*;
+
+import static com.company.FileOrganizer.append;
+import static com.company.FileOrganizer.open;
+import static com.company.IOSystem.input;
+import static com.company.IOSystem.print;
+import static com.company.Utilities.parseJson;
+import static com.company.Utilities.toJson;
+
+@AllArgsConstructor
+@Getter
+@EqualsAndHashCode
+@ToString
+public class Strategy {
+    private static final String filename = "Data/strategies.txt";
+
+    @JsonProperty("id")
+    private final int id;
+    @JsonProperty("league")
+    private final String league;
+    @JsonProperty("tree")
+    private final String tree;
+    @JsonProperty("scarabs")
+    private final String[] scarabs;
+    @JsonProperty("map")
+    private final String mapLayout;
+    @JsonProperty("mapRolling")
+    private final String mapRolling;
+    @JsonProperty("mapCraft")
+    private final String mapCraft;
+
+    private Strategy() {
+        this.id = -1;
+        this.league = null;
+        this.tree = null;
+        this.scarabs = null;
+        this.mapLayout = null;
+        this.mapRolling = null;
+        this.mapCraft = null;
+    }
+
+    private void addToFile() {
+        try {
+            append(Strategy.filename, toJson(this));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<Strategy> getAllList() {
+        return new ArrayList<Strategy>(getAll().values());
+    }
+
+    public static Map<Integer, Strategy> getAll() {
+        Map<Integer, Strategy> map = new HashMap<Integer, Strategy>();
+        try {
+            FileOrganizer file = open(filename);
+            List<String> lines = file.readLines();
+            file.close();
+            for (String line : lines) {
+                if (line.isEmpty()) {
+                    continue;
+                }
+                Strategy newStrat;
+                try {
+                    newStrat = parseJson(line, Strategy.class);
+                }
+                catch (JsonProcessingException e) {
+                    continue;
+                }
+                map.put(newStrat.getId(), newStrat);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
+    public static Strategy getById(int id) {
+        Strategy strat = getAll().get(id);
+        if (strat == null) {
+            strat = new Strategy(id, null, null, null, null, null, null);
+            strat.addToFile();
+        }
+        return strat;
+    }
+
+    public static Strategy create(int id, String league, String tree, String[] scarabs, String map, String mapRolling, String mapCraft) {
+        Strategy strat = getAll().get(id);
+        if (strat == null) {
+            strat = new Strategy(id, league, tree, scarabs, map, mapRolling, mapCraft);
+            strat.addToFile();
+        }
+        else if (!strat.equals(new Strategy(id, league, tree, scarabs, map, mapRolling, mapCraft))) {
+            print("Id conflicts with different existing Strategy");
+        }
+        return strat;
+    }
+
+    public static Strategy create(String league, String tree, String[] scarabs, String map, String mapRolling, String mapCraft) {
+        Map<Integer, Strategy> strats = getAll();
+        int id = 0;
+        while (true) {
+            if (strats.containsKey(id)) {
+                id++;
+            }
+            else {
+                Strategy strat = new Strategy(id, league, tree, scarabs, map, mapRolling, mapCraft);
+                strat.addToFile();
+                return strat;
+            }
+        }
+    }
+
+    public static Strategy create() throws StrategyCreationInterruptedException {
+        int id = getLowestFreeId();
+        String league = input("Enter the league this strategy is run in");
+        String tree = input("Enter a description of the tree");
+        String scarabString = input("Enter which scarabs are used in the format scarab1;2*scarab2" +
+                        "\nEnter _ to not specify and leave empty for no scarabs",
+                "^((\\d+\\*)?\\w+)(;(\\d+\\*)?\\w+)$|^$|^_$");
+        List<String> scarabs = new ArrayList<String>();
+        for (String scarab : scarabString.split(";")) {
+            String[] rep = scarab.split("\\*");
+            if (rep.length == 1) {
+                scarabs.add(scarab);
+            }
+            else {
+                for (int i = 0; i < Integer.parseInt(rep[0]); i++) {
+                    scarabs.add(rep[1]);
+                }
+            }
+        }
+        String map = input("Enter the name of the map");
+        String mapRolling = input("Enter a description of how the maps are rolled");
+        String mapCraft = input("Enter which map craft is used");
+        if (tree.isEmpty()) {tree = null;}
+        String[] scarabArray;
+        if (scarabString.equals("_")) {scarabArray = null;}
+        else if (scarabString.isEmpty()) {scarabArray = new String[0];}
+        else {scarabArray = scarabs.toArray(new String[0]);}
+        if (map.isEmpty()) {map = null;}
+        if (mapRolling.isEmpty()) {mapRolling = null;}
+        if (mapCraft.isEmpty()) {mapCraft = null;}
+
+        Strategy newStrat = new Strategy(id, league, tree, scarabArray, map, mapRolling, mapCraft);
+        print(newStrat);
+        String[] options = {"y", "yes", "n", "no"};
+        String validation = input("Is this correct?", options).toLowerCase();
+        if (validation.equals("y") || validation.equals("yes")) {
+            newStrat.addToFile();
+            return newStrat;
+        }
+        throw new StrategyCreationInterruptedException("Creation of new Strategy interrupted");
+    }
+
+    private static int getLowestFreeId() {
+        Map<Integer, Strategy> strats = getAll();
+        int id = 0;
+        while (true) {
+            if (strats.containsKey(id)) {
+                id++;
+            }
+            else {
+                return id;
+            }
+        }
+    }
+}

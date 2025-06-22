@@ -1,15 +1,15 @@
-package main.com.company.datacollector;
+package com.company.datacollector;
 
-import main.com.company.datasets.loot.Loot;
-import main.com.company.datasets.metadata.Strategy;
-import main.com.company.datasets.UltimatumDataSet;
-import main.com.company.exceptions.InvalidLootFormatException;
-import main.com.company.exceptions.StrategyCreationInterruptedException;
+import com.company.datasets.loot.Loot;
+import com.company.datasets.metadata.Strategy;
+import com.company.datasets.UltimatumDataSet;
+import com.company.exceptions.InvalidLootFormatException;
+import com.company.exceptions.StrategyCreationInterruptedException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static main.com.company.utils.IOUtils.*;
+import static com.company.utils.IOUtils.*;
 
 public class UltimatumDataCollector extends DataCollector {
     public UltimatumDataCollector(String filename) {

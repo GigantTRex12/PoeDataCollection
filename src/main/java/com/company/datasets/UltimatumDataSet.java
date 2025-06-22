@@ -1,7 +1,7 @@
-package main.com.company.datasets;
+package com.company.datasets;
 
-import main.com.company.datasets.loot.Loot;
-import main.com.company.datasets.metadata.Strategy;
+import com.company.datasets.loot.Loot;
+import com.company.datasets.metadata.Strategy;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

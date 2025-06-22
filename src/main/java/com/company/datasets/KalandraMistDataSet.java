@@ -1,7 +1,7 @@
-package main.com.company.datasets;
+package com.company.datasets;
 
-import main.com.company.datasets.loot.LootType;
-import main.com.company.datasets.metadata.Strategy;
+import com.company.datasets.loot.LootType;
+import com.company.datasets.metadata.Strategy;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -19,11 +19,11 @@ public class KalandraMistDataSet extends DataSet {
     @JsonProperty("lakeTier")
     private final Integer lakeTier;
     @JsonProperty("amountPositive")
-    private final byte amountPositive;
+    private final int amountPositive;
     @JsonProperty("amountNegative")
-    private final byte amountNegative;
+    private final int amountNegative;
     @JsonProperty("amountNeutral")
-    private final byte amountNeutral;
+    private final int amountNeutral;
     @JsonProperty("itemText")
     private final String itemText;
     @JsonProperty("itemType")
@@ -35,7 +35,7 @@ public class KalandraMistDataSet extends DataSet {
     @JsonProperty("inMap")
     private final Boolean inMap; //depcrecated, only left for downwards compatibility
 
-    public KalandraMistDataSet(Strategy strat, MistType type, Integer lakeTier, byte amountPositive, byte amountNegative, byte amountNeutral, String itemText, LootType itemType, String multiplier) {
+    public KalandraMistDataSet(Strategy strat, MistType type, Integer lakeTier, int amountPositive, int amountNegative, int amountNeutral, String itemText, LootType itemType, String multiplier) {
         super(strat);
         this.inMap = null;
         this.type = type;
@@ -53,7 +53,7 @@ public class KalandraMistDataSet extends DataSet {
     }
 
     @Deprecated
-    public KalandraMistDataSet(boolean inMap, byte amountPositive, byte amountNegative, byte amountNeutral, String itemText, LootType itemType) {
+    public KalandraMistDataSet(boolean inMap, int amountPositive, int amountNegative, int amountNeutral, String itemText, LootType itemType) {
         this.inMap = inMap;
         if (inMap) {
             this.type = MistType.IN_MAP;

@@ -1,4 +1,4 @@
-package main.com.company.exceptions;
+package com.company.exceptions;
 
 public class InvalidLootFormatException extends InvalidInputFormatException {
     public InvalidLootFormatException(String errorMessage) {

@@ -1,88 +1,276 @@
-package test.com.company.utils;
+package com.company.utils;
 
-import main.com.company.utils.Utils;
-import org.junit.jupiter.api.Test;
+import com.company.datasets.BossDropDataSet;
+import com.company.datasets.loot.GemLoot;
+import com.company.datasets.loot.Loot;
+import com.company.datasets.loot.LootType;
+import com.company.datasets.loot.StackableLoot;
+import com.company.datasets.metadata.Strategy;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static com.company.datasets.loot.LootType.*;
+import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilsTest {
 
-    @Test
-    void test_joinArrayNoSeperator() {
-        // given
-        String[] strings = {"aaa", "bb", "cccc"};
+    // ----------------------------------------------------------------------------------------------------------------
+    // JOIN
+    // ----------------------------------------------------------------------------------------------------------------
 
+    private static Stream<Arguments> joinListProviderNoSep() {
+        return Stream.of(
+                Arguments.of(List.of("aaa", "bb", "cccc"), "aaabbcccc"),
+                Arguments.of(List.of(), ""),
+                Arguments.of(List.of("42"), "42"),
+                Arguments.of(List.of("1", "", "1"), "11")
+        );
+    }
+
+    private static Stream<Arguments> joinListProviderSep() {
+        return Stream.of(
+                Arguments.of(List.of("aaa", "bb", "cccc"), "aaa+bb+cccc"),
+                Arguments.of(List.of(), ""),
+                Arguments.of(List.of("42"), "42"),
+                Arguments.of(List.of("1", "", "1"), "1++1")
+        );
+    }
+
+    private static Stream<Arguments> joinListProviderStart() {
+        return Stream.of(
+                Arguments.of(List.of("aaa", "bb", "cccc"), 0, "aaa+bb+cccc"),
+                Arguments.of(List.of(), 10, ""),
+                Arguments.of(List.of("42"), 3, ""),
+                Arguments.of(List.of("1", "", "1"), 1, "+1"),
+                Arguments.of(List.of("aaa", "bb", "cccc"), 2, "cccc"),
+                Arguments.of(List.of("aaa", "bb", "cccc", "d"), 1, "bb+cccc+d"),
+                Arguments.of(List.of("1", "", ""), 1, "+")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("joinListProviderNoSep")
+    void test_joinArrayNoSep(List<String> strings, String expected) {
+        // given
+        String[] stringsArr = strings.toArray(new String[0]);
+
+        // when
+        String actual = Utils.join(stringsArr);
+
+        // then
+        assertEquals(expected, actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource("joinListProviderSep")
+    void test_joinArraySep(List<String> strings, String expected) {
+        // given
+        String[] stringsArr = strings.toArray(new String[0]);
+
+        // when
+        String actual = Utils.join(stringsArr, "+");
+
+        // then
+        assertEquals(expected, actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource("joinListProviderNoSep")
+    void test_joinListNoSep(List<String> strings, String expected) {
         // when
         String actual = Utils.join(strings);
 
         // then
-        assertEquals("aaabbcccc", actual);
+        assertEquals(expected, actual);
     }
 
-    @Test
-    void test_joinEmptyArrayNoSeperator() {
-        // given
-        String[] strings = {};
-
-        // when
-        String actual = Utils.join(strings);
-
-        // then
-        assertEquals("", actual);
-    }
-
-    @Test
-    void test_joinOneElementArrayNoSeperator() {
-        // given
-        String[] strings = {"42"};
-
-        // when
-        String actual = Utils.join(strings);
-
-        // then
-        assertEquals("42", actual);
-    }
-
-    @Test
-    void test_joinArraySeperator() {
-        // given
-        String[] strings = {"aaa", "bb", "cccc"};
-
+    @ParameterizedTest
+    @MethodSource("joinListProviderSep")
+    void test_joinListSep(List<String> strings, String expected) {
         // when
         String actual = Utils.join(strings, "+");
 
         // then
-        assertEquals("aaa+bb+cccc", actual);
+        assertEquals(expected, actual);
     }
 
-    @Test
-    void test_joinEmptyArraySeperator() {
+    @ParameterizedTest
+    @MethodSource("joinListProviderStart")
+    void test_joinArraySepStart(List<String> strings, int start, String expected) {
         // given
-        String[] strings = {};
+        String[] stringsArr = strings.toArray(new String[0]);
 
         // when
-        String actual = Utils.join(strings, "+");
+        String actual = Utils.join(stringsArr, "+", start);
 
         // then
-        assertEquals("", actual);
+        assertEquals(expected, actual);
     }
 
-    @Test
-    void test_joinOneElementArraySeperator() {
+    // ----------------------------------------------------------------------------------------------------------------
+    // CONTAINS
+    // ----------------------------------------------------------------------------------------------------------------
+
+    private static Stream<Arguments> containsListProvider() {
+        return Stream.of(
+                Arguments.of(List.of("ab", "bc", "gh"), "ab", true),
+                Arguments.of(List.of("ab", "bc", "gh"), "AB", true),
+                Arguments.of(List.of("AB", "bc", "gh"), "ab", true),
+                Arguments.of(List.of("ab", "bc", "gh"), "ba", false),
+                Arguments.of(List.of(), "ab", false),
+                Arguments.of(List.of("ab", "bc", "gh"), "zz", false),
+                Arguments.of(List.of("ab", "bc", "gh"), "g", false)
+        );
+    }
+
+    private static Stream<Arguments> containsMapProvider() {
+        return Stream.of(
+                Arguments.of(Map.ofEntries(entry("ab", "cd"), entry("ef", "gh")), "ab", true),
+                Arguments.of(Map.ofEntries(entry("ab", "cd"), entry("ef", "gh")), "cd", true),
+                Arguments.of(Map.ofEntries(entry("ab", "cd"), entry("ef", "gh")), "Ab", true),
+                Arguments.of(Map.ofEntries(entry("ab", "cd"), entry("ef", "gh")), "gH", true),
+                Arguments.of(Map.ofEntries(entry("ab", "cd"), entry("ef", "gh")), "ij", false),
+                Arguments.of(Map.ofEntries(entry("ab", "cd"), entry("ef", "gh")), "a", false),
+                Arguments.of(Map.ofEntries(), "ab", false)
+        );
+    }
+
+    private static Stream<Arguments> containsLootTypeListProvider() {
+        return Stream.of(
+                Arguments.of(List.of(MAP, T17_MAP, CURRENCY), CURRENCY, true),
+                Arguments.of(List.of(MAP, T17_MAP, CURRENCY), MAP, true),
+                Arguments.of(List.of(MAP, T17_MAP, CURRENCY), CONQUEROR_MAP, false),
+                Arguments.of(List.of(MAP, T17_MAP, CURRENCY), CATALYSTS, false),
+                Arguments.of(List.of(), CURRENCY, false),
+                Arguments.of(List.of(CATALYSTS), CURRENCY, false),
+                Arguments.of(List.of(CURRENCY), CURRENCY, true)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("containsListProvider")
+    void test_containsArray(List<String> strings, String option, boolean expected) {
         // given
-        String[] strings = {"42"};
+        String[] stringsArr = strings.toArray(new String[0]);
 
         // when
-        String actual = Utils.join(strings, "+");
+        boolean actual = Utils.contains(stringsArr, option);
 
         // then
-        assertEquals("42", actual);
+        assertEquals(expected, actual);
     }
 
+    @ParameterizedTest
+    @MethodSource("containsListProvider")
+    void test_containsList(List<String> strings, String option, boolean expected) {
+        // when
+        boolean actual = Utils.contains(strings, option);
 
+        // then
+        assertEquals(expected, actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource("containsLootTypeListProvider")
+    void test_containsLootTypes(List<LootType> types, LootType option, boolean expected) {
+        // given
+        LootType[] typeArr = types.toArray(new LootType[0]);
+
+        // when
+        boolean actual = Utils.contains(typeArr, option);
+
+        // then
+        assertEquals(expected, actual);
+    }
+
+    @ParameterizedTest
+    @MethodSource("containsMapProvider")
+    void test_containsMap(Map<String, String> map, String option, boolean expected) {
+        // when
+        boolean actual = Utils.contains(map, option);
+
+        // then
+        assertEquals(expected, actual);
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // JSON
+    // ----------------------------------------------------------------------------------------------------------------
+
+    private static Stream<Arguments> toJsonProvider() {
+        Strategy exampleStrat = new Strategy(42, "3.27", null, List.of("S1", "S2").toArray(new String[0]), "Mesa", "Alch&Go", "");
+        String stratJson = "{\"id\":42,\"league\":\"3.27\",\"tree\":null,\"scarabs\":[\"S1\",\"S2\"],\"map\":\"Mesa\",\"mapRolling\":\"Alch&Go\",\"mapCraft\":\"\"}";
+        return Stream.of(
+                Arguments.of(exampleStrat, stratJson),
+                Arguments.of(
+                        new BossDropDataSet(
+                                exampleStrat, "Maven", false, true, new Loot("Arn's Anguish", BOSS_UNIQUE_ITEM),
+                                List.of(new GemLoot("Awakened WET", GEM, 0, 3), new StackableLoot("Orb of Conflict", CURRENCY, 1))
+                        ),
+                        "{\"strategy\":" + stratJson + ",\"boss\":\"Maven\",\"uber\":false,\"pinnacle\":true,\"guaranteedDrop\":" +
+                                "{\"name\":\"Arn's Anguish\",\"type\":\"BOSS_UNIQUE_ITEM\"},\"extraDrops\":[" +
+                                "{\"name\":\"Awakened WET\",\"type\":\"GEM\",\"level\":0,\"quality\":3}," +
+                                "{\"name\":\"Orb of Conflict\",\"type\":\"CURRENCY\",\"stacksize\":1}]}"
+                ),
+                Arguments.of(
+                        new GemLoot("Snipe", GEM, 1, 10),
+                        "{\"name\":\"Snipe\",\"type\":\"GEM\",\"level\":1,\"quality\":10}"
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("toJsonProvider")
+    void test_toJson(Object object, String expected) {
+        // when
+        String actual = Utils.toJson(object);
+
+        // then
+        assertEquals(expected, actual);
+    }
+
+    // This also technically tests LootDeserializer but only to some degree
+
+    @ParameterizedTest
+    @MethodSource("toJsonProvider")
+    void test_parseJson(Object expected, String json) throws JsonProcessingException {
+        // when
+        Object actual = Utils.parseJson(json, expected.getClass());
+
+        // then
+        assertEquals(expected, actual);
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // OTHER
+    // ----------------------------------------------------------------------------------------------------------------
+
+    private static Stream<Arguments> splitToCharsProvider() {
+        return Stream.of(
+                Arguments.of("ab/c/de", '/', new char[]{'a', 'b', 'c', 'd', 'e'}),
+                Arguments.of("ab//de", '/', new char[]{'a', 'b', 'd', 'e'}),
+                Arguments.of("//", '/', new char[0])
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("splitToCharsProvider")
+    void test_splittoChars(String inp, char sep, char[] expected) {
+        // when
+        char[] actual = Utils.splitToChars(inp, sep);
+
+        // then
+        assertArrayEquals(expected, actual);
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"12", "4.2", "0.75", "55.0", ".89", "+44", "+33.22", "+.76", "-90", "-20.20", "-.666", "0",

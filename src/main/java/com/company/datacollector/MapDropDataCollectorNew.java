@@ -1,17 +1,16 @@
-package main.com.company.datacollector;
+package com.company.datacollector;
 
-import main.com.company.datasets.MapDropDataSet;
+import com.company.datasets.MapDropDataSet;
 
 import java.io.IOException;
 
-import static main.com.company.utils.IOUtils.input;
-import static main.com.company.utils.Utils.splitToChars;
+import static com.company.utils.IOUtils.input;
+import static com.company.utils.Utils.splitToChars;
 
 public class MapDropDataCollectorNew extends DataCollectorNew<MapDropDataSet> {
-    private static final String mapDropsFileName = "Data/mapDrops.txt";
 
     public MapDropDataCollectorNew() throws IOException {
-        super(mapDropsFileName);
+        super();
     }
 
     @Override

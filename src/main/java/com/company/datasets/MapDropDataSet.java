@@ -1,11 +1,11 @@
-package main.com.company.datasets;
+package com.company.datasets;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import main.com.company.datasets.loot.LootType;
-import main.com.company.datasets.metadata.Strategy;
+import com.company.datasets.loot.LootType;
+import com.company.datasets.metadata.Strategy;
 
 import java.util.*;
 

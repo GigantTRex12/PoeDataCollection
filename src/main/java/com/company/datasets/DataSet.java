@@ -1,11 +1,14 @@
-package main.com.company.datasets;
+package com.company.datasets;
 
-import main.com.company.datasets.metadata.Strategy;
+import com.company.datasets.metadata.Strategy;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 
 @NoArgsConstructor(force = true)
 @AllArgsConstructor

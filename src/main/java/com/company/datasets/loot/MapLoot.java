@@ -1,13 +1,15 @@
-package main.com.company.datasets.loot;
+package com.company.datasets.loot;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString(callSuper = true)
+@EqualsAndHashCode
 @JsonDeserialize(using = JsonDeserializer.None.class)
 public class MapLoot extends Loot {
     @JsonProperty("tier")

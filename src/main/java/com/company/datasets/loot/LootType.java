@@ -1,4 +1,4 @@
-package main.com.company.datasets.loot;
+package com.company.datasets.loot;
 
 public enum LootType {
     RARE_JEWELLRY,
@@ -33,6 +33,7 @@ public enum LootType {
     FRAGMENT,
     GEM,
     GEM_CORRUPTED,
+    GEM_AWAKENED,
     OIL,
     SPLINTERS,
     SPLINTERS_LEGION,

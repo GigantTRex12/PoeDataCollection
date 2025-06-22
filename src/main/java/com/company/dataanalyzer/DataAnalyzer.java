@@ -1,6 +1,6 @@
-package main.com.company.dataanalyzer;
+package com.company.dataanalyzer;
 
-import main.com.company.datasets.DataSet;
+import com.company.datasets.DataSet;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
-package main.com.company.datasets.metadata;
+package com.company.datasets.metadata;
 
-import main.com.company.exceptions.StrategyCreationInterruptedException;
+import com.company.exceptions.StrategyCreationInterruptedException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
@@ -14,12 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static main.com.company.utils.FileUtils.append;
-import static main.com.company.utils.FileUtils.readLines;
-import static main.com.company.utils.IOUtils.input;
-import static main.com.company.utils.IOUtils.print;
-import static main.com.company.utils.Utils.parseJson;
-import static main.com.company.utils.Utils.toJson;
+import static com.company.utils.FileUtils.append;
+import static com.company.utils.FileUtils.readLines;
+import static com.company.utils.IOUtils.input;
+import static com.company.utils.IOUtils.print;
+import static com.company.utils.Utils.parseJson;
+import static com.company.utils.Utils.toJson;
 
 @AllArgsConstructor
 @Getter

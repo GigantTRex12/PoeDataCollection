@@ -1,11 +1,14 @@
-package main.com.company.utils;
+package com.company.utils;
 
+import java.io.ByteArrayInputStream;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static main.com.company.utils.Utils.*;
+import static com.company.utils.Utils.*;
 
 public class IOUtils {
+    private static Scanner scanner = new Scanner(System.in);
+
     public static void print(String string) {
         System.out.println(string);
     }
@@ -64,7 +67,6 @@ public class IOUtils {
     }
 
     public static String input() {
-        Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
 
@@ -157,7 +159,6 @@ public class IOUtils {
     }
 
     public static String multilineInput() {
-        Scanner scanner = new Scanner(System.in);
         StringBuilder sb = new StringBuilder();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -173,7 +174,7 @@ public class IOUtils {
         return sb.toString();
     }
 
-    public static String multiLineInput(String message) {
+    public static String multilineInput(String message) {
         print(message);
         return multilineInput();
     }
@@ -186,5 +187,10 @@ public class IOUtils {
             }
             print("Invalid Format, an integer is expected");
         }
+    }
+
+    public static void setInputStream(String input) { // Is needed for tests
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        scanner = new Scanner(System.in); // otherwise setting a new InputStream breaks things
     }
 }

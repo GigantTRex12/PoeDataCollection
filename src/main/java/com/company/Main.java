@@ -1,21 +1,36 @@
-package main.com.company;
+package com.company;
 
-import main.com.company.dataanalyzer.DataAnalyzer;
-import main.com.company.dataanalyzer.KalandraMistDataAnalyzer;
-import main.com.company.datacollector.DataCollector;
-import main.com.company.datacollector.KalandraMistDataCollector;
-import main.com.company.datacollector.MapDropDataCollector;
-import main.com.company.datacollector.UltimatumDataCollector;
+import com.company.dataanalyzer.DataAnalyzer;
+import com.company.dataanalyzer.KalandraMistDataAnalyzer;
+import com.company.datacollector.DataCollector;
+import com.company.datacollector.KalandraMistDataCollector;
+import com.company.datacollector.MapDropDataCollector;
+import com.company.datacollector.UltimatumDataCollector;
+import com.company.datasets.DataSet;
+import com.company.datasets.KalandraMistDataSet;
+import com.company.datasets.MapDropDataSet;
+import com.company.datasets.UltimatumDataSet;
 
 import java.io.IOException;
+import java.util.Map;
 
-import static main.com.company.utils.IOUtils.input;
-import static main.com.company.utils.IOUtils.print;
+import static com.company.utils.IOUtils.*;
+import static java.util.Map.entry;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        test();
+        final String dataPath = "Data/";
+        final Map<String, Class<? extends DataSet>> inputToClass = Map.ofEntries(
+                entry("mist", KalandraMistDataSet.class),
+                entry("map drops", MapDropDataSet.class),
+                entry("ultimatum", UltimatumDataSet.class)
+        );
+        final Map<Class<? extends DataSet>, String> classToFilename = Map.ofEntries(
+                entry(KalandraMistDataSet.class, "mist.txt"),
+                entry(UltimatumDataSet.class, "ultimatum.txt"),
+                entry(MapDropDataSet.class, "mapDrops.txt")
+        );
 
         String[] options1 = {"a", "analyze", "c", "collect", "exit"};
         String input1 = input("What would you like to do?", options1).toLowerCase();
@@ -59,8 +74,5 @@ public class Main {
                 }
                 break;
         }
-    }
-
-    public static void test() throws IOException {
     }
 }

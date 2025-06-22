@@ -1,22 +1,26 @@
-package main.com.company.datacollector;
+package com.company.datacollector;
 
-import main.com.company.datasets.DataSet;
-import main.com.company.datasets.metadata.Strategy;
-import main.com.company.exceptions.StrategyCreationInterruptedException;
+import com.company.datasets.DataSet;
+import com.company.datasets.metadata.Strategy;
+import com.company.exceptions.StrategyCreationInterruptedException;
+import lombok.Getter;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Map.entry;
-import static main.com.company.utils.FileUtils.append;
-import static main.com.company.utils.FileUtils.createNew;
-import static main.com.company.utils.IOUtils.*;
-import static main.com.company.utils.Utils.toJson;
+import static com.company.utils.FileUtils.append;
+import static com.company.utils.FileUtils.createNew;
+import static com.company.utils.IOUtils.*;
+import static com.company.utils.Utils.toJson;
 
 public abstract class DataCollectorNew<T extends DataSet> {
+    @Getter
     private static final Map<String, String> actions = Map.ofEntries(
             entry("AddData", "a"),
             entry("AddFromSingleInput", "af"),
@@ -29,18 +33,13 @@ public abstract class DataCollectorNew<T extends DataSet> {
             entry("Exit", "e")
     );
 
-    private final String filename;
-    protected List<T> data;
+    protected List<T> data = new ArrayList<>();
     protected Strategy currStrat;
     private Map<Integer, Strategy> strategyIds;
 
-    public DataCollectorNew(String filename) throws IOException {
-        this.filename = filename;
-        this.data = new ArrayList<>();
-        createNew(filename);
-    }
+    public DataCollectorNew() {}
 
-    public void collectData() throws IOException {
+    public void collectData(String filename) throws IOException {
         initializeAndPickStrat();
         while (true) {
             String action = input("What would you like to do?", actions).toLowerCase();
@@ -64,7 +63,7 @@ public abstract class DataCollectorNew<T extends DataSet> {
                     break;
                 case ("save"):
                 case ("s"):
-                    this.addAllDataToFile();
+                    this.addAllDataToFile(filename);
                     break;
                 case ("printdata"):
                 case ("p"):
@@ -82,7 +81,7 @@ public abstract class DataCollectorNew<T extends DataSet> {
                     break;
                 case ("exit"):
                 case ("e"):
-                    this.addAllDataToFile();
+                    this.addAllDataToFile(filename);
                     exit = true;
                     break;
             }
@@ -92,16 +91,9 @@ public abstract class DataCollectorNew<T extends DataSet> {
         }
     }
 
-    private void addAllDataToFile() throws IOException {
-        for (DataSet data : this.data) {
-            String rep = toJson(data);
-            this.addDataToFile(rep);
-        }
+    private void addAllDataToFile(String filename) {
+        append(filename, this.data);
         this.data.clear();
-    }
-
-    private void addDataToFile(String data) throws IOException {
-        append(this.filename, data);
     }
 
     private Strategy pickStrat() {

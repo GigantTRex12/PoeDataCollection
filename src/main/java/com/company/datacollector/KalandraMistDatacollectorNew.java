@@ -1,20 +1,18 @@
-package main.com.company.datacollector;
+package com.company.datacollector;
 
-import main.com.company.datasets.KalandraMistDataSet;
-import main.com.company.datasets.loot.LootType;
+import com.company.datasets.KalandraMistDataSet;
+import com.company.datasets.loot.LootType;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static java.util.Map.entry;
-import static main.com.company.utils.IOUtils.input;
-import static main.com.company.utils.IOUtils.multiLineInput;
+import static com.company.utils.IOUtils.input;
+import static com.company.utils.IOUtils.multilineInput;
 
 public class KalandraMistDatacollectorNew extends DataCollectorNew<KalandraMistDataSet> {
-    private static final String mistFileName = "Data/mist.txt";
 
-    public KalandraMistDatacollectorNew() throws IOException {
-        super(mistFileName);
+    public KalandraMistDatacollectorNew() {
+        super();
     }
 
     @Override
@@ -62,7 +60,7 @@ public class KalandraMistDatacollectorNew extends DataCollectorNew<KalandraMistD
         }
 
         // itemText
-        String itemText = multiLineInput("Paste the item text");
+        String itemText = multilineInput("Paste the item text");
 
         // creating DataSet
         this.data.add(new KalandraMistDataSet(currStrat, mistType, tier, pos, neg, neut, itemText, itemType, multiplier));

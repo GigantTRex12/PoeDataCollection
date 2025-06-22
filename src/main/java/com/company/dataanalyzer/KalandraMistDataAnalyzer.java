@@ -1,6 +1,6 @@
-package main.com.company.dataanalyzer;
+package com.company.dataanalyzer;
 
-import main.com.company.datasets.KalandraMistDataSet;
+import com.company.datasets.KalandraMistDataSet;
 
 import java.io.IOException;
 import java.util.List;

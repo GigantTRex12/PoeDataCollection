@@ -1,12 +1,13 @@
-package main.com.company.datacollector;
+package com.company.datacollector;
 
-import main.com.company.datasets.KalandraMistDataSet;
-import main.com.company.datasets.loot.LootType;
-import main.com.company.exceptions.InvalidInputFormatException;
+import com.company.datasets.KalandraMistDataSet;
+import com.company.datasets.loot.LootType;
+import com.company.exceptions.InvalidInputFormatException;
+import com.company.utils.IOUtils;
 
-import static main.com.company.utils.IOUtils.*;
-import static main.com.company.utils.Utils.isNumber;
-import static main.com.company.utils.Utils.join;
+import static com.company.utils.IOUtils.*;
+import static com.company.utils.Utils.isNumber;
+import static com.company.utils.Utils.join;
 
 public class KalandraMistDataCollector extends DataCollector {
     public KalandraMistDataCollector(String filename) {
@@ -89,12 +90,12 @@ public class KalandraMistDataCollector extends DataCollector {
                     itemType = LootType.RARE_JEWELLRY_AMULET;
                 }
 
-                String itemText = multiLineInput("Paste the item text");
+                String itemText = IOUtils.multilineInput("Paste the item text");
 
                 this.dataSets.add(new KalandraMistDataSet(currStrat, mistType, tier, pos, neg, neut, itemText, itemType, multiplier));
             }
             else if (action.equals("f") || action.equals("addfull")) {
-                String text = multiLineInput("Paste your text");
+                String text = IOUtils.multilineInput("Paste your text");
                 String[] lines = text.split("\n");
                 if (lines.length < 2) {
                     print("Invalid format: lines");

@@ -1,7 +1,8 @@
-package main.com.company.utils;
+package com.company.utils;
 
-import main.com.company.exceptions.FileAlreadyExistsException;
-import main.com.company.exceptions.FileCannotBeWrittenException;
+import com.company.datasets.DataSet;
+import com.company.exceptions.FileAlreadyExistsException;
+import com.company.exceptions.FileCannotBeWrittenException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import static com.company.utils.Utils.toJson;
 
 public class FileUtils {
     public static void create(String filename) throws IOException {
@@ -104,6 +107,19 @@ public class FileUtils {
         }
         else {
             create(file, content);
+        }
+    }
+
+    public static void append(String filename, List<?> data) {
+        StringBuilder dataRep = new StringBuilder();
+        for (Object dataSet : data) {
+            dataRep.append(toJson(dataSet)).append("\n");
+        }
+        dataRep = new StringBuilder(dataRep.toString().trim());
+        try {
+            append(filename, dataRep.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

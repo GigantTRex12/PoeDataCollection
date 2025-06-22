@@ -1,27 +1,25 @@
-package main.com.company.datasets.loot;
+package com.company.datasets.loot;
 
-import main.com.company.exceptions.InvalidLootFormatException;
+import com.company.exceptions.InvalidLootFormatException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-import static main.com.company.datasets.loot.LootType.*;
-import static main.com.company.utils.Utils.contains;
+import static com.company.datasets.loot.LootType.*;
+import static com.company.utils.Utils.contains;
 
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Getter
 @ToString
+@EqualsAndHashCode
 @JsonDeserialize(using = LootDeserializer.class)
 public class Loot {
     private static final LootType[] stackable = {CATALYSTS, ESSENCES, DIVINATIONCARDS, CURRENCY, EXOTIC_CURRENCY, FRAGMENT, SCARAB, FOSSILS, SPLINTERS, SPLINTERS_BREACH, SPLINTERS_LEGION, OIL, INCUBATOR, SCOUTING_REPORT};
     private static final LootType[] corrImplicits = {UNIQUE_ITEM_IMPLICIT_CORRUPTED, RARE_ARMOUR_IMPLICIT_CORRUPTED, RARE_WEAPON_IMPLICIT_CORRUPTED, RARE_JEWELLRY_IMPLICIT_CORRUPTED, RARE_ITEM_IMPLICIT_CORRUPTED};
     private static final LootType[] maps = {MAP, UNIQUE_MAP, SYNTH_MAP, ELDER_MAP, SHAPER_MAP, CONQUEROR_MAP, T17_MAP, RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS};
     private static final LootType[] corruptedMaps = {RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS};
-    private static final LootType[] gems = {GEM, GEM_CORRUPTED};
+    private static final LootType[] gems = {GEM, GEM_CORRUPTED, GEM_AWAKENED};
     private static final LootType[] crafts = {GUFF_CRAFTING_BENCH, VORICI_CRAFTING_BENCH, TORA_CRAFTING_BENCH, IT_THAT_FLED_BREACHSTONE_CRAFT};
 
     @JsonProperty("name")
@@ -128,7 +126,7 @@ public class Loot {
     public static LootType parseLootType(String rep) throws InvalidLootFormatException {
         LootType type = null;
         try {
-            type = LootType.valueOf(rep.toUpperCase());
+            type = valueOf(rep.toUpperCase());
         }
         catch (IllegalArgumentException e) {
             String lower = rep.toLowerCase();
@@ -149,7 +147,7 @@ public class Loot {
                 type = FOSSILS;
             }
             else if (lower.contains("offering")) {
-                type = LootType.OFFERINGS;
+                type = OFFERINGS;
             }
             else if (lower.contains("incubator")) {
                 type = INCUBATOR;
@@ -181,9 +179,14 @@ public class Loot {
                 }
                 else if (gem) type = GEM_CORRUPTED;
             }
+            else if (gem) {
+                if (lower.contains("awakened")) type = GEM_AWAKENED;
+                else type = GEM;
+
+            }
             else if (unique) {
-                if (lower.contains("boss")) type = LootType.BOSS_UNIQUE_ITEM;
-                else type = LootType.UNIQUE_ITEM;
+                if (lower.contains("boss")) type = BOSS_UNIQUE_ITEM;
+                else type = UNIQUE_ITEM;
             }
             else if (rare) {
                 if (weapon) type = RARE_WEAPON;
@@ -234,4 +237,5 @@ public class Loot {
         }
         return Loot.class;
     }
+
 }

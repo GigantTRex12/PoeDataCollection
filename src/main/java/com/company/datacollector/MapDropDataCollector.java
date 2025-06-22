@@ -1,11 +1,11 @@
-package main.com.company.datacollector;
+package com.company.datacollector;
 
-import main.com.company.datasets.MapDropDataSet;
-import main.com.company.datasets.metadata.Strategy;
-import main.com.company.exceptions.StrategyCreationInterruptedException;
+import com.company.datasets.MapDropDataSet;
+import com.company.datasets.metadata.Strategy;
+import com.company.exceptions.StrategyCreationInterruptedException;
 
-import static main.com.company.utils.IOUtils.*;
-import static main.com.company.utils.Utils.splitToChars;
+import static com.company.utils.IOUtils.*;
+import static com.company.utils.Utils.splitToChars;
 
 public class MapDropDataCollector extends DataCollector {
     public MapDropDataCollector(String filename) {

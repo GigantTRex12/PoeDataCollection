@@ -1,9 +1,9 @@
-package main.com.company.datacollector;
+package com.company.datacollector;
 
-import main.com.company.datasets.DataSet;
-import main.com.company.datasets.metadata.Strategy;
-import main.com.company.exceptions.FileAlreadyExistsException;
-import main.com.company.utils.Utils;
+import com.company.datasets.DataSet;
+import com.company.datasets.metadata.Strategy;
+import com.company.exceptions.FileAlreadyExistsException;
+import com.company.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static main.com.company.utils.FileUtils.append;
-import static main.com.company.utils.FileUtils.create;
-import static main.com.company.utils.IOUtils.*;
+import static com.company.utils.FileUtils.append;
+import static com.company.utils.FileUtils.create;
+import static com.company.utils.IOUtils.*;
 
 public abstract class DataCollector {
     protected String filename;

@@ -1,4 +1,4 @@
-package main.com.company.datasets.loot;
+package com.company.datasets.loot;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
@@ -20,6 +20,13 @@ public class LootDeserializer extends StdDeserializer<Loot> {
 
         LootType lootType = LootType.valueOf(typeString.substring(1, typeString.length() - 1));
 
-        return jp.getCodec().treeToValue(node, Loot.typeToClass(lootType));
+        Class<? extends Loot> clazz = Loot.typeToClass(lootType);
+
+        if (clazz == Loot.class) {
+            String name = node.get("name").toString();
+            name = name.substring(1, name.length() - 1);
+            return new Loot(name, lootType);
+        }
+        return jp.getCodec().treeToValue(node, clazz);
     }
 }

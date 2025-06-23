@@ -14,6 +14,9 @@ public class ParseUtils {
     }
 
     public static List<Loot> toLootList(String string) {
+        if (string.trim().isEmpty()) {
+            return List.of();
+        }
         String[] reps = string.strip().split("\n");
         List<Loot> loot = new ArrayList<>();
 
@@ -32,6 +35,9 @@ public class ParseUtils {
 
     public static Loot parseToLoot(String string) {
         try {
+            if (string.trim().isEmpty()) {
+                return null;
+            }
             return Loot.parseToLoot(string);
         }
         catch (InvalidLootFormatException e) {

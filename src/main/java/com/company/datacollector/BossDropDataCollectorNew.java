@@ -58,6 +58,8 @@ public class BossDropDataCollectorNew extends DataCollectorNew<BossDropDataSet> 
             try {
                 Method builderFunc = builder.getClass().getMethod(field.getName(), field.getType());
                 if (!ann.parsingFunc().isEmpty()) {
+                    // TODO: parsing func could throw an InvalidInputFormatException
+                    // also then add tests for that exception
                     builderFunc.invoke(builder, ParseUtils.class.getMethod(ann.parsingFunc(), String.class).invoke(null, inp));
                 }
                 else if (field.getType() == String.class) {

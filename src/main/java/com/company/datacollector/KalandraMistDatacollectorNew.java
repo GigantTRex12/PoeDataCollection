@@ -32,7 +32,7 @@ public class KalandraMistDatacollectorNew extends DataCollectorNew<KalandraMistD
         }
 
         // amountPositive, amountNegative and amountNeutral
-        String mods = input("Enter how many mods are positive, negative or neutral", "\\d+\\/\\d+(\\/\\d+)?");
+        String mods = input("Enter how many mods are positive, negative or neutral", "^\\d+\\/\\d+(\\/\\d+)?$");
         String[] split = mods.split("/");
         byte pos = Byte.parseByte(split[0]);
         byte neg = Byte.parseByte(split[1]);
@@ -43,7 +43,7 @@ public class KalandraMistDatacollectorNew extends DataCollectorNew<KalandraMistD
 
         // multiplier
         String multiplier = input("Enter the multiplier. Leave Empty to skip",
-                "^$|^\\d+\\.\\d*$").toLowerCase();
+                "^$|^\\d+\\.?\\d*$").toLowerCase();
         if (multiplier.trim().isEmpty()) {
             multiplier = null;
         }

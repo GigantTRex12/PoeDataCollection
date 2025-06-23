@@ -37,7 +37,7 @@ public class Loot {
         LootType type = parseLootType(split[1]);
         if (contains(stackable, type)) {
             if (split.length < 3) {
-                throw new InvalidLootFormatException("Invalid Format to parse Loot: missing argument for stacksize");
+                return new StackableLoot(name, type, 1);
             }
             int stacksize;
             try {

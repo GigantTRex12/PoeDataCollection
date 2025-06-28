@@ -1,5 +1,6 @@
 package com.company.datacollector;
 
+import com.company.datasets.other.metadata.Strategy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
 public class DataCollectorTest {
     
     protected static final String LINEBREAK = System.lineSeparator();
+
+    protected static final Strategy nullStrat = new Strategy(null, null, null, null, null, null, null);
 
     protected Map<String, String> actions;
 

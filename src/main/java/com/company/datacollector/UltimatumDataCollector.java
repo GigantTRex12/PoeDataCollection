@@ -1,8 +1,8 @@
 package com.company.datacollector;
 
-import com.company.datasets.loot.Loot;
-import com.company.datasets.metadata.Strategy;
-import com.company.datasets.UltimatumDataSet;
+import com.company.datasets.other.loot.Loot;
+import com.company.datasets.other.metadata.Strategy;
+import com.company.datasets.datasets.UltimatumDataSet;
 import com.company.exceptions.InvalidLootFormatException;
 import com.company.exceptions.StrategyCreationInterruptedException;
 

@@ -6,13 +6,12 @@ import com.company.datacollector.DataCollector;
 import com.company.datacollector.KalandraMistDataCollector;
 import com.company.datacollector.MapDropDataCollector;
 import com.company.datacollector.UltimatumDataCollector;
-import com.company.datasets.DataSet;
-import com.company.datasets.KalandraMistDataSet;
-import com.company.datasets.MapDropDataSet;
-import com.company.datasets.UltimatumDataSet;
+import com.company.datasets.datasets.DataSet;
+import com.company.datasets.datasets.KalandraMistDataSet;
+import com.company.datasets.datasets.MapDropDataSet;
+import com.company.datasets.datasets.UltimatumDataSet;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Map;
 
 import static com.company.utils.IOUtils.*;

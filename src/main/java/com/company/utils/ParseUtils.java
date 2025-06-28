@@ -1,6 +1,6 @@
 package com.company.utils;
 
-import com.company.datasets.loot.Loot;
+import com.company.datasets.other.loot.Loot;
 import com.company.exceptions.InvalidLootFormatException;
 
 import java.util.ArrayList;

@@ -2,7 +2,7 @@ package com.company.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.company.datasets.loot.LootType;
+import com.company.datasets.other.loot.LootType;
 
 import java.util.ArrayList;
 import java.util.Collection;

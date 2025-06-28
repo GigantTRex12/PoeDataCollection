@@ -1,10 +1,9 @@
 package com.company.datacollector;
 
-import com.company.datasets.BossDropDataSet;
-import com.company.datasets.loot.GemLoot;
-import com.company.datasets.loot.Loot;
-import com.company.datasets.loot.StackableLoot;
-import com.company.datasets.metadata.Strategy;
+import com.company.datasets.datasets.BossDropDataSet;
+import com.company.datasets.other.loot.GemLoot;
+import com.company.datasets.other.loot.Loot;
+import com.company.datasets.other.loot.StackableLoot;
 import com.company.utils.IOUtils;
 import com.company.utils.Utils;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static com.company.datasets.loot.LootType.*;
+import static com.company.datasets.other.loot.LootType.*;
 
 public class BossDropDataCollectorTest extends DataCollectorTest{
 
@@ -29,7 +28,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
     @Test
     void add_oneDataSet() throws IOException {
         // given
-        String inputs = "3" + LINEBREAK +
+        String inputs = "0" + LINEBREAK +
                 actions.get("AddData") + LINEBREAK +
                 "The Maven" + LINEBREAK +
                 "n" + LINEBREAK +
@@ -40,7 +39,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         IOUtils.setInputStream(inputs);
 
         BossDropDataSet dataSet = new BossDropDataSet(
-                new Strategy(3, "3.25", null, null, null, null, null),
+                nullStrat,
                 "The Maven",
                 false,
                 true,
@@ -75,7 +74,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
     @Test
     void add_multipleDataSets() throws IOException {
         // given
-        String inputs = "3" + LINEBREAK +
+        String inputs = "0" + LINEBREAK +
                 actions.get("AddData") + LINEBREAK +
                 "The Maven" + LINEBREAK +
                 "n" + LINEBREAK +
@@ -92,7 +91,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         IOUtils.setInputStream(inputs);
 
         BossDropDataSet dataSet1 = new BossDropDataSet(
-                new Strategy(3, "3.25", null, null, null, null, null),
+                nullStrat,
                 "The Maven",
                 false,
                 true,
@@ -103,7 +102,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 )
         );
         BossDropDataSet dataSet2 = new BossDropDataSet(
-                new Strategy(3, "3.25", null, null, null, null, null),
+                nullStrat,
                 "The Infinite Hunger",
                 false,
                 true,
@@ -143,7 +142,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
     @Test
     void add_attemptInvalidInputs() throws IOException {
         // given
-        String inputs = "3" + LINEBREAK +
+        String inputs = "0" + LINEBREAK +
                 actions.get("AddData") + LINEBREAK +
                 "The Maven" + LINEBREAK +
                 "x" + LINEBREAK + "y" + LINEBREAK +
@@ -154,7 +153,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         IOUtils.setInputStream(inputs);
 
         BossDropDataSet dataSet = new BossDropDataSet(
-                new Strategy(3, "3.25", null, null, null, null, null),
+                nullStrat,
                 "The Maven",
                 true,
                 true,

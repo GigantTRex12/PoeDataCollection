@@ -1,8 +1,8 @@
 package com.company.utils;
 
-import com.company.datasets.KalandraMistDataSet;
-import com.company.datasets.loot.LootType;
-import com.company.datasets.metadata.Strategy;
+import com.company.datasets.datasets.KalandraMistDataSet;
+import com.company.datasets.other.loot.LootType;
+import com.company.datasets.other.metadata.Strategy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ public class FileUtilsTest {
 
         List<KalandraMistDataSet> list = List.of(
                 new KalandraMistDataSet(
-                        new Strategy(3, "3.25", null, null, null, null, null),
+                        new Strategy(null, "3.25", null, null, null, null, null),
                         KalandraMistDataSet.MistType.IN_MAP, null,
                         2, 3, 0,
                         "This is a dummy text.\nThis is only for tests.",
@@ -30,7 +30,7 @@ public class FileUtilsTest {
                         "1.9"
                 ),
                 new KalandraMistDataSet(
-                        new Strategy(3, "3.25", null, null, null, null, null),
+                        new Strategy(null, "3.25", null, null, null, null, null),
                         KalandraMistDataSet.MistType.ITEMIZED, null,
                         2, 1, 1,
                         "This is another dummy text.\nThis is only for tests.",
@@ -39,8 +39,8 @@ public class FileUtilsTest {
                 )
         );
 
-        String expectedJson1 = "{\"strategy\":{\"id\":3,\"league\":\"3.25\",\"tree\":null,\"scarabs\":null,\"map\":null,\"mapRolling\":null,\"mapCraft\":null},\"type\":\"IN_MAP\",\"lakeTier\":null,\"amountPositive\":2,\"amountNegative\":3,\"amountNeutral\":0,\"itemText\":\"This is a dummy text.\\nThis is only for tests.\",\"itemType\":\"RARE_JEWELLRY_RING\",\"multiplier\":\"1.9\"}";
-        String expectedJson2 = "{\"strategy\":{\"id\":3,\"league\":\"3.25\",\"tree\":null,\"scarabs\":null,\"map\":null,\"mapRolling\":null,\"mapCraft\":null},\"type\":\"ITEMIZED\",\"lakeTier\":null,\"amountPositive\":2,\"amountNegative\":1,\"amountNeutral\":1,\"itemText\":\"This is another dummy text.\\nThis is only for tests.\",\"itemType\":\"RARE_JEWELLRY_AMULET\",\"multiplier\":\"2.1\"}";
+        String expectedJson1 = "{\"strategy\":{\"league\":\"3.25\",\"tree\":null,\"scarabs\":null,\"map\":null,\"mapRolling\":null,\"mapCraft\":null},\"type\":\"IN_MAP\",\"lakeTier\":null,\"amountPositive\":2,\"amountNegative\":3,\"amountNeutral\":0,\"itemText\":\"This is a dummy text.\\nThis is only for tests.\",\"itemType\":\"RARE_JEWELLRY_RING\",\"multiplier\":\"1.9\"}";
+        String expectedJson2 = "{\"strategy\":{\"league\":\"3.25\",\"tree\":null,\"scarabs\":null,\"map\":null,\"mapRolling\":null,\"mapCraft\":null},\"type\":\"ITEMIZED\",\"lakeTier\":null,\"amountPositive\":2,\"amountNegative\":1,\"amountNeutral\":1,\"itemText\":\"This is another dummy text.\\nThis is only for tests.\",\"itemType\":\"RARE_JEWELLRY_AMULET\",\"multiplier\":\"2.1\"}";
 
         // when
         FileUtils.append(tempfile.toString(), list);

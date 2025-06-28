@@ -1,7 +1,7 @@
 package com.company.datacollector;
 
-import com.company.datasets.MapDropDataSet;
-import com.company.datasets.metadata.Strategy;
+import com.company.datasets.datasets.MapDropDataSet;
+import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.StrategyCreationInterruptedException;
 
 import static com.company.utils.IOUtils.*;

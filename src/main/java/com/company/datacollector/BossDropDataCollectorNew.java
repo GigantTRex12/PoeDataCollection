@@ -1,16 +1,17 @@
 package com.company.datacollector;
 
-import com.company.datasets.BossDropDataSet;
-import com.company.datasets.DataSet;
+import com.company.datasets.datasets.BossDropDataSet;
+import com.company.datasets.datasets.DataSet;
 import com.company.datasets.annotations.InputProperty;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
 import com.company.utils.ParseUtils;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.company.utils.IOUtils.input;
@@ -25,18 +26,26 @@ public class BossDropDataCollectorNew extends DataCollectorNew<BossDropDataSet> 
     @Override
     protected void addData() {
         Class<? extends DataSet> clazz = BossDropDataSet.class;
-        Field[] fields = clazz.getDeclaredFields();
-        List<Field> fieldList = Arrays.stream(fields)
+        // get annotated Fields and sort them
+        List<Field> fieldList = Arrays.stream(clazz.getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(InputProperty.class))
                 .sorted(Comparator.comparingInt(f -> f.getAnnotation(InputProperty.class).order()))
                 .collect(Collectors.toList());
+        // Create Builder
         BossDropDataSet.BossDropDataSetBuilder builder = BossDropDataSet.builder().strategy(currStrat);
 
+        // Iterate over Fields
         for (Field field : fieldList) {
+            // Get user input according to annotation
             InputProperty ann = field.getAnnotation(InputProperty.class);
             String inp;
             if (ann.message().isEmpty()) {
-                inp = input();
+                if (ann.multiline()) {
+                    inp = multilineInput();
+                }
+                else {
+                    inp = input();
+                }
             }
             else {
                 String msg = ann.message();
@@ -55,6 +64,7 @@ public class BossDropDataCollectorNew extends DataCollectorNew<BossDropDataSet> 
                     }
                 }
             }
+            // Parse input to type of the Field and pass it to the Builder
             try {
                 Method builderFunc = builder.getClass().getMethod(field.getName(), field.getType());
                 if (!ann.parsingFunc().isEmpty()) {

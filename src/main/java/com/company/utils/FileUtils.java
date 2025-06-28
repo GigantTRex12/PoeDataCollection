@@ -1,6 +1,5 @@
 package com.company.utils;
 
-import com.company.datasets.DataSet;
 import com.company.exceptions.FileAlreadyExistsException;
 import com.company.exceptions.FileCannotBeWrittenException;
 

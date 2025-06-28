@@ -1,8 +1,7 @@
 package com.company.datacollector;
 
-import com.company.datasets.KalandraMistDataSet;
-import com.company.datasets.loot.LootType;
-import com.company.datasets.metadata.Strategy;
+import com.company.datasets.datasets.KalandraMistDataSet;
+import com.company.datasets.other.loot.LootType;
 import com.company.utils.IOUtils;
 import com.company.utils.Utils;
 import org.junit.jupiter.api.Assertions;
@@ -24,7 +23,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
     @Test
     void add_oneDataSet() throws IOException {
         // given
-        String inputs = "3" + LINEBREAK +
+        String inputs = "0" + LINEBREAK +
                         actions.get("AddData") + LINEBREAK +
                         "in map" + LINEBREAK +
                         "2/3" + LINEBREAK +
@@ -35,7 +34,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
         IOUtils.setInputStream(inputs);
 
         KalandraMistDataSet dataSet = new KalandraMistDataSet(
-                new Strategy(3, "3.25", null, null, null, null, null),
+                nullStrat,
                 KalandraMistDataSet.MistType.IN_MAP, null,
                 2, 3, 0,
                 "This is a dummy text.\nThis is only for tests.",
@@ -69,7 +68,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
     @Test
     void add_multipleDataSets() throws IOException {
         // given
-        String inputs ="3" + LINEBREAK +
+        String inputs ="0" + LINEBREAK +
                 actions.get("AddData") + LINEBREAK +
                 "in map" + LINEBREAK +
                 "2/3" + LINEBREAK +
@@ -92,7 +91,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
         IOUtils.setInputStream(inputs);
 
         KalandraMistDataSet dataSet1 = new KalandraMistDataSet(
-                new Strategy(3, "3.25", null, null, null, null, null),
+                nullStrat,
                 KalandraMistDataSet.MistType.IN_MAP, null,
                 2, 3, 0,
                 "This is a dummy text.\nThis is only for tests.",
@@ -100,7 +99,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
                 null
         );
         KalandraMistDataSet dataSet2 = new KalandraMistDataSet(
-                new Strategy(3, "3.25", null, null, null, null, null),
+                nullStrat,
                 KalandraMistDataSet.MistType.ITEMIZED, null,
                 2, 1, 1,
                 "",
@@ -108,7 +107,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
                 "2.1"
         );
         KalandraMistDataSet dataSet3 = new KalandraMistDataSet(
-                new Strategy(3, "3.25", null, null, null, null, null),
+                nullStrat,
                 KalandraMistDataSet.MistType.LAKE, 5,
                 3, 2, 0,
                 "Dummy text nr3",
@@ -163,7 +162,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
     @Test
     void add_attemptInvalidInputs() throws IOException {
         // given
-        String inputs = "3" + LINEBREAK +
+        String inputs = "0" + LINEBREAK +
                 actions.get("AddData") + LINEBREAK +
                 "bla" + LINEBREAK + "in map" + LINEBREAK +
                 "ble" + LINEBREAK + "15" + LINEBREAK + "-1/3" + LINEBREAK + "4/0" + LINEBREAK +
@@ -174,7 +173,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
         IOUtils.setInputStream(inputs);
 
         KalandraMistDataSet dataSet = new KalandraMistDataSet(
-                new Strategy(3, "3.25", null, null, null, null, null),
+                nullStrat,
                 KalandraMistDataSet.MistType.IN_MAP, null,
                 4, 0, 0,
                 "blu",

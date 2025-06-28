@@ -1,7 +1,7 @@
 package com.company.datacollector;
 
-import com.company.datasets.KalandraMistDataSet;
-import com.company.datasets.loot.LootType;
+import com.company.datasets.datasets.KalandraMistDataSet;
+import com.company.datasets.other.loot.LootType;
 import com.company.exceptions.InvalidInputFormatException;
 import com.company.utils.IOUtils;
 

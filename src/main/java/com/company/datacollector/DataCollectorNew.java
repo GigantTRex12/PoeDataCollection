@@ -1,23 +1,19 @@
 package com.company.datacollector;
 
-import com.company.datasets.DataSet;
-import com.company.datasets.metadata.Strategy;
+import com.company.datasets.datasets.DataSet;
+import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.StrategyCreationInterruptedException;
 import lombok.Getter;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Map.entry;
 import static com.company.utils.FileUtils.append;
-import static com.company.utils.FileUtils.createNew;
 import static com.company.utils.IOUtils.*;
-import static com.company.utils.Utils.toJson;
 
 public abstract class DataCollectorNew<T extends DataSet> {
     @Getter

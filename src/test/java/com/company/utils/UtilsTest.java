@@ -1,14 +1,12 @@
 package com.company.utils;
 
-import com.company.datasets.BossDropDataSet;
-import com.company.datasets.loot.GemLoot;
-import com.company.datasets.loot.Loot;
-import com.company.datasets.loot.LootType;
-import com.company.datasets.loot.StackableLoot;
-import com.company.datasets.metadata.Strategy;
+import com.company.datasets.datasets.BossDropDataSet;
+import com.company.datasets.other.loot.GemLoot;
+import com.company.datasets.other.loot.Loot;
+import com.company.datasets.other.loot.LootType;
+import com.company.datasets.other.loot.StackableLoot;
+import com.company.datasets.other.metadata.Strategy;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.company.datasets.loot.LootType.*;
+import static com.company.datasets.other.loot.LootType.*;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -209,8 +207,8 @@ public class UtilsTest {
     // ----------------------------------------------------------------------------------------------------------------
 
     private static Stream<Arguments> toJsonProvider() {
-        Strategy exampleStrat = new Strategy(42, "3.27", null, List.of("S1", "S2").toArray(new String[0]), "Mesa", "Alch&Go", "");
-        String stratJson = "{\"id\":42,\"league\":\"3.27\",\"tree\":null,\"scarabs\":[\"S1\",\"S2\"],\"map\":\"Mesa\",\"mapRolling\":\"Alch&Go\",\"mapCraft\":\"\"}";
+        Strategy exampleStrat = new Strategy(null, "3.27", null, List.of("S1", "S2").toArray(new String[0]), "Mesa", "Alch&Go", "");
+        String stratJson = "{\"league\":\"3.27\",\"tree\":null,\"scarabs\":[\"S1\",\"S2\"],\"map\":\"Mesa\",\"mapRolling\":\"Alch&Go\",\"mapCraft\":\"\"}";
         return Stream.of(
                 Arguments.of(exampleStrat, stratJson),
                 Arguments.of(

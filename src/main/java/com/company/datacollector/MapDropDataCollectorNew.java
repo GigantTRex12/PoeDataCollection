@@ -1,15 +1,13 @@
 package com.company.datacollector;
 
-import com.company.datasets.MapDropDataSet;
-
-import java.io.IOException;
+import com.company.datasets.datasets.MapDropDataSet;
 
 import static com.company.utils.IOUtils.input;
 import static com.company.utils.Utils.splitToChars;
 
 public class MapDropDataCollectorNew extends DataCollectorNew<MapDropDataSet> {
 
-    public MapDropDataCollectorNew() throws IOException {
+    public MapDropDataCollectorNew() {
         super();
     }
 
@@ -17,7 +15,7 @@ public class MapDropDataCollectorNew extends DataCollectorNew<MapDropDataSet> {
     protected void addData() {
         // conversionChance and conversionType
         String conversion = input("Enter the chance for converting maps from Influencing Scarab of conversion and conversion type.\n" +
-                "s:shaper, e:elder, c:conqueror, y:synthesis", "^\\s*$|[1-9]\\d*[secy]");
+                "s:shaper, e:elder, c:conqueror, y:synthesis", "^\\s*$|^[1-9]\\d*[secy]$");
         char conversionType = '_';
         int conversionChance = 0;
         if (!conversion.isBlank()) {
@@ -27,12 +25,12 @@ public class MapDropDataCollectorNew extends DataCollectorNew<MapDropDataSet> {
 
         // mapsInOrder
         String maps = input("Enter maps dropped.\nr:regular, s:shaper, e:elder, c:conqueror, y:synthesis, t:t17, u:unique",
-                "^$|[rsecytu](-[rsecytu])*");
+                "^$|^[rsecytu](-[rsecytu])*$");
         char[] mapDrops = splitToChars(maps, '-');
 
         // bossDrops
         String bossMaps = input("Enter maps dropped by boss.\nEmpty for not killing boss, - for no drops",
-                "^-?$|[rsecytu](,[rsecytu])*");
+                "^-?$|^[rsecytu](,[rsecytu])*$");
         char[] bossDrops;
         if (bossMaps.isEmpty()) {
             bossDrops = null;

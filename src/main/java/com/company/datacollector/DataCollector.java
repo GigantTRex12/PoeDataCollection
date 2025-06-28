@@ -1,7 +1,7 @@
 package com.company.datacollector;
 
-import com.company.datasets.DataSet;
-import com.company.datasets.metadata.Strategy;
+import com.company.datasets.datasets.DataSet;
+import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.FileAlreadyExistsException;
 import com.company.utils.Utils;
 

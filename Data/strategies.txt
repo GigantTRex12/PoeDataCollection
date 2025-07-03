@@ -1,5 +1,5 @@
-
 {"id":0,"league":null,"tree":null,"scarabs":null,"map":null,"mapRolling":null,"mapCraft":null}
 {"id":1,"league":"3.25 Regular Softcore trade Settlers","tree":"quant/effect/maps/eater","scarabs":["Cartography Scarab of Escalation","Cartography Scarab of the Multitude","Cartography Scarab of the Multitude","Cartography Scarab of the Multitude","Influencing Scarab of Conversion"],"map":"Jungle Valley","mapRolling":"6 mod, 20% qual","mapCraft":null}
 {"id":2,"league":"3.25 Regular Softcore trade Settlers","tree":"Ultimatum(NoKeystones)/Exarch","scarabs":[""],"map":"Atoll","mapRolling":"Alch and go","mapCraft":null}
 {"id":3,"league":"3.25","tree":null,"scarabs":null,"map":null,"mapRolling":null,"mapCraft":null}
+{"id":4,"league":"3.26","tree":null,"scarabs":null,"map":null,"mapRolling":null,"mapCraft":null}

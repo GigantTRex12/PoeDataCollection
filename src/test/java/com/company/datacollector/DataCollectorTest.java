@@ -20,7 +20,7 @@ public class DataCollectorTest {
 
     protected Map<String, String> actions;
 
-    private DataCollectorNew genericCollector;
+    private DataCollector genericCollector;
 
     protected Path tempfile;
 
@@ -30,7 +30,7 @@ public class DataCollectorTest {
 
     @BeforeEach
     void setup_All() throws IOException {
-        actions = DataCollectorNew.getActions();
+        actions = DataCollector.getActions();
 
         tempfile = Files.createTempFile("test", ".txt");
         tempfile.toFile().deleteOnExit();

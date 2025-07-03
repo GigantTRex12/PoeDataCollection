@@ -14,11 +14,11 @@ import static com.company.datasets.other.loot.LootType.*;
 
 public class MapDropDataCollectorTest extends DataCollectorTest {
 
-    private MapDropDataCollectorNew collector;
+    private MapDropDataCollector collector;
 
     @BeforeEach
     void setup() {
-        collector = new MapDropDataCollectorNew();
+        collector = new MapDropDataCollector();
     }
 
     @Test

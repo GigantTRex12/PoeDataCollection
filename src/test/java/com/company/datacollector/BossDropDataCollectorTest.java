@@ -5,24 +5,23 @@ import com.company.datasets.other.loot.GemLoot;
 import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.loot.StackableLoot;
 import com.company.utils.IOUtils;
-import com.company.utils.Utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
 
 import static com.company.datasets.other.loot.LootType.*;
+import static com.company.utils.Utils.toJson;
 
 public class BossDropDataCollectorTest extends DataCollectorTest{
 
-    private BossDropDataCollectorNew collector;
+    private BossDropDataCollector collector;
 
     @BeforeEach
     void setup() {
-        collector = new BossDropDataCollectorNew();
+        collector = new BossDropDataCollector();
     }
 
     @Test
@@ -56,7 +55,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         // then
         List<String> content = getContent();
         Assertions.assertEquals(1, content.size());
-        Assertions.assertEquals(Utils.toJson(dataSet), content.get(0).trim());
+        Assertions.assertEquals(toJson(dataSet), content.get(0).trim());
 
         // validate console outputs
         List<String> output = getOutputs();
@@ -85,8 +84,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "The Infinite Hunger" + LINEBREAK +
                 "n" + LINEBREAK +
                 "y" + LINEBREAK +
-                LINEBREAK +
-                LINEBREAK +
+                LINEBREAK + LINEBREAK +
                 actions.get("Exit");
         IOUtils.setInputStream(inputs);
 
@@ -116,8 +114,8 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         // then
         List<String> content = getContent();
         Assertions.assertEquals(2, content.size());
-        Assertions.assertEquals(Utils.toJson(dataSet1), content.get(0).trim());
-        Assertions.assertEquals(Utils.toJson(dataSet2), content.get(1).trim());
+        Assertions.assertEquals(toJson(dataSet1), content.get(0).trim());
+        Assertions.assertEquals(toJson(dataSet2), content.get(1).trim());
 
         // validate console outputs
         List<String> output = getOutputs();
@@ -138,7 +136,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         Assertions.assertEquals(pos + 20, output.size());
     }
 
-    @Disabled("Functionality not yet implemented so test would fail")
     @Test
     void add_attemptInvalidInputs() throws IOException {
         // given
@@ -157,7 +154,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "The Maven",
                 true,
                 true,
-                new Loot("Graven's Secret", BOSS_UNIQUE_ITEM),
+                new Loot("Impossible Escape", BOSS_UNIQUE_ITEM),
                 List.of(
                         new GemLoot("Awakened Enlighten Support", GEM_AWAKENED)
                 )
@@ -169,7 +166,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         // then
         List<String> content = getContent();
         Assertions.assertEquals(1, content.size());
-        Assertions.assertEquals(Utils.toJson(dataSet), content.get(0).trim());
+        Assertions.assertEquals(toJson(dataSet), content.get(0).trim());
 
         // validate console outputs
         List<String> output = getOutputs();

@@ -2,14 +2,7 @@ package com.company;
 
 import com.company.dataanalyzer.DataAnalyzer;
 import com.company.dataanalyzer.KalandraMistDataAnalyzer;
-import com.company.datacollector.DataCollector;
-import com.company.datacollector.KalandraMistDataCollector;
-import com.company.datacollector.MapDropDataCollector;
-import com.company.datacollector.UltimatumDataCollector;
-import com.company.datasets.datasets.DataSet;
-import com.company.datasets.datasets.KalandraMistDataSet;
-import com.company.datasets.datasets.MapDropDataSet;
-import com.company.datasets.datasets.UltimatumDataSet;
+import com.company.datacollector.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,39 +14,41 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         final String dataPath = "Data/";
-        final Map<String, Class<? extends DataSet>> inputToClass = Map.ofEntries(
-                entry("mist", KalandraMistDataSet.class),
-                entry("map drops", MapDropDataSet.class),
-                entry("ultimatum", UltimatumDataSet.class)
-        );
-        final Map<Class<? extends DataSet>, String> classToFilename = Map.ofEntries(
-                entry(KalandraMistDataSet.class, "mist.txt"),
-                entry(UltimatumDataSet.class, "ultimatum.txt"),
-                entry(MapDropDataSet.class, "mapDrops.txt")
+        final Map<String, String> typeToFilename = Map.ofEntries(
+                entry("mist", "mist.txt"),
+                entry("ultimatum", "ultimatum.txt"),
+                entry("map drops", "mapDrops.txt"),
+                entry("boss drops", "bossDrops.txt")
         );
 
-        String[] options1 = {"a", "analyze", "c", "collect", "exit"};
-        String input1 = input("What would you like to do?", options1).toLowerCase();
+        Map<String, String> options = Map.ofEntries(
+                entry("a", "analyze"),
+                entry("c", "collect"),
+                entry("e", "exit")
+        );
+        String input1 = input("What would you like to do?", options).toLowerCase();
         if (input1.equals("exit")) {
             print("Exiting");
             return;
         }
-        String[] options2 = {"mist", "map drops", "ultimatum", "exit"};
-        String input2 = input("Which type of Data would you like to work with?", options2).toLowerCase();
+        String input2 = input("Which type of Data would you like to work with?", typeToFilename.keySet()).toLowerCase();
 
-        DataCollector collector;
-        DataAnalyzer analyzer = null;
+        String filename = dataPath + typeToFilename.get(input2.toLowerCase());
+        DataCollector<?> collector;
+        DataAnalyzer<?> analyzer = null;
         switch (input2) {
             case "mist":
-                String filename = "Data/mist.txt";
-                collector = new KalandraMistDataCollector(filename);
+                collector = new KalandraMistDatacollector();
                 analyzer = new KalandraMistDataAnalyzer(filename);
                 break;
             case "map drops":
-                collector = new MapDropDataCollector("Data/mapDrops.txt");
+                collector = new MapDropDataCollector();
                 break;
             case "ultimatum":
-                collector = new UltimatumDataCollector("Data/ultimatum.txt");
+                collector = new UltimatumDataCollector();
+                break;
+            case "boss drops":
+                collector = new BossDropDataCollector();
                 break;
             default:
                 print("Exiting");
@@ -69,9 +64,7 @@ public class Main {
                 break;
             case "c":
             case "collect":
-                if (collector != null) {
-                    collector.collectData();
-                }
+                collector.collectData(filename);
                 break;
         }
     }

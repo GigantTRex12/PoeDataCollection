@@ -13,11 +13,11 @@ import java.util.List;
 
 public class KalandraMistDataCollectorTest extends DataCollectorTest {
 
-    private KalandraMistDatacollectorNew collector;
+    private KalandraMistDatacollector collector;
 
     @BeforeEach
     void setup() {
-        collector = new KalandraMistDatacollectorNew();
+        collector = new KalandraMistDatacollector();
     }
 
     @Test

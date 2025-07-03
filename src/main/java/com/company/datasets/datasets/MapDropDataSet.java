@@ -1,7 +1,9 @@
 package com.company.datasets.datasets;
 
+import com.company.datasets.annotations.InputProperty;
 import com.company.datasets.datasets.DataSet;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -18,14 +20,25 @@ public class MapDropDataSet extends DataSet {
     private static boolean mapInitialized = false;
 
     @JsonProperty("conversionChance")
+    @InputProperty(order = 0, groupOrder = 1, parsingFunc = "toConversionChance")
     private final int conversionChance;
+
     @JsonProperty("conversionType")
+    @InputProperty(message = "Enter the chance for converting maps from Influencing Scarab of conversion and conversion type.\ns:shaper, e:elder, c:conqueror, y:synthesis",
+    regex = "^\\s*$|^[1-9]\\d*[secy]$", order = 0, parsingFunc = "toMapConversionType")
     private final LootType conversionType;
+
     @JsonProperty("mapsInOrder")
+    @InputProperty(message = "Enter maps dropped.\nr:regular, s:shaper, e:elder, c:conqueror, y:synthesis, t:t17, u:unique",
+    regex = "^$|^[rsecytu](-[rsecytu])*$", order = 1, parsingFunc = "toMapDropList")
     private final List<LootType> mapsInOrder;
+
     @JsonProperty("bossDrops")
+    @InputProperty(message = "Enter maps dropped by boss.\nEmpty for not killing boss, - for no drops",
+    regex = "^-?$|^[rsecytu](,[rsecytu])*$", order = 2, parsingFunc = "toBossMapDropList")
     private final Collection<LootType> bossDrops;
 
+    @Builder
     public MapDropDataSet(Strategy strategy, int conversionChance, LootType conversionType, List<LootType> mapsInOrder, Collection<LootType> bossDrops) {
         super(strategy);
         this.conversionChance = conversionChance;
@@ -67,5 +80,10 @@ public class MapDropDataSet extends DataSet {
         lootTypesMap.put('r', LootType.MAP);
         lootTypesMap.put('t', LootType.T17_MAP);
         mapInitialized = true;
+    }
+
+    public static Map<Character, LootType> getLootTypesMap() {
+        initializeMap();
+        return lootTypesMap;
     }
 }

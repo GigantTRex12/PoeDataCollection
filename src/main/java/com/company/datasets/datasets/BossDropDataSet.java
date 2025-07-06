@@ -3,10 +3,13 @@ package com.company.datasets.datasets;
 import com.company.datasets.annotations.InputProperty;
 import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.metadata.Strategy;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.List;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @NoArgsConstructor(force = true)
 @Getter
@@ -33,13 +36,19 @@ public class BossDropDataSet extends DataSet {
     @InputProperty(message = "Input extra drops to track.", order = 4, parsingFunc = "toLootList", multiline = true)
     private final List<Loot> extraDrops;
 
+    @JsonProperty("quantity")
+    @JsonInclude(NON_NULL)
+    @InputProperty(message = "Enter the area quantity.", regex = "^$|^\\d+$", order = 5, parsingFunc = "toInt", emptyToNull = true)
+    private final Integer quantity;
+
     @Builder
-    public BossDropDataSet(Strategy strategy, String bossName, boolean uber, boolean pinnacle, Loot guaranteedDrop, List<Loot> extraDrops) {
+    public BossDropDataSet(Strategy strategy, String bossName, boolean uber, boolean pinnacle, Loot guaranteedDrop, List<Loot> extraDrops, Integer quantity) {
         super(strategy);
         this.bossName = bossName;
         this.uber = uber;
         this.pinnacle = pinnacle;
         this.guaranteedDrop = guaranteedDrop;
         this.extraDrops = extraDrops;
+        this.quantity = quantity;
     }
 }

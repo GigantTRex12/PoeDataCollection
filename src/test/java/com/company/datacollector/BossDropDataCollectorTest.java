@@ -4,6 +4,7 @@ import com.company.datasets.datasets.BossDropDataSet;
 import com.company.datasets.other.loot.GemLoot;
 import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.loot.StackableLoot;
+import com.company.testutils.InputBuilder;
 import com.company.utils.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,15 +28,20 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
     @Test
     void add_oneDataSet() throws IOException {
         // given
-        String inputs = "0" + LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
-                "The Maven" + LINEBREAK +
-                "n" + LINEBREAK +
-                "y" + LINEBREAK +
-                "Graven's Secret;bossunique" + LINEBREAK +
-                "Awakened Multistrike Support;gemawakened" + LINEBREAK + "Orb of Conflict;currency;1" + LINEBREAK + LINEBREAK +
-                actions.get("Exit");
-        IOUtils.setInputStream(inputs);
+        InputBuilder.start()
+                .line(0)
+                .line(actions.get("AddData"))
+                .line("The Maven")
+                .line("n")
+                .line("y")
+                .line("Graven's Secret;bossunique")
+                .multiLine(new String[]{
+                        "Awakened Multistrike Support;gemawakened",
+                        "Orb of Conflict;currency;1"
+                })
+                .emptyLine()
+                .line(actions.get("Exit"))
+                .set();
 
         BossDropDataSet dataSet = new BossDropDataSet(
                 nullStrat,
@@ -46,7 +52,8 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 List.of(
                         new GemLoot("Awakened Multistrike Support", GEM_AWAKENED),
                         new StackableLoot("Orb of Conflict", CURRENCY, 1)
-                )
+                ),
+                null
         );
 
         // when
@@ -57,17 +64,18 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         Assertions.assertEquals(1, content.size());
         Assertions.assertEquals(toJson(dataSet), content.get(0).trim());
 
-        // validate console outputs
-        List<String> output = getOutputs();
-        int pos = output.indexOf("What would you like to do?");
-        Assertions.assertTrue(pos > 2);
-        Assertions.assertEquals("Enter the name of the boss.", output.get(pos + 2));
-        Assertions.assertEquals("Is the boss uber?", output.get(pos + 3));
-        Assertions.assertEquals("Is the boss a pinnacle boss?", output.get(pos + 5));
-        Assertions.assertEquals("What was the guaranteed drop?", output.get(pos + 7));
-        Assertions.assertEquals("Input extra drops to track.", output.get(pos + 8));
-        Assertions.assertEquals("What would you like to do?", output.get(pos + 9));
-        Assertions.assertEquals(pos + 11, output.size());
+        validateOutputs(new String[]{
+                "Enter the name of the boss.",
+                "Is the boss uber?",
+                null,
+                "Is the boss a pinnacle boss?",
+                null,
+                "What was the guaranteed drop?",
+                "Input extra drops to track.",
+                "Enter the area quantity.",
+                "Format: ^$|^\\d+$",
+                "What would you like to do?"
+        });
     }
 
     @Test
@@ -80,11 +88,13 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "y" + LINEBREAK +
                 "Graven's Secret;bossunique" + LINEBREAK +
                 "Awakened Multistrike Support;gemawakened" + LINEBREAK + "Orb of Conflict;currency" + LINEBREAK + LINEBREAK +
+                LINEBREAK +
                 actions.get("AddData") + LINEBREAK +
                 "The Infinite Hunger" + LINEBREAK +
                 "n" + LINEBREAK +
                 "y" + LINEBREAK +
                 LINEBREAK + LINEBREAK +
+                "50" + LINEBREAK +
                 actions.get("Exit");
         IOUtils.setInputStream(inputs);
 
@@ -97,7 +107,8 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 List.of(
                         new GemLoot("Awakened Multistrike Support", GEM_AWAKENED),
                         new StackableLoot("Orb of Conflict", CURRENCY, 1)
-                )
+                ),
+                null
         );
         BossDropDataSet dataSet2 = new BossDropDataSet(
                 nullStrat,
@@ -105,7 +116,8 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 false,
                 true,
                 null,
-                List.of()
+                List.of(),
+                50
         );
 
         // when
@@ -117,23 +129,29 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         Assertions.assertEquals(toJson(dataSet1), content.get(0).trim());
         Assertions.assertEquals(toJson(dataSet2), content.get(1).trim());
 
-        // validate console outputs
-        List<String> output = getOutputs();
-        int pos = output.indexOf("What would you like to do?");
-        Assertions.assertTrue(pos > 2);
-        Assertions.assertEquals("Enter the name of the boss.", output.get(pos + 2));
-        Assertions.assertEquals("Is the boss uber?", output.get(pos + 3));
-        Assertions.assertEquals("Is the boss a pinnacle boss?", output.get(pos + 5));
-        Assertions.assertEquals("What was the guaranteed drop?", output.get(pos + 7));
-        Assertions.assertEquals("Input extra drops to track.", output.get(pos + 8));
-        Assertions.assertEquals("What would you like to do?", output.get(pos + 9));
-        Assertions.assertEquals("Enter the name of the boss.", output.get(pos + 11));
-        Assertions.assertEquals("Is the boss uber?", output.get(pos + 12));
-        Assertions.assertEquals("Is the boss a pinnacle boss?", output.get(pos + 14));
-        Assertions.assertEquals("What was the guaranteed drop?", output.get(pos + 16));
-        Assertions.assertEquals("Input extra drops to track.", output.get(pos + 17));
-        Assertions.assertEquals("What would you like to do?", output.get(pos + 18));
-        Assertions.assertEquals(pos + 20, output.size());
+        validateOutputs(new String[]{
+                "Enter the name of the boss.",
+                "Is the boss uber?",
+                null,
+                "Is the boss a pinnacle boss?",
+                null,
+                "What was the guaranteed drop?",
+                "Input extra drops to track.",
+                "Enter the area quantity.",
+                "Format: ^$|^\\d+$",
+                "What would you like to do?",
+                null,
+                "Enter the name of the boss.",
+                "Is the boss uber?",
+                null,
+                "Is the boss a pinnacle boss?",
+                null,
+                "What was the guaranteed drop?",
+                "Input extra drops to track.",
+                "Enter the area quantity.",
+                "Format: ^$|^\\d+$",
+                "What would you like to do?"
+        });
     }
 
     @Test
@@ -146,6 +164,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "y" + LINEBREAK +
                 "randomthing" + LINEBREAK + "Impossible Escape;bossunique" + LINEBREAK +
                 "invalid" + LINEBREAK + "  " + LINEBREAK + "invalid;invalid" + LINEBREAK + "Awakened Enlighten Support;gemawakened" + LINEBREAK + "Orb of Conflict;currency;zwei" + LINEBREAK + LINEBREAK +
+                "NaN" + LINEBREAK + LINEBREAK +
                 actions.get("Exit");
         IOUtils.setInputStream(inputs);
 
@@ -157,7 +176,8 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 new Loot("Impossible Escape", BOSS_UNIQUE_ITEM),
                 List.of(
                         new GemLoot("Awakened Enlighten Support", GEM_AWAKENED)
-                )
+                ),
+                null
         );
 
         // when
@@ -168,25 +188,29 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         Assertions.assertEquals(1, content.size());
         Assertions.assertEquals(toJson(dataSet), content.get(0).trim());
 
-        // validate console outputs
-        List<String> output = getOutputs();
-        int pos = output.indexOf("What would you like to do?");
-        Assertions.assertTrue(pos > 2);
-        String invalid = "Invalid input, try again";
-        Assertions.assertEquals("Enter the name of the boss.", output.get(pos + 2));
-        Assertions.assertEquals("Is the boss uber?", output.get(pos + 3));
-        Assertions.assertEquals(invalid, output.get(pos + 5));
-        Assertions.assertEquals("Is the boss uber?", output.get(pos + 6));
-        Assertions.assertEquals("Is the boss a pinnacle boss?", output.get(pos + 8));
-        Assertions.assertEquals("What was the guaranteed drop?", output.get(pos + 10));
-        Assertions.assertEquals(invalid, output.get(pos + 11));
-        Assertions.assertEquals("What was the guaranteed drop?", output.get(pos + 12));
-        Assertions.assertEquals("Input extra drops to track.", output.get(pos + 13));
-        Assertions.assertEquals("Couldn't parse \"invalid\" to Loot. (skipped)", output.get(pos + 14));
-        Assertions.assertEquals("Couldn't parse \"  \" to Loot. (skipped)", output.get(pos + 15));
-        Assertions.assertEquals("Couldn't parse \"invalid;invalid\" to Loot. (skipped)", output.get(pos + 16));
-        Assertions.assertEquals("Couldn't parse \"Orb of Conflict;currency;zwei\" to Loot. (skipped)", output.get(pos + 17));
-        Assertions.assertEquals("What would you like to do?", output.get(pos + 18));
-        Assertions.assertEquals(pos + 20, output.size());
+        validateOutputs(new String[]{
+                "Enter the name of the boss.",
+                "Is the boss uber?",
+                null,
+                INVALID,
+                "Is the boss uber?",
+                null,
+                "Is the boss a pinnacle boss?",
+                null,
+                "What was the guaranteed drop?",
+                INVALID,
+                "What was the guaranteed drop?",
+                "Input extra drops to track.",
+                "Couldn't parse \"invalid\" to Loot. (skipped)",
+                "Couldn't parse \"  \" to Loot. (skipped)",
+                "Couldn't parse \"invalid;invalid\" to Loot. (skipped)",
+                "Couldn't parse \"Orb of Conflict;currency;zwei\" to Loot. (skipped)",
+                "Enter the area quantity.",
+                "Format: ^$|^\\d+$",
+                INVALID,
+                "Enter the area quantity.",
+                "Format: ^$|^\\d+$",
+                "What would you like to do?"
+        });
     }
 }

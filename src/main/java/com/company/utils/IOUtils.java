@@ -118,7 +118,7 @@ public class IOUtils {
 
     public static String input(String message, Map<String, String> options) {
         List<String> optionsReps = new ArrayList<>();
-        options.forEach((k, v) -> optionsReps.add(v + "(" + k + ")"));
+        options.forEach((k, v) -> optionsReps.add(k + "(" + v + ")"));
         String rep = message + "\nOptions: " + join(optionsReps, "; ");
         String result;
         while (true) {

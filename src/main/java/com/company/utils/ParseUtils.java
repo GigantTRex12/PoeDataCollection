@@ -14,10 +14,15 @@ import static com.company.utils.IOUtils.print;
 import static com.company.utils.Utils.splitToChars;
 
 public class ParseUtils {
+
     public static boolean toBool(String string) throws InvalidInputFormatException {
         if (string.equalsIgnoreCase("y") || string.equalsIgnoreCase("yes")) {return true;}
         else if (string.equalsIgnoreCase("n") || string.equalsIgnoreCase("no")) {return false;}
         throw new InvalidInputFormatException("Input cannot be converted to boolean");
+    }
+
+    public static int toInt(String string) {
+        return Integer.parseInt(string);
     }
 
     public static List<Loot> toLootList(String string) {

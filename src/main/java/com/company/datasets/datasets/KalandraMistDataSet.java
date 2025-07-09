@@ -1,6 +1,7 @@
 package com.company.datasets.datasets;
 
 import com.company.datasets.annotations.InputProperty;
+import com.company.datasets.builder.DataSetBuilderInterface;
 import com.company.datasets.datasets.DataSet;
 import com.company.datasets.other.loot.LootType;
 import com.company.datasets.other.metadata.Strategy;
@@ -94,4 +95,7 @@ public class KalandraMistDataSet extends DataSet {
         this.itemType = itemType;
         this.multiplier = null;
     }
+
+    public static class KalandraMistDataSetBuilder implements DataSetBuilderInterface<KalandraMistDataSet> {}
+
 }

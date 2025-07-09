@@ -2,22 +2,34 @@ package com.company.utils;
 
 import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
+import com.company.datasets.other.jun.Action;
+import com.company.datasets.other.jun.Encounter;
+import com.company.datasets.other.jun.Member;
+import com.company.datasets.other.jun.Safehouse;
 import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.loot.LootType;
 import com.company.exceptions.InvalidInputFormatException;
 import com.company.exceptions.InvalidLootFormatException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import static com.company.utils.IOUtils.print;
+import static com.company.datasets.other.jun.Action.ActionType.*;
+import static com.company.utils.IOUtils.*;
 import static com.company.utils.Utils.splitToChars;
 
 public class ParseUtils {
 
     public static boolean toBool(String string) throws InvalidInputFormatException {
-        if (string.equalsIgnoreCase("y") || string.equalsIgnoreCase("yes")) {return true;}
-        else if (string.equalsIgnoreCase("n") || string.equalsIgnoreCase("no")) {return false;}
+        if (string.equalsIgnoreCase("y") || string.equalsIgnoreCase("yes")) {
+            return true;
+        } else if (string.equalsIgnoreCase("n") || string.equalsIgnoreCase("no")) {
+            return false;
+        }
         throw new InvalidInputFormatException("Input cannot be converted to boolean");
     }
 
@@ -40,8 +52,7 @@ public class ParseUtils {
             try {
                 Loot newLoot = Loot.parseToLoot(rep);
                 loot.add(newLoot);
-            }
-            catch (InvalidLootFormatException e) {
+            } catch (InvalidLootFormatException e) {
                 print("Couldn't parse \"" + rep + "\" to Loot. (skipped)");
             }
         }
@@ -55,8 +66,7 @@ public class ParseUtils {
                 return null;
             }
             return Loot.parseToLoot(string);
-        }
-        catch (InvalidLootFormatException e) {
+        } catch (InvalidLootFormatException e) {
             throw new InvalidInputFormatException(e.getMessage());
         }
     }
@@ -140,4 +150,25 @@ public class ParseUtils {
         }
         return toMapDropList(string, ',');
     }
+
+    public static Safehouse.SafehouseType toSafeHouse(String string) {
+        if (string.length() == 1) {
+            return Safehouse.SafehouseType.fromLetter(string);
+        }
+        return Safehouse.SafehouseType.valueOf(string.toUpperCase());
+    }
+
+    public static Encounter toEncounter(String string) throws InvalidInputFormatException {
+        return ParseUtilsJun.toEncounter(string);
+    }
+
+    public static Member.MemberName toMember(String string) throws InvalidInputFormatException {
+        try {
+            return Member.MemberName.valueOf(string);
+        }
+        catch (IllegalArgumentException e) {
+            throw new InvalidInputFormatException(string + " is not a valid membername");
+        }
+    }
+
 }

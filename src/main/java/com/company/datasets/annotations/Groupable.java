@@ -17,4 +17,7 @@ public @interface Groupable {
 
     // set to true if the annotated value should be able to be evaluated numerically
     boolean isNum() default false;
+
+    // set to true to filter out any datasets where the value is null
+    boolean ignoreNulls() default false;
 }

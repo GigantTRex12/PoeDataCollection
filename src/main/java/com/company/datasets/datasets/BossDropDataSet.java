@@ -1,6 +1,7 @@
 package com.company.datasets.datasets;
 
 import com.company.datasets.annotations.InputProperty;
+import com.company.datasets.builder.DataSetBuilderInterface;
 import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.metadata.Strategy;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -51,4 +52,7 @@ public class BossDropDataSet extends DataSet {
         this.extraDrops = extraDrops;
         this.quantity = quantity;
     }
+
+    public static class BossDropDataSetBuilder implements DataSetBuilderInterface<BossDropDataSet> {}
+
 }

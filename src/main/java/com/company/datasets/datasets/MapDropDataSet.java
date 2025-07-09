@@ -1,6 +1,7 @@
 package com.company.datasets.datasets;
 
 import com.company.datasets.annotations.InputProperty;
+import com.company.datasets.builder.DataSetBuilderInterface;
 import com.company.datasets.datasets.DataSet;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -86,4 +87,7 @@ public class MapDropDataSet extends DataSet {
         initializeMap();
         return lootTypesMap;
     }
+
+    public static class MapDropDataSetBuilder implements DataSetBuilderInterface<MapDropDataSet> {}
+
 }

@@ -1,6 +1,7 @@
 package com.company.datasets.datasets;
 
 import com.company.datasets.annotations.InputProperty;
+import com.company.datasets.builder.DataSetBuilderInterface;
 import com.company.datasets.datasets.DataSet;
 import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.metadata.Strategy;
@@ -47,7 +48,7 @@ public class UltimatumDataSet extends DataSet {
         this.bossLoot = bossLoot;
     }
 
-    public static class UltimatumDataSetBuilder {
+    public static class UltimatumDataSetBuilder implements DataSetBuilderInterface<UltimatumDataSet> {
         public boolean canBoss() {
             return this.rewards.size() == 10;
         }

@@ -1,6 +1,7 @@
 package com.company.datacollector;
 
 import com.company.datasets.annotations.InputProperty;
+import com.company.datasets.builder.DataSetBuilderInterface;
 import com.company.datasets.datasets.DataSet;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.InvalidInputFormatException;
@@ -10,7 +11,6 @@ import com.company.utils.ParseUtils;
 import com.company.utils.Utils;
 import lombok.Getter;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -41,7 +41,7 @@ public abstract class DataCollector<T extends DataSet> {
 
     public DataCollector() {}
 
-    public void collectData(String filename) throws IOException {
+    public void collectData(String filename) {
         initializeAndPickStrat();
         while (true) {
             String action = input("What would you like to do?", actions).toLowerCase();
@@ -122,9 +122,16 @@ public abstract class DataCollector<T extends DataSet> {
         print("Added new Strategy and switched to new Strategy");
     }
 
+    protected void beforeAddData() {};
+
+    protected DataSetBuilderInterface<T> finalizeData(DataSetBuilderInterface<T> builder) {
+        return builder;
+    }
+
     private void addDataGeneric() {
+        beforeAddData();
         List<Field> fields = getAnnotatedFields();
-        Object builder = createBuilder();
+        DataSetBuilderInterface<T> builder = createBuilder();
         String input = "";
         for (Field field : fields) {
             InputProperty ann = field.getAnnotation(InputProperty.class);
@@ -153,13 +160,10 @@ public abstract class DataCollector<T extends DataSet> {
                 }
             }
         }
-        try {
-            T dataSet = (T) builder.getClass().getMethod("build").invoke(builder);
-            if (validateDataSet(dataSet)) {
-                this.data.add(dataSet);
-            }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new SomethingIsWrongWithMyCodeException("¯\\_(ツ)_/¯");
+        builder = finalizeData(builder);
+        T dataSet = (T) builder.build();
+        if (validateDataSet(dataSet)) {
+            this.data.add(dataSet);
         }
     }
 
@@ -183,10 +187,10 @@ public abstract class DataCollector<T extends DataSet> {
                 .collect(Collectors.toList());
     }
 
-    protected Object createBuilder() {
+    protected DataSetBuilderInterface<T> createBuilder() {
         try {
-            Object builder = getGenericClass().getMethod("builder").invoke(null);
-            builder.getClass().getMethod("strategy", Strategy.class).invoke(builder, currStrat);
+            DataSetBuilderInterface<T> builder = (DataSetBuilderInterface<T>) getGenericClass().getMethod("builder").invoke(null);
+            builder.strategy(currStrat);
             return builder;
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             throw new SomethingIsWrongWithMyCodeException("¯\\_(ツ)_/¯");
@@ -235,14 +239,27 @@ public abstract class DataCollector<T extends DataSet> {
         }
     }
 
-    private void parseInputAndCallBuilder(String inp, Object builder, Field field, InputProperty ann) throws InvalidInputFormatException {
+    private void parseInputAndCallBuilder(String inp, DataSetBuilderInterface<T> builder, Field field, InputProperty ann) throws InvalidInputFormatException {
         try {
             Method builderFunc = builder.getClass().getMethod(field.getName(), field.getType());
             if (ann.emptyToNull() && inp.isEmpty()) {
                 builderFunc.invoke(builder, new Object[]{null});
             }
+            else if (!ann.cleanUpFunc().isEmpty()) {
+                Method cleanupFunc = getClass().getMethod(ann.cleanUpFunc(), field.getType());
+                builderFunc.invoke(
+                        builder,
+                        cleanupFunc.invoke(
+                                this,
+                                ParseUtils.class.getMethod(ann.parsingFunc(), String.class).invoke(null, inp)
+                        )
+                );
+            }
             else if (!ann.parsingFunc().isEmpty()) {
-                builderFunc.invoke(builder, ParseUtils.class.getMethod(ann.parsingFunc(), String.class).invoke(null, inp));
+                builderFunc.invoke(
+                        builder,
+                        ParseUtils.class.getMethod(ann.parsingFunc(), String.class).invoke(null, inp)
+                );
             }
             else if (field.getType() == String.class) {
                 builderFunc.invoke(builder, inp);

@@ -21,7 +21,6 @@ import static com.company.utils.IOUtils.print;
 import static java.util.Map.entry;
 
 @Getter
-@ToString
 @AllArgsConstructor
 public class Board {
 
@@ -87,6 +86,51 @@ public class Board {
         freeMembers = new ArrayList<>(List.of(new Member(), new Member()));
 
         allMembers = getAllMembers();
+    }
+
+    @Override
+    public String toString() {
+        String rep = "Safehouses:\n";
+        rep += transportation.toString() + "\n";
+        rep += fortification.toString() + "\n";
+        rep += research.toString() + "\n";
+        rep += intervention.toString() + "\n";
+
+        rep += "No Safehouse:\n";
+        for (Member member : allMembers) {
+            if (member.getSafehouse() == null) {
+                rep += member.getName().name() + "\n";
+            }
+        }
+
+        rep += "Prison:";
+        for (Member member : allMembers) {
+            if (member.getPrisonTurnsLeft() > 0) {
+                rep += member.getName().name() + " (" + member.getPrisonTurnsLeft() + " rounds; " +
+                        member.getIntelligencePerTurn() + " intelligence for " + member.getPrisonSafehouse().name() +
+                        " safehouse per turn.)";
+            }
+        }
+
+        rep += "Trusted:";
+        for (Member member : allMembers) {
+            for (Member trusted : member.getTrusted()) {
+                if (member.getName().name().compareTo(trusted.getName().name()) < 0) {
+                    rep += member.getName().name() + "-" + trusted.getName().name();
+                }
+            }
+        }
+
+        rep += "Rivals:";
+        for (Member member : allMembers) {
+            for (Member rival : member.getRivals()) {
+                if (member.getName().name().compareTo(rival.getName().name()) < 0) {
+                    rep += member.getName().name() + "-" + rival.getName().name();
+                }
+            }
+        }
+
+        return rep;
     }
 
     public Board deepCopy() {
@@ -206,6 +250,9 @@ public class Board {
     }
 
     private void checkMember(Member member, Safehouse.SafehouseType safehouse) {
+        if (member.getRank() == null) {
+            return;
+        }
         Member thisMember = allMembers.stream().filter(m -> m.equals(member)).findAny().orElse(null);
         if (thisMember == null) {
             if (member.getRank() == 0) {

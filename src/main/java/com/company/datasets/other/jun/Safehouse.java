@@ -14,7 +14,6 @@ import static com.company.utils.IOUtils.input;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Getter
-@ToString
 @EqualsAndHashCode(of = {"type"})
 public class Safehouse {
 
@@ -49,6 +48,19 @@ public class Safehouse {
         this.leader.setLeader(false);
         this.leader = leader;
         this.leader.setLeader(true);
+    }
+
+    @Override
+    public String toString() {
+        String rep = type.name() + "\n";
+        rep += "Intelligence: " + intelligence + "\n";
+        rep += "Leader: " + leader.getName().name() + "\nMembers:";
+
+        for (Member member : members) {
+            rep += member.toString() + "\n";
+        }
+
+        return rep;
     }
 
     public void addMember(Member member) {

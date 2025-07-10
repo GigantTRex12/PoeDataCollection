@@ -22,17 +22,17 @@ import java.util.List;
 public class JunEncounterDataSet extends JunDataSet {
 
     @JsonProperty("encounter1")
-    @InputProperty(message = "Input the first encounter", regex = "\\w+\\: \\w+(\\([1-3]b?\\))?(;\\w+(\\([1-3]b?\\))?)*",
+    @InputProperty(message = "Input the first encounter", regex = "\\w+\\: \\w+(\\([0-3]?b?f?\\))?(;\\w+(\\([0-3]?b?f?\\))?)*",
             order = 0, parsingFunc = "toEncounter", cleanUpFunc = "cleanupEncounter")
     private final Encounter encounter1;
 
     @JsonProperty("encounter2")
-    @InputProperty(message = "Input the second encounter", regex = "^$|\\w+\\: \\w+(\\([1-3]b?\\))?(;\\w+(\\([1-3]b?\\))?)*",
+    @InputProperty(message = "Input the second encounter", regex = "^$|\\w+\\: \\w+(\\([0-3]?b?f?\\))?(;\\w+(\\([0-3]?b?f?\\))?)*",
             order = 1, parsingFunc = "toEncounter", emptyToNull = true, cleanUpFunc = "cleanupEncounter")
     private final Encounter encounter2;
 
     @JsonProperty("encounter3")
-    @InputProperty(message = "Input the second encounter", regex = "^$|\\w+\\: \\w+(\\([1-3]b?\\))?(;\\w+(\\([1-3]b?\\))?)*",
+    @InputProperty(message = "Input the second encounter", regex = "^$|\\w+\\: \\w+(\\([0-3]?b?f?\\))?(;\\w+(\\([0-3]?b?f?\\))?)*",
             order = 1, parsingFunc = "toEncounter", emptyToNull = true, checkCondition = "secondNull", cleanUpFunc = "cleanupEncounter")
     private final Encounter encounter3;
 

@@ -5,6 +5,7 @@ import com.company.datasets.other.jun.Encounter;
 import com.company.datasets.other.jun.Member;
 import com.company.datasets.other.jun.Safehouse;
 import com.company.exceptions.InvalidInputFormatException;
+import org.mockito.internal.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class ParseUtilsJun {
     }
 
     private static Member toMember(String string) throws InvalidInputFormatException {
-        Matcher matcher = Pattern.compile("([\\w\\-]+)(\\(([1-3])(b?)\\))?").matcher(string);
+        Matcher matcher = Pattern.compile("([\\w\\-]+)(\\(([1-3]?)(b?)\\))?").matcher(string);
         if (!matcher.find()) {
             throw new InvalidInputFormatException("Input doesn't match regex");
         }
@@ -70,14 +71,14 @@ public class ParseUtilsJun {
             throw new InvalidInputFormatException(matcher.group(1) + " is not a valid member name");
         }
 
-        int rank = 0;
-        boolean leader = false;
-        if (matcher.groupCount() == 4) {
-            rank = Integer.parseInt(matcher.group(3));
-            leader = matcher.group(4).equalsIgnoreCase("b");
-        }
+        boolean failed = matcher.group(5) != null && matcher.group(5).equalsIgnoreCase("f");
 
-        return new Member(member, rank, leader);
+        return new Member(
+                member,
+                matcher.group(3) == null || matcher.group(3).isEmpty() ? (failed ? null : 0) : Integer.parseInt(matcher.group(3)),
+                matcher.group(4) != null && matcher.group(4).equalsIgnoreCase("b"),
+                failed
+        );
     }
 
     private static Action toAction(String string) throws InvalidInputFormatException {

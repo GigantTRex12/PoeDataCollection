@@ -13,14 +13,13 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Getter
 @Setter
-@ToString
 public class Member {
 
     @JsonProperty("name")
     private MemberName name = UNKNOWN;
 
     @JsonProperty("rank")
-    private int rank;
+    private Integer rank;
 
     @JsonProperty("prisonTurnsLeft")
     @JsonInclude(NON_DEFAULT)
@@ -39,6 +38,9 @@ public class Member {
 
     @JsonProperty("trusted")
     private final HashSet<Member> trusted;
+
+    @JsonProperty("failed")
+    private final Boolean failed;
 
     @JsonIgnore
     private Safehouse.SafehouseType safehouse;
@@ -61,9 +63,10 @@ public class Member {
         trusted = new HashSet<>();
         safehouse = member.safehouse;
         leader = member.leader;
+        failed = false;
     }
 
-    public Member(int rank, boolean leader) {
+    public Member(Integer rank, boolean leader) {
         this.rank = rank;
         prisonTurnsLeft = 0;
         prisonSafehouse = null;
@@ -72,30 +75,40 @@ public class Member {
         trusted = new HashSet<>();
         safehouse = null;
         this.leader = leader;
+        failed = false;
     }
 
-    public Member(MemberName name, int rank, boolean leader) {
+    public Member(MemberName name, Integer rank, boolean leader) {
         this.name = name;
         this.rank = rank;
         this.leader = leader;
         rivals = null;
         trusted = null;
+        failed = false;
     }
 
-    public Member(MemberName name, int rank, Safehouse.SafehouseType safehouse, boolean leader) {
+    public Member(MemberName name, Integer rank, boolean leader, Boolean failed) {
+        this.name = name;
+        this.rank = rank;
+        this.failed = failed;
+        this.leader = leader;
+        rivals = null;
+        trusted = null;
+    }
+
+    public Member(MemberName name, Integer rank, Safehouse.SafehouseType safehouse, boolean leader) {
         this.name = name;
         this.rank = rank;
         this.safehouse = safehouse;
         this.leader = leader;
         rivals = null;
         trusted = null;
+        failed = false;
     }
 
-    public Member(MemberName name, int rank, int prisonTurnsLeft, Safehouse.SafehouseType prisonSafehouse, Integer intelligencePerTurn, boolean leader) {
-        this(name, rank, leader);
-        this.prisonTurnsLeft = prisonTurnsLeft;
-        this.prisonSafehouse = prisonSafehouse;
-        this.intelligencePerTurn = intelligencePerTurn;
+    @Override
+    public String toString() {
+        return name.name() + " (Rank: " + rank + ")";
     }
 
     @Override
@@ -110,6 +123,9 @@ public class Member {
 
     @Override
     public int hashCode() {
+        if (name == UNKNOWN) {
+            return (42 + rank) * (42 + safehouse.hashCode());
+        }
         return name.hashCode();
     }
 

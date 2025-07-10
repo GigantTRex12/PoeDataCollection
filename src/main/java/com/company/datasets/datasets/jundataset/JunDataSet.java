@@ -2,8 +2,10 @@ package com.company.datasets.datasets.jundataset;
 
 import com.company.datasets.datasets.DataSet;
 import com.company.datasets.other.jun.Board;
+import com.company.datasets.other.loot.LootDeserializer;
 import com.company.datasets.other.metadata.Strategy;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -11,6 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor(force = true)
 @Getter
 @ToString(callSuper = true)
+@JsonDeserialize(using = JunDataSetDeserializer.class)
 public abstract class JunDataSet extends DataSet {
 
     @JsonProperty("encountersSinceLastSet")

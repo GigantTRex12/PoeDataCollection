@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode
-@JsonDeserialize(using = JsonDeserializer.None.class)
+@JsonDeserialize()
 public class GemLoot extends Loot {
     @JsonProperty("level")
     private final int level;

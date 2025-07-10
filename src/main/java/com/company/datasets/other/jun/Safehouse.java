@@ -122,6 +122,16 @@ public class Safehouse {
         }
     }
 
+    public void removeAllMembers(Member newLeader) {
+        for (Member member : members) {
+            member.setSafehouse(null);
+            member.setRank(0);
+        }
+        members.clear();
+        members.add(newLeader);
+        setLeader(newLeader);
+    }
+
     public enum SafehouseType {
         RESEARCH, INTERVENTION, FORTIFICATION, TRANSPORTATION;
 

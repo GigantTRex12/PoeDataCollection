@@ -8,6 +8,7 @@ import com.company.datasets.other.jun.Safehouse;
 import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.metadata.Strategy;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 @Getter
 @ToString(callSuper = true)
+@JsonDeserialize()
 public class SafehouseEncounterDataSet extends JunDataSet {
 
     @JsonProperty("safehouse")
@@ -27,7 +29,7 @@ public class SafehouseEncounterDataSet extends JunDataSet {
     private final Safehouse.SafehouseType safehouse;
 
     @JsonProperty("leader")
-    @InputProperty(message = "Who is the leader?", order = 1, parsingFunc = "toMember")
+    @InputProperty(message = "Who is the leader?", regex = "^\\d+$", order = 1, parsingFunc = "toMember")
     private final Member.MemberName leader;
 
     @JsonProperty("loot")
@@ -42,6 +44,10 @@ public class SafehouseEncounterDataSet extends JunDataSet {
         this.leaderLoot = leaderLoot;
     }
 
-    public static class SafehouseEncounterDataSetBuilder implements JunDataSetBuilderInterface<SafehouseEncounterDataSet> {}
+    public static class SafehouseEncounterDataSetBuilder implements JunDataSetBuilderInterface<SafehouseEncounterDataSet> {
+        public Safehouse.SafehouseType getSafehouse() {
+            return safehouse;
+        }
+    }
 
 }

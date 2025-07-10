@@ -12,7 +12,7 @@ import lombok.ToString;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode
-@JsonDeserialize(using = JsonDeserializer.None.class)
+@JsonDeserialize()
 public class CorruptedMapLoot extends MapLoot {
     @JsonProperty("implicitAmount")
     private final int implicitAmount;

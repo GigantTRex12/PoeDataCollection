@@ -1,6 +1,7 @@
 package com.company.datasets.other.jun;
 
 import com.company.exceptions.BoardStateDoesntMatchException;
+import com.company.exceptions.SomethingIsWrongWithMyCodeException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,9 +11,13 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.company.datasets.other.jun.Member.MemberName.UNKNOWN;
 import static com.company.datasets.other.jun.Safehouse.SafehouseType.*;
+import static com.company.utils.IOUtils.input;
+import static com.company.utils.IOUtils.print;
 import static java.util.Map.entry;
 
 @Getter
@@ -154,6 +159,36 @@ public class Board {
 
     public void editBoard() {
         // TODO
+    }
+
+    public void editSafehouse(Safehouse.SafehouseType safehouseType) {
+        print("Editing safehouse " + safehouseType.name());
+
+        Safehouse safehouse = getSafehouse(safehouseType);
+        String safehouseState = input("Enter the new state", "^\\w+\\([1-3]b\\)(;\\w+\\([1-3]\\))*");
+        String[] split = safehouseState.split(";");
+        String memberReg = "(\\w+)\\(([1-3])(b?)\\)";
+        Matcher matcherLeader = Pattern.compile(memberReg).matcher(split[0]);
+        if (matcherLeader.find()) {
+            Member newLeader = findMember(Member.MemberName.valueOf(matcherLeader.group(1).toUpperCase()));
+            newLeader.setSafehouse(safehouseType);
+            safehouse.removeAllMembers(newLeader);
+            newLeader.setRank(Integer.parseInt(matcherLeader.group(2)));
+        }
+        else {
+            throw new SomethingIsWrongWithMyCodeException("Regex should always match here");
+        }
+        for (int i = 1; i < split.length; i++) {
+            Matcher matcherNewMember = Pattern.compile(memberReg).matcher(split[i]);
+            if (matcherNewMember.find()) {
+                Member newMember = findMember(Member.MemberName.valueOf(matcherNewMember.group(1).toUpperCase()));
+                newMember.setRank(Integer.parseInt(matcherNewMember.group(2)));
+                safehouse.addMember(newMember);
+            }
+            else {
+                throw new SomethingIsWrongWithMyCodeException("Regex should always match here");
+            }
+        }
     }
 
 

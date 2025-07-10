@@ -12,7 +12,7 @@ import lombok.ToString;
 @Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode
-@JsonDeserialize(using = JsonDeserializer.None.class)
+@JsonDeserialize()
 public class CraftingBenchLoot extends Loot {
     @JsonProperty("description")
     private final String description;

@@ -74,7 +74,7 @@ public class ParseUtilsJun {
         boolean leader = false;
         if (matcher.groupCount() == 4) {
             rank = Integer.parseInt(matcher.group(3));
-            leader = matcher.group(4).toLowerCase().equals("b");
+            leader = matcher.group(4).equalsIgnoreCase("b");
         }
 
         return new Member(member, rank, leader);

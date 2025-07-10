@@ -154,16 +154,30 @@ public class JunDataCollector extends DataCollector<JunDataSet> {
                 currBoard.applyEncounter(encounter);
             }
 
-            print(currBoard);
-            String boardCorrect = input("Is this Board correct?",
-                    Map.ofEntries(entry("y", "yes"), entry("n", "no"))).toLowerCase();
-            if (boardCorrect.equals("n") || boardCorrect.equals("no")) {
-                currBoard.editBoard();
-            }
-
-            castedBuilder.boardAfter(currBoard.deepCopy());
-            return castedBuilder;
+            return checkAndAddBoardAfter(castedBuilder);
         }
+        else if (currClass == SafehouseEncounterDataSet.class) {
+            if (builder.getClass() != SafehouseEncounterDataSet.SafehouseEncounterDataSetBuilder.class) {
+                throw new SomethingIsWrongWithMyCodeException("Incorrect Builder");
+            }
+            SafehouseEncounterDataSet.SafehouseEncounterDataSetBuilder castedBuilder = (SafehouseEncounterDataSet.SafehouseEncounterDataSetBuilder) builder;
+
+            currBoard.editSafehouse(castedBuilder.getSafehouse());
+
+            return checkAndAddBoardAfter(castedBuilder);
+        }
+        return builder;
+    }
+
+    private JunDataSetBuilderInterface<?> checkAndAddBoardAfter(JunDataSetBuilderInterface<?> builder) {
+        print(currBoard);
+        String boardCorrect = input("Is this Board correct?",
+                Map.ofEntries(entry("y", "yes"), entry("n", "no"))).toLowerCase();
+        if (boardCorrect.equals("n") || boardCorrect.equals("no")) {
+            currBoard.editBoard();
+        }
+
+        builder.boardAfter(currBoard.deepCopy());
         return builder;
     }
 

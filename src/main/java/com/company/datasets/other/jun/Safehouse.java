@@ -2,6 +2,7 @@ package com.company.datasets.other.jun;
 
 import com.company.exceptions.BoardStateDoesntMatchException;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -17,7 +18,7 @@ import static com.company.utils.IOUtils.input;
 @EqualsAndHashCode(of = {"type"})
 public class Safehouse {
 
-    @JsonProperty("type")
+    @JsonIgnore
     private final SafehouseType type;
 
     @JsonProperty("leader")
@@ -28,6 +29,7 @@ public class Safehouse {
     private final ArrayList<Member> members;
 
     @JsonProperty("intelligence")
+    @Setter
     private int intelligence;
 
     // to create deep copy of Board

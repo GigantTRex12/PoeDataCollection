@@ -274,6 +274,7 @@ public abstract class DataCollector<T extends DataSet> {
                 throw (InvalidInputFormatException) newE;
             }
             else {
+                e.printStackTrace();
                 throw new SomethingIsWrongWithMyCodeException(newE.getMessage());
             }
         }

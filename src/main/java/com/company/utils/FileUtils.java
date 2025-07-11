@@ -2,11 +2,11 @@ package com.company.utils;
 
 import com.company.exceptions.FileAlreadyExistsException;
 import com.company.exceptions.FileCannotBeWrittenException;
+import lombok.SneakyThrows;
+import net.bytebuddy.implementation.bytecode.Throw;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -121,4 +121,20 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
+
+    public static void logException(Throwable e) throws IOException {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        logException(e.getClass().getName() + "\n" + e.getMessage() + "\n" + sw);
+    }
+
+    private static void logException(String message) throws IOException {
+        append("Log/exceptions.txt", message);
+    }
+
+    public static void initLogs() throws IOException {
+        logException("\n------------------------------\n" + LocalDateTime.now());
+    }
+
 }

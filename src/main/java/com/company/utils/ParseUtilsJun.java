@@ -60,7 +60,7 @@ public class ParseUtilsJun {
     }
 
     private static Member toMember(String string) throws InvalidInputFormatException {
-        Matcher matcher = Pattern.compile("([\\w\\-]+)(\\(([1-3]?)(b?)\\))?").matcher(string);
+        Matcher matcher = Pattern.compile("([\\w\\-]+)(\\(([1-3]?)(b?)(f?)\\))?").matcher(string);
         if (!matcher.find()) {
             throw new InvalidInputFormatException("Input doesn't match regex");
         }
@@ -90,7 +90,7 @@ public class ParseUtilsJun {
         List<Action> actions = new ArrayList<>();
 
         for (String actionRep : actionReps) {
-            Matcher matcher = Pattern.compile("^(\\w+ )?(\\w+)(\\(.+\\))?$|^\\((\\w+)\\)$").matcher(actionRep);
+            Matcher matcher = Pattern.compile("^(\\w+)? ?(\\w+)(\\(.+\\))?$|^\\((\\w+)\\)$").matcher(actionRep);
             if (!matcher.find()) {
                 throw new InvalidInputFormatException("Action " + actionRep + "is not valid");
             }
@@ -98,7 +98,7 @@ public class ParseUtilsJun {
             if (matcher.group(4) == null) {
                 if (matcher.group(1) != null) {
                     try {
-                        currMember = Member.MemberName.valueOf(matcher.group(1).toUpperCase());
+                        currMember = toMemberName(matcher.group(1));
                     } catch (IllegalArgumentException e) {
                         throw new InvalidInputFormatException(matcher.group(1) + " is not a valid member name");
                     }
@@ -136,7 +136,7 @@ public class ParseUtilsJun {
         }
         String rep = string.substring(1, string.length() - 1).trim().toLowerCase();
 
-        Matcher matcherIntel = Pattern.compile("(\\d+)([tfir])?").matcher(rep);
+        Matcher matcherIntel = Pattern.compile("(\\w+)? ?(\\d+)([tfir])").matcher(rep);
         Matcher matcherRecruit = Pattern.compile("move (\\w+)( [tfir])").matcher(rep);
         Matcher matcherSwitch = Pattern.compile("switch (\\w+)(\\([tfir]\\))?").matcher(rep);
         Matcher matcherDestroy = Pattern.compile("destroy\\(([tfir])\\)").matcher(rep);
@@ -145,8 +145,9 @@ public class ParseUtilsJun {
 
         if (matcherIntel.find()) {
             return new Action(member, BARGAIN__INTELLIGENCE, null,
-                    Integer.parseInt(matcherIntel.group(2)), null,
-                    Safehouse.SafehouseType.fromLetter(matcherIntel.group(2)));
+                    Integer.parseInt(matcherIntel.group(2)),
+                    matcherIntel.group(1) == null ? null : toMemberName(matcherIntel.group(1)),
+                    Safehouse.SafehouseType.fromLetter(matcherIntel.group(3)));
         }
         if (matcherRecruit.find()) {
             return new Action(member, BARGAIN__RECRUIT, null, null,

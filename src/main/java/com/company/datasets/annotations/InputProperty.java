@@ -78,6 +78,7 @@ public @interface InputProperty {
     /**
      * a function in the DataCollector that takes the parsed value for the field type as an argument and returns it
      * executed at the end before the Builder is called
+     * CURRENTLY NOT WORKING (throws NoSuchMethodException for some reason)
      */
     String cleanUpFunc() default "";
 }

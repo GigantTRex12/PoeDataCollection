@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +58,7 @@ public class Board {
     }
 
     public Board() {
+        // FIXME: not all safehouses start with 2 members
         Member transportationLeader = new Member(2, true);
         transportation = new Safehouse(TRANSPORTATION, transportationLeader, new ArrayList<>(), 0);
         transportation.addMember(transportationLeader);
@@ -202,13 +202,50 @@ public class Board {
     }
 
     public void editBoard() {
-        // TODO
+        print("Editing safehouse");
+
+        boolean editing = true;
+        while (editing) {
+            String action = input("What would you like to edit?", Map.ofEntries(
+                    entry("s", "safehouse"),
+                    entry("m", "member"),
+                    entry("u", "unknown member"),
+                    entry("r", "relation"),
+                    entry("e", "exit")
+            ), false).toLowerCase();
+
+            switch (action) {
+                case ("s"), ("safehouse") -> editSafehouse();
+                // TODO
+                default -> editing = false;
+            }
+        }
+    }
+
+    private void editSafehouse() {
+        String safehouse = input("Which safehouse to edit?", Map.ofEntries(
+                entry("t", "transportation"),
+                entry("f", "fortification"),
+                entry("r", "research"),
+                entry("i", "intervention")
+        )).toLowerCase();
+        switch (safehouse) {
+            case ("t"), ("transportation") -> editSafehouse(TRANSPORTATION);
+            case ("f"), ("fortification") -> editSafehouse(FORTIFICATION);
+            case ("r"), ("research") -> editSafehouse(RESEARCH);
+            case ("i"), ("intervention") -> editSafehouse(INTERVENTION);
+        }
     }
 
     public void editSafehouse(Safehouse.SafehouseType safehouseType) {
         print("Editing safehouse " + safehouseType.name());
-
         Safehouse safehouse = getSafehouse(safehouseType);
+
+        String intelligence = input("Enter new intelligence value", "^$|\\d+");
+        if (!intelligence.equals("")) {
+            safehouse.setIntelligence(Integer.parseInt(intelligence));
+        }
+
         String safehouseState = input("Enter the new state", "^\\w+\\([1-3]b\\)(;\\w+\\([1-3]\\))*");
         String[] split = safehouseState.split(";");
         String memberReg = "(\\w+)\\(([1-3])(b?)\\)";
@@ -218,8 +255,7 @@ public class Board {
             newLeader.setSafehouse(safehouseType);
             safehouse.removeAllMembers(newLeader);
             newLeader.setRank(Integer.parseInt(matcherLeader.group(2)));
-        }
-        else {
+        } else {
             throw new SomethingIsWrongWithMyCodeException("Regex should always match here");
         }
         for (int i = 1; i < split.length; i++) {
@@ -228,8 +264,7 @@ public class Board {
                 Member newMember = findMember(Member.MemberName.valueOf(matcherNewMember.group(1).toUpperCase()));
                 newMember.setRank(Integer.parseInt(matcherNewMember.group(2)));
                 safehouse.addMember(newMember);
-            }
-            else {
+            } else {
                 throw new SomethingIsWrongWithMyCodeException("Regex should always match here");
             }
         }
@@ -260,12 +295,10 @@ public class Board {
                         .filter(m -> m.getName() == UNKNOWN)
                         .findAny().orElseThrow(() -> new BoardStateDoesntMatchException("No revealable member found"));
                 thisMember.setName(member.getName());
-            }
-            else {
+            } else {
                 getSafehouse(safehouse).revealMember(member);
             }
-        }
-        else {
+        } else {
             thisMember.setRank(member.getRank());
         }
     }
@@ -336,8 +369,7 @@ public class Board {
             case BARGAIN__INTELLIGENCE -> {
                 if (otherMember == null) {
                     safehouse.addIntelligence(action.getValue());
-                }
-                else {
+                } else {
                     otherSafehouse.addIntelligence(action.getValue());
                     setTrusted(member, otherMember);
                 }
@@ -407,6 +439,10 @@ public class Board {
                     }
                 }
         );
+    }
+
+    public void resetSafeHouseIntelligence(Safehouse.SafehouseType safehouse) {
+        getSafehouse(safehouse).setIntelligence(0);
     }
 
 }

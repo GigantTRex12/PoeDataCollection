@@ -35,6 +35,7 @@ public class JunDataCollector extends DataCollector<JunDataSet> {
         super();
 
         List<String> previousReps = Arrays.stream(FileUtils.read(filename).split("\\n"))
+                .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
 
         List<JunDataSet> previousDataSets = new ArrayList<>();
@@ -45,7 +46,11 @@ public class JunDataCollector extends DataCollector<JunDataSet> {
         List<String> possibleIds = previousDataSets.stream()
                 .map(ds -> ds.getLeagueId().toLowerCase())
                 .collect(Collectors.toList());
-        leagueId = input("Which league to use?", possibleIds, false).toLowerCase();
+        Map<String, String> nrToId = new LinkedHashMap<>();
+        for (int i = 0; i < possibleIds.size(); i++) {
+            nrToId.put(Integer.toString(i), possibleIds.get(i));
+        }
+        leagueId = input("Which league to use?", nrToId, false).toLowerCase();
         List<JunDataSet> oldSets = previousDataSets.stream()
                 .filter(ds -> ds.getLeagueId().equalsIgnoreCase(leagueId))
                 .sorted(Comparator.comparingInt(JunDataSet::getEncounterId))
@@ -136,7 +141,7 @@ public class JunDataCollector extends DataCollector<JunDataSet> {
     }
 
     private Encounter cleanupEncounter(Encounter encounter) {
-        if (currStrat.getTree().contains("jun")) {
+        if (Optional.ofNullable(currStrat.getTree()).map(t -> t.toLowerCase().contains("jun")).orElse(false)) {
             encounter.setJunTree(true);
         }
         return encounter;
@@ -162,6 +167,7 @@ public class JunDataCollector extends DataCollector<JunDataSet> {
             }
             SafehouseEncounterDataSet.SafehouseEncounterDataSetBuilder castedBuilder = (SafehouseEncounterDataSet.SafehouseEncounterDataSetBuilder) builder;
 
+            currBoard.resetSafeHouseIntelligence(castedBuilder.getSafehouse());
             currBoard.editSafehouse(castedBuilder.getSafehouse());
 
             return checkAndAddBoardAfter(castedBuilder);

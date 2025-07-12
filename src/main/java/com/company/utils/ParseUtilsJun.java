@@ -138,7 +138,7 @@ public class ParseUtilsJun {
 
         Matcher matcherIntel = Pattern.compile("(\\w+)? ?(\\d+)([tfir])").matcher(rep);
         Matcher matcherRecruit = Pattern.compile("move (\\w+)( [tfir])").matcher(rep);
-        Matcher matcherSwitch = Pattern.compile("switch (\\w+)(\\([tfir]\\))?").matcher(rep);
+        Matcher matcherSwitch = Pattern.compile("switch (\\w+)\\(([tfir])\\)").matcher(rep);
         Matcher matcherDestroy = Pattern.compile("destroy\\(([tfir])\\)").matcher(rep);
         Matcher matcherNeutral = Pattern.compile("neutral (\\w+)\\((\\d+)([tfir])\\)").matcher(rep);
         Matcher matcherRemoveRivalries = Pattern.compile("remove rivalries\\(([tfir])\\)").matcher(rep);

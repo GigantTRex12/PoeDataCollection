@@ -33,13 +33,14 @@ public class Member {
     @JsonInclude(NON_NULL)
     private Integer intelligencePerTurn;
 
-    @JsonProperty("rivals")
-    private final HashSet<Member> rivals;
+    @JsonIgnore
+    private final HashSet<MemberName> rivals;
 
-    @JsonProperty("trusted")
-    private final HashSet<Member> trusted;
+    @JsonIgnore
+    private final HashSet<MemberName> trusted;
 
     @JsonProperty("failed")
+    @JsonInclude(NON_NULL)
     private final Boolean failed;
 
     @JsonIgnore
@@ -59,11 +60,11 @@ public class Member {
         prisonTurnsLeft = member.prisonTurnsLeft;
         prisonSafehouse = member.prisonSafehouse;
         intelligencePerTurn = member.intelligencePerTurn;
-        rivals = new HashSet<>();
-        trusted = new HashSet<>();
+        rivals = new HashSet<>(member.getRivals());
+        trusted = new HashSet<>(member.getTrusted());
         safehouse = member.safehouse;
         leader = member.leader;
-        failed = false;
+        failed = null;
     }
 
     public Member(Integer rank, boolean leader) {
@@ -75,7 +76,7 @@ public class Member {
         trusted = new HashSet<>();
         safehouse = null;
         this.leader = leader;
-        failed = false;
+        failed = null;
     }
 
     public Member(MemberName name, Integer rank, boolean leader) {
@@ -84,7 +85,7 @@ public class Member {
         this.leader = leader;
         rivals = null;
         trusted = null;
-        failed = false;
+        failed = null;
     }
 
     public Member(MemberName name, Integer rank, boolean leader, Boolean failed) {
@@ -103,7 +104,7 @@ public class Member {
         this.leader = leader;
         rivals = null;
         trusted = null;
-        failed = false;
+        failed = null;
     }
 
     @Override
@@ -139,30 +140,21 @@ public class Member {
     }
 
     public void addTrusted(Member member) {
-        trusted.add(member);
+        trusted.add(member.getName());
     }
 
     public void addRival(Member member) {
-        rivals.add(member);
-        trusted.remove(member);
+        rivals.add(member.getName());
+        trusted.remove(member.getName());
     }
 
     public void removeRival(Member member) {
-        rivals.remove(member);
+        rivals.remove(member.getName());
     }
 
     public void neutralize(Member member) {
-        trusted.remove(member);
-        rivals.remove(member);
-    }
-
-    public void removeSelf() {
-        for (Member member : trusted) {
-            member.trusted.remove(this);
-        }
-        for (Member member : rivals) {
-            member.removeRival(this);
-        }
+        trusted.remove(member.getName());
+        rivals.remove(member.getName());
     }
 
     public enum MemberName {

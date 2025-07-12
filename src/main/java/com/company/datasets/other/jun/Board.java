@@ -7,13 +7,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.company.datasets.other.jun.Member.MemberName.UNKNOWN;
+import static com.company.datasets.other.jun.Relation.RelationType.RIVALS;
+import static com.company.datasets.other.jun.Relation.RelationType.TRUSTED;
 import static com.company.datasets.other.jun.Safehouse.SafehouseType.*;
 import static com.company.utils.IOUtils.input;
 import static com.company.utils.IOUtils.print;
@@ -48,6 +48,8 @@ public class Board {
     @JsonIgnore
     private final List<Member> allMembers;
 
+    private final Set<Relation> relationships;
+
     public Board(Safehouse transportation, Safehouse fortification, Safehouse research, Safehouse intervention, ArrayList<Member> freeMembers) {
         this.transportation = transportation;
         this.fortification = fortification;
@@ -55,92 +57,81 @@ public class Board {
         this.intervention = intervention;
         this.freeMembers = freeMembers;
         allMembers = getAllMembers();
+        relationships = new HashSet<>();
     }
 
     public Board() {
-        // FIXME: not all safehouses start with 2 members
         Member transportationLeader = new Member(2, true);
         transportation = new Safehouse(TRANSPORTATION, transportationLeader, new ArrayList<>(), 0);
         transportation.addMember(transportationLeader);
-        transportation.addMember(new Member(1, false));
         transportation.addMember(new Member(1, false));
 
         Member fortificationLeader = new Member(2, true);
         fortification = new Safehouse(FORTIFICATION, fortificationLeader, new ArrayList<>(), 0);
         fortification.addMember(fortificationLeader);
         fortification.addMember(new Member(1, false));
-        fortification.addMember(new Member(1, false));
 
         Member researchLeader = new Member(2, true);
         research = new Safehouse(RESEARCH, researchLeader, new ArrayList<>(), 0);
         research.addMember(researchLeader);
-        research.addMember(new Member(1, false));
         research.addMember(new Member(1, false));
 
         Member interventionLeader = new Member(2, true);
         intervention = new Safehouse(INTERVENTION, interventionLeader, new ArrayList<>(), 0);
         intervention.addMember(interventionLeader);
         intervention.addMember(new Member(1, false));
-        intervention.addMember(new Member(1, false));
 
-        freeMembers = new ArrayList<>(List.of(new Member(), new Member()));
+        freeMembers = new ArrayList<>(List.of(
+                new Member(), new Member(), new Member(), new Member(), new Member(), new Member()
+        ));
 
         allMembers = getAllMembers();
+        relationships = new HashSet<>();
     }
 
     @Override
     public String toString() {
-        String rep = "Safehouses:\n";
-        rep += transportation.toString() + "\n";
-        rep += fortification.toString() + "\n";
-        rep += research.toString() + "\n";
-        rep += intervention.toString() + "\n";
+        StringBuilder rep = new StringBuilder("Safehouses:\n");
+        rep.append(transportation.toString()).append("\n");
+        rep.append(fortification.toString()).append("\n");
+        rep.append(research.toString()).append("\n");
+        rep.append(intervention.toString()).append("\n");
 
-        rep += "No Safehouse:\n";
+        rep.append("No Safehouse:\n");
         for (Member member : allMembers) {
             if (member.getSafehouse() == null) {
-                rep += member.getName().name() + "\n";
+                rep.append(member.getName().name()).append("\n");
             }
         }
 
-        rep += "Prison:";
+        rep.append("Prison:\n");
         for (Member member : allMembers) {
             if (member.getPrisonTurnsLeft() > 0) {
-                rep += member.getName().name() + " (" + member.getPrisonTurnsLeft() + " rounds; " +
-                        member.getIntelligencePerTurn() + " intelligence for " + member.getPrisonSafehouse().name() +
-                        " safehouse per turn.)";
+                rep.append(member.getName().name()).append(" (").append(member.getPrisonTurnsLeft()).append(" rounds; ").append(member.getIntelligencePerTurn()).append(" intelligence for ").append(member.getPrisonSafehouse().name()).append(" safehouse per turn.)\n");
             }
         }
 
-        rep += "Trusted:";
-        for (Member member : allMembers) {
-            for (Member trusted : member.getTrusted()) {
-                if (member.getName().name().compareTo(trusted.getName().name()) < 0) {
-                    rep += member.getName().name() + "-" + trusted.getName().name();
-                }
-            }
+        rep.append("Relations:\n");
+        updateRelations();
+        for (Relation relation : relationships) {
+            rep.append(relation.toString()).append("\n");
         }
 
-        rep += "Rivals:";
-        for (Member member : allMembers) {
-            for (Member rival : member.getRivals()) {
-                if (member.getName().name().compareTo(rival.getName().name()) < 0) {
-                    rep += member.getName().name() + "-" + rival.getName().name();
-                }
-            }
-        }
-
-        return rep;
+        return rep.toString();
     }
 
     public Board deepCopy() {
         List<Member> newMembers = new ArrayList<>();
+
         Safehouse newTransportation = new Safehouse(transportation);
         newMembers.addAll(newTransportation.getMembers());
+
         Safehouse newFortification = new Safehouse(fortification);
         newMembers.addAll(newFortification.getMembers());
+
         Safehouse newResearch = new Safehouse(research);
         newMembers.addAll(newResearch.getMembers());
+
         Safehouse newIntervention = new Safehouse(intervention);
         newMembers.addAll(newIntervention.getMembers());
 
@@ -150,32 +141,9 @@ public class Board {
         }
         newMembers.addAll(newFreeMembers);
 
-        // fix relations
-        for (Member newMember : newMembers) {
-            for (Member oldMember : getAllMembers()) {
-                if (newMember.equals(oldMember)) {
-                    for (Member rival : oldMember.getRivals()) {
-                        for (Member newRival : newMembers) {
-                            if (rival.equals(newRival)) {
-                                newMember.addRival(newRival);
-                                break;
-                            }
-                        }
-                    }
-                    for (Member trusted : oldMember.getTrusted()) {
-                        for (Member newTrusted : newMembers) {
-                            if (trusted.equals(newTrusted)) {
-                                newMember.addTrusted(newTrusted);
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-
-        return new Board(newTransportation, newFortification, newResearch, newIntervention, newFreeMembers, newMembers);
+        Board newBoard = new Board(newTransportation, newFortification, newResearch, newIntervention, newFreeMembers, newMembers, new HashSet<>());
+        newBoard.updateRelations();
+        return newBoard;
     }
 
     private List<Member> getAllMembers() {
@@ -278,6 +246,7 @@ public class Board {
         prisonRound();
     }
 
+    // Don't use for name = UNKNOWN
     private Member findMember(Member.MemberName name) {
         return allMembers.stream()
                 .filter(m -> m.getName() == name)
@@ -304,25 +273,47 @@ public class Board {
     }
 
     private void checkAction(Action action, boolean junTree, Safehouse.SafehouseType safehouse) {
-        if (action.getActionType().isBetray()) {
+        Action.ActionType actionType = action.getActionType();
+        Safehouse actionSafehouse = getSafehouse(safehouse);
+        if (actionType.isBetray()) {
             checkBetrayal(action);
             return;
         }
-        if (action.getActionType().isBargain()) {
-            checkBargain(action, getSafehouse(safehouse));
+        if (actionType.isBargain()) {
+            checkBargain(action, actionSafehouse);
             return;
         }
         Member member = findMember(action.getMember());
-        switch (action.getActionType()) {
+        switch (actionType) {
             case INTERROGATE -> {
                 member.setPrisonTurnsLeft(3);
                 member.setPrisonSafehouse(safehouse);
                 member.setIntelligencePerTurn(rankToIntelligencePerTurn.get(member.getRank()));
+                if (member.isLeader()) {
+                    Member otherMember;
+                    if (action.getOtherMember() != UNKNOWN) {
+                        otherMember = findMember(action.getOtherMember());
+                    }
+                    else {
+                        throw new BoardStateDoesntMatchException("No logic found to set random member to leader");
+                    }
+                    getSafehouse(member.getSafehouse()).setLeader(otherMember);
+                }
+                else if (action.getOtherMember() != null) {
+                    Member newMember = freeMembers.stream()
+                            .filter(m -> m.getName() == action.getOtherMember())
+                            .findAny().orElseThrow(() -> new BoardStateDoesntMatchException("No free member found"));
+                    newMember.setRank(1);
+                    getSafehouse(member.getSafehouse()).addMember(newMember);
+                }
             }
             case EXECUTE -> {
                 int rank = member.getRank();
+                if (rank == 0) {
+                    actionSafehouse.addMember(member);
+                }
                 if (junTree) {
-                    getSafehouse(safehouse).addIntelligence(rank * 2);
+                    actionSafehouse.addIntelligence(rank * 2);
                     rank++;
                 }
                 rank++;
@@ -401,7 +392,7 @@ public class Board {
                 setNeutral(member, otherMember);
             }
             case BARGAIN__REMOVE_RIVALRIES -> {
-                otherSafehouse.getMembers().forEach(m -> m.getRivals().forEach(r -> setNeutral(m, r)));
+                otherSafehouse.getMembers().forEach(m -> m.getRivals().forEach(r -> setNeutral(m, findMember(r))));
             }
         }
     }
@@ -423,7 +414,6 @@ public class Board {
 
     private void removeMember(Member member) {
         getSafehouse(member.getSafehouse()).removeMember(member);
-        member.removeSelf();
         allMembers.remove(member);
         freeMembers.remove(member);
         freeMembers.add(new Member());
@@ -443,6 +433,22 @@ public class Board {
 
     public void resetSafeHouseIntelligence(Safehouse.SafehouseType safehouse) {
         getSafehouse(safehouse).setIntelligence(0);
+    }
+
+    private void updateRelations() {
+        relationships.clear();
+        for (Member member : allMembers) {
+            for (Member.MemberName trusted : member.getTrusted()) {
+                if (member.getName().name().compareTo(trusted.name()) < 0) {
+                    relationships.add(new Relation(TRUSTED, member.getName(), trusted));
+                }
+            }
+            for (Member.MemberName rival : member.getRivals()) {
+                if (member.getName().name().compareTo(rival.name()) < 0) {
+                    relationships.add(new Relation(RIVALS, member.getName(), rival));
+                }
+            }
+        }
     }
 
 }

@@ -3,3 +3,4 @@
 {"id":2,"league":"3.25 Regular Softcore trade Settlers","tree":"Ultimatum(NoKeystones)/Exarch","scarabs":[""],"map":"Atoll","mapRolling":"Alch and go","mapCraft":null}
 {"id":3,"league":"3.25","tree":null,"scarabs":null,"map":null,"mapRolling":null,"mapCraft":null}
 {"id":4,"league":"3.26","tree":null,"scarabs":null,"map":null,"mapRolling":null,"mapCraft":null}
+{"id":5,"league":"3.26","tree":"Jun (No Bribery);Eater","scarabs":[],"map":null,"mapRolling":"Alch&Go","mapCraft":null}

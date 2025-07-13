@@ -34,6 +34,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 .line("The Maven")
                 .line("n")
                 .line("y")
+                .line("n")
                 .line("Graven's Secret;bossunique")
                 .multiLine(new String[]{
                         "Awakened Multistrike Support;gemawakened",
@@ -48,6 +49,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "The Maven",
                 false,
                 true,
+                false,
                 new Loot("Graven's Secret", BOSS_UNIQUE_ITEM),
                 List.of(
                         new GemLoot("Awakened Multistrike Support", GEM_AWAKENED),
@@ -70,6 +72,8 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 null,
                 "Is the boss a pinnacle boss?",
                 null,
+                "Was the boss witnessed by the Maven?",
+                null,
                 "What was the guaranteed drop?",
                 "Input extra drops to track.",
                 "Enter the area quantity.",
@@ -81,28 +85,36 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
     @Test
     void add_multipleDataSets() throws IOException {
         // given
-        String inputs = "0" + LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
-                "The Maven" + LINEBREAK +
-                "n" + LINEBREAK +
-                "y" + LINEBREAK +
-                "Graven's Secret;bossunique" + LINEBREAK +
-                "Awakened Multistrike Support;gemawakened" + LINEBREAK + "Orb of Conflict;currency" + LINEBREAK + LINEBREAK +
-                LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
-                "The Infinite Hunger" + LINEBREAK +
-                "n" + LINEBREAK +
-                "y" + LINEBREAK +
-                LINEBREAK + LINEBREAK +
-                "50" + LINEBREAK +
-                actions.get("Exit");
-        IOUtils.setInputStream(inputs);
+        InputBuilder.start()
+                .line(0)
+                .line(actions.get("AddData"))
+                .line("The Maven")
+                .line("n")
+                .line("y")
+                .line("n")
+                .line("Graven's Secret;bossunique")
+                .multiLine(new String[]{
+                        "Awakened Multistrike Support;gemawakened",
+                        "Orb of Conflict;currency;1"
+                })
+                .emptyLine()
+                .line(actions.get("AddData"))
+                .line("The Infinite Hunger")
+                .line("n")
+                .line("y")
+                .line("n")
+                .emptyLine()
+                .multiLine(new String[]{})
+                .line(50)
+                .line(actions.get("Exit"))
+                .set();
 
         BossDropDataSet dataSet1 = new BossDropDataSet(
                 nullStrat,
                 "The Maven",
                 false,
                 true,
+                false,
                 new Loot("Graven's Secret", BOSS_UNIQUE_ITEM),
                 List.of(
                         new GemLoot("Awakened Multistrike Support", GEM_AWAKENED),
@@ -115,6 +127,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "The Infinite Hunger",
                 false,
                 true,
+                false,
                 null,
                 List.of(),
                 50
@@ -135,6 +148,8 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 null,
                 "Is the boss a pinnacle boss?",
                 null,
+                "Was the boss witnessed by the Maven?",
+                null,
                 "What was the guaranteed drop?",
                 "Input extra drops to track.",
                 "Enter the area quantity.",
@@ -145,6 +160,8 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "Is the boss uber?",
                 null,
                 "Is the boss a pinnacle boss?",
+                null,
+                "Was the boss witnessed by the Maven?",
                 null,
                 "What was the guaranteed drop?",
                 "Input extra drops to track.",
@@ -162,6 +179,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "The Maven" + LINEBREAK +
                 "x" + LINEBREAK + "y" + LINEBREAK +
                 "y" + LINEBREAK +
+                "n" + LINEBREAK +
                 "randomthing" + LINEBREAK + "Impossible Escape;bossunique" + LINEBREAK +
                 "invalid" + LINEBREAK + "  " + LINEBREAK + "invalid;invalid" + LINEBREAK + "Awakened Enlighten Support;gemawakened" + LINEBREAK + "Orb of Conflict;currency;zwei" + LINEBREAK + LINEBREAK +
                 "NaN" + LINEBREAK + LINEBREAK +
@@ -173,6 +191,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "The Maven",
                 true,
                 true,
+                false,
                 new Loot("Impossible Escape", BOSS_UNIQUE_ITEM),
                 List.of(
                         new GemLoot("Awakened Enlighten Support", GEM_AWAKENED)
@@ -196,6 +215,8 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "Is the boss uber?",
                 null,
                 "Is the boss a pinnacle boss?",
+                null,
+                "Was the boss witnessed by the Maven?",
                 null,
                 "What was the guaranteed drop?",
                 INVALID,

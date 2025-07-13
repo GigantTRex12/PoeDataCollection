@@ -3,7 +3,8 @@ package com.company.datasets.other.jun;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 
@@ -33,10 +34,10 @@ public class Member {
     @JsonInclude(NON_NULL)
     private Integer intelligencePerTurn;
 
-    @JsonIgnore
+    @JsonProperty("rivals")
     private final HashSet<MemberName> rivals;
 
-    @JsonIgnore
+    @JsonProperty("trusted")
     private final HashSet<MemberName> trusted;
 
     @JsonProperty("failed")
@@ -46,7 +47,7 @@ public class Member {
     @JsonIgnore
     private Safehouse.SafehouseType safehouse;
 
-    @JsonIgnore
+    @JsonProperty("leader")
     private boolean leader;
 
     public Member() {

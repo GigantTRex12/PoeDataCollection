@@ -2,10 +2,13 @@ package com.company.datasets.other.jun;
 
 import com.company.exceptions.BoardStateDoesntMatchException;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -20,7 +23,7 @@ import static com.company.utils.IOUtils.print;
 import static java.util.Map.entry;
 
 @Getter
-@AllArgsConstructor
+@JsonDeserialize(using = BoardDeserializer.class)
 public class Board {
 
     private static final Map<Integer, Integer> rankToIntelligencePerTurn = Map.ofEntries(
@@ -46,10 +49,13 @@ public class Board {
     private final ArrayList<Member> freeMembers;
 
     @JsonIgnore
-    private final List<Member> allMembers;
+    @Setter
+    private List<Member> allMembers;
 
+    @JsonIgnore
     private final Set<Relation> relationships;
 
+    @JsonCreator // TODO: how to explicitly tell for this class to always desrialize with ConstructorDetector.EXPLICIT_ONLY
     public Board(Safehouse transportation, Safehouse fortification, Safehouse research, Safehouse intervention, ArrayList<Member> freeMembers) {
         this.transportation = transportation;
         this.fortification = fortification;
@@ -58,28 +64,25 @@ public class Board {
         this.freeMembers = freeMembers;
         allMembers = getAllMembers();
         relationships = new HashSet<>();
+        updateRelations();
     }
 
     public Board() {
-        Member transportationLeader = new Member(2, true);
-        transportation = new Safehouse(TRANSPORTATION, transportationLeader, new ArrayList<>(), 0);
-        transportation.addMember(transportationLeader);
-        transportation.addMember(new Member(1, false));
+        transportation = new Safehouse(
+                TRANSPORTATION, new Member(2, true), List.of(new Member(1, false))
+        );
 
-        Member fortificationLeader = new Member(2, true);
-        fortification = new Safehouse(FORTIFICATION, fortificationLeader, new ArrayList<>(), 0);
-        fortification.addMember(fortificationLeader);
-        fortification.addMember(new Member(1, false));
+        fortification = new Safehouse(
+                FORTIFICATION, new Member(2, true), List.of(new Member(1, false))
+        );
 
-        Member researchLeader = new Member(2, true);
-        research = new Safehouse(RESEARCH, researchLeader, new ArrayList<>(), 0);
-        research.addMember(researchLeader);
-        research.addMember(new Member(1, false));
+        research = new Safehouse(
+                RESEARCH, new Member(2, true), List.of(new Member(1, false))
+        );
 
-        Member interventionLeader = new Member(2, true);
-        intervention = new Safehouse(INTERVENTION, interventionLeader, new ArrayList<>(), 0);
-        intervention.addMember(interventionLeader);
-        intervention.addMember(new Member(1, false));
+        intervention = new Safehouse(
+                INTERVENTION, new Member(2, true), List.of(new Member(1, false))
+        );
 
         freeMembers = new ArrayList<>(List.of(
                 new Member(), new Member(), new Member(), new Member(), new Member(), new Member()
@@ -87,6 +90,17 @@ public class Board {
 
         allMembers = getAllMembers();
         relationships = new HashSet<>();
+    }
+
+    @Builder
+    public Board(Safehouse transportation, Safehouse fortification, Safehouse research, Safehouse intervention, ArrayList<Member> freeMembers, List<Member> allMembers, Set<Relation> relationships) {
+        this.transportation = transportation;
+        this.fortification = fortification;
+        this.research = research;
+        this.intervention = intervention;
+        this.freeMembers = freeMembers;
+        this.allMembers = allMembers;
+        this.relationships = relationships;
     }
 
     @Override
@@ -146,7 +160,7 @@ public class Board {
         return newBoard;
     }
 
-    private List<Member> getAllMembers() {
+    public List<Member> getAllMembers() {
         List<Member> members = new ArrayList<>(freeMembers);
         members.addAll(transportation.getMembers());
         members.addAll(fortification.getMembers());
@@ -435,7 +449,7 @@ public class Board {
         getSafehouse(safehouse).setIntelligence(0);
     }
 
-    private void updateRelations() {
+    public void updateRelations() {
         relationships.clear();
         for (Member member : allMembers) {
             for (Member.MemberName trusted : member.getTrusted()) {

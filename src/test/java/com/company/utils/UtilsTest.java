@@ -217,10 +217,11 @@ public class UtilsTest {
                 Arguments.of(exampleStrat, stratJson),
                 Arguments.of(
                         new BossDropDataSet(
-                                exampleStrat, "Maven", false, true, new Loot("Arn's Anguish", BOSS_UNIQUE_ITEM),
+                                exampleStrat, "Maven", false, true, false, new Loot("Arn's Anguish", BOSS_UNIQUE_ITEM),
                                 List.of(new GemLoot("Awakened WET", GEM, 0, 3), new StackableLoot("Orb of Conflict", CURRENCY, 1)), null
                         ),
-                        "{\"strategy\":" + stratJson + ",\"boss\":\"Maven\",\"uber\":false,\"pinnacle\":true,\"guaranteedDrop\":" +
+                        "{\"strategy\":" + stratJson + ",\"boss\":\"Maven\",\"uber\":false,\"pinnacle\":true," +
+                                "\"witnessed\":false,\"guaranteedDrop\":" +
                                 "{\"name\":\"Arn's Anguish\",\"type\":\"BOSS_UNIQUE_ITEM\"},\"extraDrops\":[" +
                                 "{\"name\":\"Awakened WET\",\"type\":\"GEM\",\"level\":0,\"quality\":3}," +
                                 "{\"name\":\"Orb of Conflict\",\"type\":\"CURRENCY\",\"stacksize\":1}]}"

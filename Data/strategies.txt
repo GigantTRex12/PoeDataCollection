@@ -4,3 +4,4 @@
 {"id":3,"league":"3.25","tree":null,"scarabs":null,"map":null,"mapRolling":null,"mapCraft":null}
 {"id":4,"league":"3.26","tree":null,"scarabs":null,"map":null,"mapRolling":null,"mapCraft":null}
 {"id":5,"league":"3.26","tree":"Jun (No Bribery);Eater","scarabs":[],"map":null,"mapRolling":"Alch&Go","mapCraft":null}
+{"id":6,"league":"3.26","tree":"Maven/Boss Drops","scarabs":null,"map":null,"mapRolling":"Alch&Go","mapCraft":null}

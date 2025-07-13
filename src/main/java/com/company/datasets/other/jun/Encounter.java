@@ -26,7 +26,7 @@ public class Encounter {
     @JsonIgnore
     private boolean junTree;
 
-    @JsonIgnore
+    @JsonProperty("revealed")
     private List<Member> revealed;
 
 }

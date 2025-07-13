@@ -2,11 +2,12 @@ package com.company.datasets.other.jun;
 
 import com.company.exceptions.BoardStateDoesntMatchException;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.company.datasets.other.jun.Member.MemberName.UNKNOWN;
@@ -16,9 +17,10 @@ import static com.company.utils.IOUtils.input;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(of = {"type"})
+@JsonDeserialize(using = SafehouseDeserializer.class)
 public class Safehouse {
 
-    @JsonIgnore
+    @JsonProperty("type")
     private final SafehouseType type;
 
     @JsonProperty("leader")
@@ -46,6 +48,14 @@ public class Safehouse {
         intelligence = safehouse.intelligence;
     }
 
+    public Safehouse(SafehouseType type, Member leader, List<Member> otherMembers) {
+        this.type = type;
+        this.leader = leader;
+        members = new ArrayList<>(otherMembers);
+        members.add(leader);
+        intelligence = 0;
+    }
+
     public void setLeader(Member leader) {
         this.leader.setLeader(false);
         this.leader = leader;
@@ -54,15 +64,15 @@ public class Safehouse {
 
     @Override
     public String toString() {
-        String rep = type.name() + "\n";
-        rep += "Intelligence: " + intelligence + "\n";
-        rep += "Leader: " + leader.getName().name() + "\nMembers:";
+        StringBuilder rep = new StringBuilder(type.name() + "\n");
+        rep.append("Intelligence: ").append(intelligence).append("\n");
+        rep.append("Leader: ").append(leader.getName().name()).append("\nMembers:\n");
 
         for (Member member : members) {
-            rep += member.toString() + "\n";
+            rep.append(member.toString()).append("\n");
         }
 
-        return rep;
+        return rep.toString();
     }
 
     public void addMember(Member member) {

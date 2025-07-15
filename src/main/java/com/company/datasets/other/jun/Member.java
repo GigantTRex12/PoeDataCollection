@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Getter
 @Setter
+@NoArgsConstructor(force = true)
 public class Member {
 
     @JsonProperty("name")
@@ -50,10 +52,6 @@ public class Member {
     @JsonProperty("leader")
     private boolean leader;
 
-    public Member() {
-        this(0, false);
-    }
-
     // to create deep copy of Board
     public Member(Member member) {
         name = member.name;
@@ -80,15 +78,6 @@ public class Member {
         failed = null;
     }
 
-    public Member(MemberName name, Integer rank, boolean leader) {
-        this.name = name;
-        this.rank = rank;
-        this.leader = leader;
-        rivals = null;
-        trusted = null;
-        failed = null;
-    }
-
     public Member(MemberName name, Integer rank, boolean leader, Boolean failed) {
         this.name = name;
         this.rank = rank;
@@ -106,6 +95,10 @@ public class Member {
         rivals = null;
         trusted = null;
         failed = null;
+    }
+
+    public static Member createDefaultMember() {
+        return new Member(0, false);
     }
 
     @Override

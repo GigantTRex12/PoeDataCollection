@@ -13,7 +13,7 @@ public class BoardDeserializer extends StdDeserializer<Board> {
     public Board deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException {
         Board board = jp.getCodec().treeToValue(jp.readValueAsTree(), Board.class);
 
-        board.setAllMembers(board.getAllMembers());
+        board.setAllMembers();
         board.updateRelations();
 
         return board;

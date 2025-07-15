@@ -30,17 +30,29 @@ public class Strategy {
     @JsonProperty("id")
     @JsonInclude(NON_NULL)
     private final Integer id;
+
     @JsonProperty("league")
+    @JsonInclude(NON_NULL)
     private final String league;
+
     @JsonProperty("tree")
+    @JsonInclude(NON_NULL)
     private final String tree;
+
     @JsonProperty("scarabs")
+    @JsonInclude(NON_NULL)
     private final String[] scarabs;
+
     @JsonProperty("map")
+    @JsonInclude(NON_NULL)
     private final String mapLayout;
+
     @JsonProperty("mapRolling")
+    @JsonInclude(NON_NULL)
     private final String mapRolling;
+
     @JsonProperty("mapCraft")
+    @JsonInclude(NON_NULL)
     private final String mapCraft;
 
     private Strategy() {

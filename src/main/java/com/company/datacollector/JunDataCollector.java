@@ -60,7 +60,7 @@ public class JunDataCollector extends DataCollector<JunDataSet> {
             String newBoard = input("Start with empty Board?",
                     Map.ofEntries(entry("y", "yes"), entry("n", "no"))).toLowerCase();
             if (newBoard.equals("y") || newBoard.equals("yes")) {
-                currBoard = new Board();
+                currBoard = Board.createEmptyBoard();
             } else {
                 currBoard = Board.createBoard();
             }
@@ -138,13 +138,6 @@ public class JunDataCollector extends DataCollector<JunDataSet> {
         builder.encounterId(encounterId);
 
         return builder;
-    }
-
-    private Encounter cleanupEncounter(Encounter encounter) {
-        if (Optional.ofNullable(currStrat.getTree()).map(t -> t.toLowerCase().contains("jun")).orElse(false)) {
-            encounter.setJunTree(true);
-        }
-        return encounter;
     }
 
     @Override

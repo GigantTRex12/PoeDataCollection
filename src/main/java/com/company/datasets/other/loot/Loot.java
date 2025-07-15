@@ -17,7 +17,7 @@ import static com.company.utils.Utils.contains;
 public class Loot {
     private static final LootType[] stackable = {CATALYSTS, ESSENCES, DIVINATIONCARDS, CURRENCY, EXOTIC_CURRENCY, FRAGMENT, SCARAB, FOSSILS, SPLINTERS, SPLINTERS_BREACH, SPLINTERS_LEGION, OIL, INCUBATOR, SCOUTING_REPORT};
     private static final LootType[] corrImplicits = {UNIQUE_ITEM_IMPLICIT_CORRUPTED, RARE_ARMOUR_IMPLICIT_CORRUPTED, RARE_WEAPON_IMPLICIT_CORRUPTED, RARE_JEWELLRY_IMPLICIT_CORRUPTED, RARE_ITEM_IMPLICIT_CORRUPTED};
-    private static final LootType[] maps = {MAP, UNIQUE_MAP, SYNTH_MAP, ELDER_MAP, SHAPER_MAP, CONQUEROR_MAP, T17_MAP, RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS};
+    private static final LootType[] maps = {MAP, UNIQUE_MAP, SYNTH_MAP, ELDER_MAP, SHAPER_MAP, CONQUEROR_MAP, T17_MAP, RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS, ORIGINATOR_MAP, NON_GUARDIAN_ELDER_MAP, NON_GUARDIAN_SHAPER_MAP};
     private static final LootType[] corruptedMaps = {RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS};
     private static final LootType[] gems = {GEM, GEM_CORRUPTED, GEM_AWAKENED};
     private static final LootType[] crafts = {GUFF_CRAFTING_BENCH, VORICI_CRAFTING_BENCH, TORA_CRAFTING_BENCH, IT_THAT_FLED_BREACHSTONE_CRAFT};
@@ -155,9 +155,10 @@ public class Loot {
             else if (lower.contains("map")) {
                 if (lower.contains("synth") || lower.contains("synthesis")) type = SYNTH_MAP;
                 else if (lower.contains("conq") || lower.contains("conqueror")) type = CONQUEROR_MAP;
-                else if (lower.contains("elder")) type = ELDER_MAP;
-                else if (lower.contains("shaper")) type = SHAPER_MAP;
+                else if (lower.contains("elder")) type = lower.contains("regular") ? NON_GUARDIAN_ELDER_MAP : ELDER_MAP;
+                else if (lower.contains("shaper")) type = lower.contains("regular") ? NON_GUARDIAN_SHAPER_MAP : SHAPER_MAP;
                 else if (lower.contains("17")) type = T17_MAP;
+                else if (lower.contains("originator")) type = ORIGINATOR_MAP;
                 else if (unique) type = UNIQUE_MAP;
                 else if (corrupted) {
                     if (lower.contains("8mod")) type = RARE_MAP_CORRUPTED_8MOD;

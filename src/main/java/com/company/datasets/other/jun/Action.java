@@ -20,6 +20,7 @@ public class Action {
     private final ActionType actionType;
 
     @JsonProperty("doneAction")
+    @JsonInclude(NON_NULL)
     private Action doneAction;
 
     @JsonProperty("value")

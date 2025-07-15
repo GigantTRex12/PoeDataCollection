@@ -39,11 +39,8 @@ public class Safehouse {
         type = safehouse.type;
         leader = new Member(safehouse.leader);
         members = new ArrayList<>();
-        addMember(leader);
         for (Member member : safehouse.members) {
-            if (!member.equals(leader)) {
-                addMember(new Member(member));
-            }
+            addMember(new Member(member));
         }
         intelligence = safehouse.intelligence;
     }
@@ -51,8 +48,9 @@ public class Safehouse {
     public Safehouse(SafehouseType type, Member leader, List<Member> otherMembers) {
         this.type = type;
         this.leader = leader;
-        members = new ArrayList<>(otherMembers);
-        members.add(leader);
+        members = new ArrayList<>();
+        otherMembers.forEach(this::addMember);
+        addMember(leader);
         intelligence = 0;
     }
 

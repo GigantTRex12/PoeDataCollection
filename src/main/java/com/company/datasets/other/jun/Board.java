@@ -2,13 +2,12 @@ package com.company.datasets.other.jun;
 
 import com.company.exceptions.BoardStateDoesntMatchException;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -24,6 +23,8 @@ import static java.util.Map.entry;
 
 @Getter
 @JsonDeserialize(using = BoardDeserializer.class)
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class Board {
 
     private static final Map<Integer, Integer> rankToIntelligencePerTurn = Map.ofEntries(
@@ -49,58 +50,39 @@ public class Board {
     private final ArrayList<Member> freeMembers;
 
     @JsonIgnore
-    @Setter
     private List<Member> allMembers;
 
     @JsonIgnore
     private final Set<Relation> relationships;
 
-    @JsonCreator // TODO: how to explicitly tell for this class to always desrialize with ConstructorDetector.EXPLICIT_ONLY
-    public Board(Safehouse transportation, Safehouse fortification, Safehouse research, Safehouse intervention, ArrayList<Member> freeMembers) {
-        this.transportation = transportation;
-        this.fortification = fortification;
-        this.research = research;
-        this.intervention = intervention;
-        this.freeMembers = freeMembers;
-        allMembers = getAllMembers();
-        relationships = new HashSet<>();
-        updateRelations();
-    }
-
-    public Board() {
-        transportation = new Safehouse(
+    public static Board createEmptyBoard() {
+        Safehouse transportation = new Safehouse(
                 TRANSPORTATION, new Member(2, true), List.of(new Member(1, false))
         );
 
-        fortification = new Safehouse(
+        Safehouse fortification = new Safehouse(
                 FORTIFICATION, new Member(2, true), List.of(new Member(1, false))
         );
 
-        research = new Safehouse(
+        Safehouse research = new Safehouse(
                 RESEARCH, new Member(2, true), List.of(new Member(1, false))
         );
 
-        intervention = new Safehouse(
+        Safehouse intervention = new Safehouse(
                 INTERVENTION, new Member(2, true), List.of(new Member(1, false))
         );
 
-        freeMembers = new ArrayList<>(List.of(
-                new Member(), new Member(), new Member(), new Member(), new Member(), new Member()
+        ArrayList<Member> freeMembers = new ArrayList<>(List.of(
+                Member.createDefaultMember(), Member.createDefaultMember(), Member.createDefaultMember(),
+                Member.createDefaultMember(), Member.createDefaultMember(), Member.createDefaultMember()
         ));
 
-        allMembers = getAllMembers();
-        relationships = new HashSet<>();
-    }
-
-    @Builder
-    public Board(Safehouse transportation, Safehouse fortification, Safehouse research, Safehouse intervention, ArrayList<Member> freeMembers, List<Member> allMembers, Set<Relation> relationships) {
-        this.transportation = transportation;
-        this.fortification = fortification;
-        this.research = research;
-        this.intervention = intervention;
-        this.freeMembers = freeMembers;
-        this.allMembers = allMembers;
-        this.relationships = relationships;
+        Board emptyBoard = new Board(
+                transportation, fortification, research, intervention,
+                freeMembers, null, new HashSet<>()
+        );
+        emptyBoard.setAllMembers();
+        return emptyBoard;
     }
 
     @Override
@@ -112,10 +94,8 @@ public class Board {
         rep.append(intervention.toString()).append("\n");
 
         rep.append("No Safehouse:\n");
-        for (Member member : allMembers) {
-            if (member.getSafehouse() == null) {
-                rep.append(member.getName().name()).append("\n");
-            }
+        for (Member member : freeMembers) {
+            rep.append(member.getName().name()).append("\n");
         }
 
         rep.append("Prison:\n");
@@ -160,6 +140,10 @@ public class Board {
         return newBoard;
     }
 
+    public void setAllMembers() {
+        allMembers = getAllMembers();
+    }
+
     public List<Member> getAllMembers() {
         List<Member> members = new ArrayList<>(freeMembers);
         members.addAll(transportation.getMembers());
@@ -180,7 +164,7 @@ public class Board {
 
     public static Board createBoard() {
         // TODO
-        return new Board();
+        return createEmptyBoard();
     }
 
     public void editBoard() {
@@ -325,6 +309,7 @@ public class Board {
                 int rank = member.getRank();
                 if (rank == 0) {
                     actionSafehouse.addMember(member);
+                    freeMembers.remove(member);
                 }
                 if (junTree) {
                     actionSafehouse.addIntelligence(rank * 2);
@@ -430,7 +415,7 @@ public class Board {
         getSafehouse(member.getSafehouse()).removeMember(member);
         allMembers.remove(member);
         freeMembers.remove(member);
-        freeMembers.add(new Member());
+        freeMembers.add(Member.createDefaultMember());
     }
 
     private void prisonRound() {

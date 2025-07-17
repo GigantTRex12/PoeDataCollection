@@ -3447,3 +3447,40 @@ com.company.exceptions.InvalidLootFormatException: Invalid Format to parse Loot:
 
 ------------------------------
 2025-07-15T20:02:09.771408900
+
+------------------------------
+2025-07-16T20:07:48.823296500
+
+------------------------------
+2025-07-16T20:09:14.177922900
+
+------------------------------
+2025-07-17T16:37:35.301616600
+
+------------------------------
+2025-07-17T16:38:35.804893400
+
+------------------------------
+2025-07-17T16:39:53.247054300
+
+------------------------------
+2025-07-17T20:29:27.334213800
+
+------------------------------
+2025-07-17T20:31:07.674698900
+
+------------------------------
+2025-07-17T20:37:36.640033400
+
+------------------------------
+2025-07-17T20:39:42.613013400
+
+------------------------------
+2025-07-17T20:41:17.385111100
+com.company.exceptions.SomethingIsWrongWithMyCodeException
+No match found
+com.company.exceptions.SomethingIsWrongWithMyCodeException: No match found
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:278)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)

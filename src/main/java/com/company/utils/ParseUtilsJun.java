@@ -5,7 +5,6 @@ import com.company.datasets.other.jun.Encounter;
 import com.company.datasets.other.jun.Member;
 import com.company.datasets.other.jun.Safehouse;
 import com.company.exceptions.InvalidInputFormatException;
-import org.mockito.internal.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +33,10 @@ public class ParseUtilsJun {
             members.add(toMember(memberRep.trim()));
         }
 
-        List<Action> actions = new ArrayList<>();
+        List<List<Action>> actions = new ArrayList<>();
         String actionsRep = multilineInput("Input the actions").trim();
         for (String line : actionsRep.split("\\n")) {
-            actions.add(toAction(line.trim()));
+            actions.add(toActions(line.trim()));
         }
 
         String revealedRep = input("Give additional revealed members", "^$|\\w+\\(\\d[tfri]b?\\)(;\\w+\\(\\d[tfri]b?\\))?");
@@ -81,7 +80,7 @@ public class ParseUtilsJun {
         );
     }
 
-    private static Action toAction(String string) throws InvalidInputFormatException {
+    private static List<Action> toActions(String string) throws InvalidInputFormatException {
         if (string.isEmpty()) {
             throw new InvalidInputFormatException("At least one action needs to be specified");
         }
@@ -123,11 +122,7 @@ public class ParseUtilsJun {
             }
         }
 
-        for (int i = 0; i < actions.size() - 1; i++) {
-            actions.get(i).setDoneAction(actions.get(i + 1));
-        }
-
-        return actions.get(0);
+        return actions;
     }
 
     private static Action parseBargain(String string, Member.MemberName member) throws InvalidInputFormatException {

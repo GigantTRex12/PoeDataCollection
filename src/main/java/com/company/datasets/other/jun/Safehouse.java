@@ -17,7 +17,6 @@ import static com.company.utils.IOUtils.input;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(of = {"type"})
-@JsonDeserialize(using = SafehouseDeserializer.class)
 public class Safehouse {
 
     @JsonProperty("type")
@@ -55,7 +54,9 @@ public class Safehouse {
     }
 
     public void setLeader(Member leader) {
-        this.leader.setLeader(false);
+        if (this.leader != null) {
+            this.leader.setLeader(false);
+        }
         this.leader = leader;
         this.leader.setLeader(true);
     }

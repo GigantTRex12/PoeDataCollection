@@ -4,7 +4,6 @@ import com.company.exceptions.BoardStateDoesntMatchException;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +21,6 @@ import static com.company.utils.IOUtils.print;
 import static java.util.Map.entry;
 
 @Getter
-@JsonDeserialize(using = BoardDeserializer.class)
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Board {
@@ -53,7 +51,7 @@ public class Board {
     private List<Member> allMembers;
 
     @JsonIgnore
-    private final Set<Relation> relationships;
+    private Set<Relation> relationships;
 
     public static Board createEmptyBoard() {
         Safehouse transportation = new Safehouse(
@@ -240,7 +238,7 @@ public class Board {
     public void applyEncounter(Encounter encounter) {
         encounter.getMembers().forEach(m -> checkMember(m, encounter.getSafehouse()));
         encounter.getRevealed().forEach(m -> checkMember(m, m.getSafehouse()));
-        encounter.getActions().forEach(a -> checkAction(a.get(), encounter.isJunTree(), encounter.getSafehouse()));
+        encounter.getDoneActions().forEach(a -> checkAction(a, encounter.isJunTree(), encounter.getSafehouse()));
         prisonRound();
     }
 
@@ -435,7 +433,7 @@ public class Board {
     }
 
     public void updateRelations() {
-        relationships.clear();
+        relationships = new HashSet<>();
         for (Member member : allMembers) {
             for (Member.MemberName trusted : member.getTrusted()) {
                 if (member.getName().name().compareTo(trusted.name()) < 0) {
@@ -448,6 +446,18 @@ public class Board {
                 }
             }
         }
+    }
+
+    // Call after parsing json to this
+    public void fixBoard() {
+        for (Safehouse safehouse : List.of(transportation, fortification, research, intervention)) {
+            safehouse.getMembers().forEach(m -> {
+                m.setSafehouse(safehouse.getType());
+                if (m.isLeader()) {safehouse.setLeader(m);}
+            });
+        }
+        setAllMembers();
+        updateRelations();
     }
 
 }

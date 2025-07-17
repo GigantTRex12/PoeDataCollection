@@ -45,12 +45,14 @@ public class JunDataCollector extends DataCollector<JunDataSet> {
 
         List<String> possibleIds = previousDataSets.stream()
                 .map(ds -> ds.getLeagueId().toLowerCase())
+                .distinct()
                 .collect(Collectors.toList());
         Map<String, String> nrToId = new LinkedHashMap<>();
         for (int i = 0; i < possibleIds.size(); i++) {
             nrToId.put(Integer.toString(i), possibleIds.get(i));
         }
-        leagueId = input("Which league to use?", nrToId, false).toLowerCase();
+        String id = input("Which league to use?", nrToId, false).toLowerCase();
+        leagueId = nrToId.getOrDefault(id, id);
         List<JunDataSet> oldSets = previousDataSets.stream()
                 .filter(ds -> ds.getLeagueId().equalsIgnoreCase(leagueId))
                 .sorted(Comparator.comparingInt(JunDataSet::getEncounterId))
@@ -67,6 +69,7 @@ public class JunDataCollector extends DataCollector<JunDataSet> {
         } else {
             encounterId = oldSets.get(oldSets.size() - 1).getEncounterId() + 1;
             currBoard = oldSets.get(oldSets.size() - 1).getBoardAfter();
+            currBoard.fixBoard(); // TODO: Is there a better way to call this?
             print(currBoard);
             String newBoard = input("Is this Board correct?",
                     Map.ofEntries(entry("y", "yes"), entry("c", "create new"), entry("e", "edit"))).toLowerCase();

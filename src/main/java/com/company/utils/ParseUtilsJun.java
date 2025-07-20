@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import static com.company.datasets.other.jun.Action.ActionType.*;
 import static com.company.utils.IOUtils.input;
 import static com.company.utils.IOUtils.multilineInput;
+import static com.company.utils.Utils.cutOne;
 
 public class ParseUtilsJun {
 
@@ -41,7 +42,7 @@ public class ParseUtilsJun {
         List<Member> revealed = new ArrayList<>();
         if (!revealedRep.isEmpty()) {
             for (String singleRevealed : revealedRep.split(";")) {
-                Matcher memberMatcher = Pattern.compile("(\\w+)\\((\\d)([trfi])?(b?)\\)").matcher(singleRevealed);
+                Matcher memberMatcher = Pattern.compile("(\\w+)\\((\\d)([trfi])?(b)?\\)").matcher(singleRevealed);
                 if (memberMatcher.find()) {
                     revealed.add(new Member(
                             toMemberName(memberMatcher.group(1)),
@@ -57,7 +58,7 @@ public class ParseUtilsJun {
     }
 
     private static Member toMember(String string) throws InvalidInputFormatException {
-        Matcher matcher = Pattern.compile("([\\w\\-]+)(\\(([1-3]?)(b?)(f?)\\))?").matcher(string);
+        Matcher matcher = Pattern.compile("([\\w\\-]+)(\\(([1-3])?(b?)(f?)\\))?").matcher(string);
         if (!matcher.find()) {
             throw new InvalidInputFormatException("Input doesn't match regex");
         }
@@ -70,9 +71,19 @@ public class ParseUtilsJun {
 
         boolean failed = matcher.group(5) != null && matcher.group(5).equalsIgnoreCase("f");
 
+        Integer rank = null;
+        if (matcher.group(3) == null || matcher.group(3).isEmpty()) {
+            if (!failed) {
+                rank = 0;
+            }
+        }
+        else {
+            rank = Integer.parseInt(matcher.group(3));
+        }
+
         return new Member(
                 member,
-                matcher.group(3) == null || matcher.group(3).isEmpty() ? (failed ? null : 0) : Integer.parseInt(matcher.group(3)),
+                rank,
                 matcher.group(4) != null && matcher.group(4).equalsIgnoreCase("b"),
                 failed
         );
@@ -102,6 +113,14 @@ public class ParseUtilsJun {
                 }
                 if (matcher.group(2).equalsIgnoreCase("kill")) {
                     actions.add(new Action(currMember, EXECUTE, null, null, null, null));
+                } else if (matcher.group(2).equalsIgnoreCase("interrogate")) {
+                    if (matcher.group(3) == null) {
+                        actions.add(new Action(currMember, INTERROGATE, null, null, null, null));
+                    }
+                    else {
+                        actions.add(new Action(currMember, INTERROGATE, null, null,
+                                toMemberName(cutOne(matcher.group(3))), null));
+                    }
                 } else if (matcher.group(2).equalsIgnoreCase("bargain")) {
                     actions.add(parseBargain(matcher.group(3), currMember));
                 } else if (matcher.group(2).equalsIgnoreCase("betray")) {
@@ -127,7 +146,7 @@ public class ParseUtilsJun {
         if (string == null || string.length() <= 2) {
             throw new InvalidInputFormatException("Bargain needs arguments");
         }
-        String rep = string.substring(1, string.length() - 1).trim().toLowerCase();
+        String rep = cutOne(string).toLowerCase();
 
         Matcher matcherIntel = Pattern.compile("(\\w+)? ?(\\d+)([tfir])").matcher(rep);
         Matcher matcherRecruit = Pattern.compile("move (\\w+)( [tfir])").matcher(rep);
@@ -195,7 +214,7 @@ public class ParseUtilsJun {
         if (string == null || string.length() <= 2) {
             throw new InvalidInputFormatException("Betrayal needs arguments");
         }
-        String rep = string.substring(1, string.length() - 1).trim().toLowerCase();
+        String rep = cutOne(string).toLowerCase();
 
         Matcher matcherIntelligence = Pattern.compile("(\\w+),(\\d+)([tfir])").matcher(rep);
         Matcher matcherRanks = Pattern.compile("\\+(\\d) (\\w+) looses all ranks").matcher(rep);

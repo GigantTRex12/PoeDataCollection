@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class Encounter {
     private List<Member> revealed;
 
     public List<Action> getDoneActions() {
-        return actions.stream()
+        return actions == null ? new ArrayList<>() : actions.stream()
                 .map(actionList -> actionList.get(actionList.size() - 1))
                 .collect(Collectors.toList());
     }

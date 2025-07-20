@@ -1,5 +1,6 @@
 package com.company.datasets.other.jun;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -19,8 +20,8 @@ public class Action {
     @JsonProperty("actionType")
     private final ActionType actionType;
 
-    @JsonProperty("doneAction")
-    @JsonInclude(NON_NULL)
+    @JsonIgnore
+    @Deprecated
     private Action doneAction;
 
     @JsonProperty("value")

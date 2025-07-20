@@ -112,4 +112,11 @@ public class Utils {
     public static boolean isWholeNumber(String string) {
         return string != null && string.matches("[-+]?\\d+");
     }
+
+    // returns substring with only removing first and last non-whitespace character
+    public static String cutOne(String string) {
+        String trimmed = string.trim();
+        return trimmed.substring(1, trimmed.length() - 1).trim();
+    }
+
 }

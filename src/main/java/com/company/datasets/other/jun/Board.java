@@ -288,10 +288,11 @@ public class Board {
                 member.setIntelligencePerTurn(rankToIntelligencePerTurn.get(member.getRank()));
                 if (member.isLeader()) {
                     Member otherMember;
-                    if (action.getOtherMember() != UNKNOWN) {
+                    if (action.getOtherMember() != UNKNOWN && action.getOtherMember() != null) {
                         otherMember = findMember(action.getOtherMember());
                     }
                     else {
+                        // TODO:
                         throw new BoardStateDoesntMatchException("No logic found to set random member to leader");
                     }
                     getSafehouse(member.getSafehouse()).setLeader(otherMember);
@@ -411,7 +412,9 @@ public class Board {
     }
 
     private void removeMember(Member member) {
-        getSafehouse(member.getSafehouse()).removeMember(member);
+        if (member.getSafehouse() != null) {
+            getSafehouse(member.getSafehouse()).removeMember(member);
+        }
         allMembers.remove(member);
         freeMembers.remove(member);
         freeMembers.add(Member.createDefaultMember());
@@ -424,7 +427,7 @@ public class Board {
                     m.decrementPrisonTurns();
                     if (m.getRank() < 1 && m.getSafehouse() != null) {
                         getSafehouse(m.getSafehouse()).removeMember(m);
-                        freeMembers.add(m);
+                        freeMembers.add(m); // TODO: figure out why this happens even if rank > 0
                     }
                 }
         );

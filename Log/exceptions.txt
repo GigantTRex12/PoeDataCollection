@@ -3656,3 +3656,152 @@ com.company.exceptions.BoardStateDoesntMatchException: No revealable member foun
 
 ------------------------------
 2025-07-20T07:44:50.657607200
+
+------------------------------
+2025-07-20T07:47:01.858073500
+
+------------------------------
+2025-07-20T07:49:28.457526600
+com.company.exceptions.SomethingIsWrongWithMyCodeException
+Cannot invoke "java.lang.Integer.intValue()"
+com.company.exceptions.SomethingIsWrongWithMyCodeException: Cannot invoke "java.lang.Integer.intValue()"
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:279)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-20T07:53:47.495285700
+com.company.exceptions.SomethingIsWrongWithMyCodeException
+Cannot invoke "java.lang.Integer.intValue()"
+com.company.exceptions.SomethingIsWrongWithMyCodeException: Cannot invoke "java.lang.Integer.intValue()"
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:279)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-20T07:54:59.240890100
+com.company.exceptions.SomethingIsWrongWithMyCodeException
+Cannot invoke "java.lang.Integer.intValue()"
+com.company.exceptions.SomethingIsWrongWithMyCodeException: Cannot invoke "java.lang.Integer.intValue()"
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:279)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-20T07:58:47.158428600
+
+------------------------------
+2025-07-20T07:59:04.843507400
+
+------------------------------
+2025-07-20T07:59:30.500161700
+com.company.exceptions.InvalidInputFormatException
+interrogate is not a valid action
+com.company.exceptions.InvalidInputFormatException: interrogate is not a valid action
+	at com.company.utils.ParseUtilsJun.toActions(ParseUtilsJun.java:120)
+	at com.company.utils.ParseUtilsJun.toEncounter(ParseUtilsJun.java:37)
+	at com.company.utils.ParseUtils.toEncounter(ParseUtils.java:162)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:261)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+com.company.exceptions.InvalidInputFormatException
+interrogate is not a valid action
+com.company.exceptions.InvalidInputFormatException: interrogate is not a valid action
+	at com.company.utils.ParseUtilsJun.toActions(ParseUtilsJun.java:120)
+	at com.company.utils.ParseUtilsJun.toEncounter(ParseUtilsJun.java:37)
+	at com.company.utils.ParseUtils.toEncounter(ParseUtils.java:162)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:261)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-20T08:14:37.966403100
+
+------------------------------
+2025-07-20T08:27:01.021586
+com.company.exceptions.InvalidInputFormatException
+(Haku) is not a valid member name
+com.company.exceptions.InvalidInputFormatException: (Haku) is not a valid member name
+	at com.company.utils.ParseUtilsJun.toMemberName(ParseUtilsJun.java:260)
+	at com.company.utils.ParseUtilsJun.toActions(ParseUtilsJun.java:120)
+	at com.company.utils.ParseUtilsJun.toEncounter(ParseUtilsJun.java:37)
+	at com.company.utils.ParseUtils.toEncounter(ParseUtils.java:162)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:261)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-20T08:29:29.200202500
+com.company.exceptions.InvalidInputFormatException
+(Haku) is not a valid member name
+com.company.exceptions.InvalidInputFormatException: (Haku) is not a valid member name
+	at com.company.utils.ParseUtilsJun.toMemberName(ParseUtilsJun.java:260)
+	at com.company.utils.ParseUtilsJun.toActions(ParseUtilsJun.java:120)
+	at com.company.utils.ParseUtilsJun.toEncounter(ParseUtilsJun.java:37)
+	at com.company.utils.ParseUtils.toEncounter(ParseUtils.java:162)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:261)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-20T08:34:57.205329800
+com.company.exceptions.BoardStateDoesntMatchException
+Leader for this safehouse is already revealed and different
+com.company.exceptions.BoardStateDoesntMatchException: Leader for this safehouse is already revealed and different
+	at com.company.datasets.other.jun.Safehouse.revealMember(Safehouse.java:105)
+	at com.company.datasets.other.jun.Board.checkMember(Board.java:265)
+	at com.company.datasets.other.jun.Board.lambda$applyEncounter$1(Board.java:241)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at com.company.datasets.other.jun.Board.applyEncounter(Board.java:241)
+	at com.company.datacollector.JunDataCollector.finalizeData(JunDataCollector.java:155)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:163)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-20T08:38:03.604280
+com.company.exceptions.BoardStateDoesntMatchException
+Leader for this safehouse is already revealed and different
+com.company.exceptions.BoardStateDoesntMatchException: Leader for this safehouse is already revealed and different
+	at com.company.datasets.other.jun.Safehouse.revealMember(Safehouse.java:105)
+	at com.company.datasets.other.jun.Board.checkMember(Board.java:265)
+	at com.company.datasets.other.jun.Board.lambda$applyEncounter$1(Board.java:241)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at com.company.datasets.other.jun.Board.applyEncounter(Board.java:241)
+	at com.company.datacollector.JunDataCollector.finalizeData(JunDataCollector.java:155)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:163)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-20T08:40:12.597709600
+com.company.exceptions.BoardStateDoesntMatchException
+Leader for this safehouse is already revealed and different
+com.company.exceptions.BoardStateDoesntMatchException: Leader for this safehouse is already revealed and different
+	at com.company.datasets.other.jun.Safehouse.revealMember(Safehouse.java:105)
+	at com.company.datasets.other.jun.Board.checkMember(Board.java:265)
+	at com.company.datasets.other.jun.Board.lambda$applyEncounter$1(Board.java:241)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at com.company.datasets.other.jun.Board.applyEncounter(Board.java:241)
+	at com.company.datacollector.JunDataCollector.finalizeData(JunDataCollector.java:155)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:163)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-20T08:42:49.589286900

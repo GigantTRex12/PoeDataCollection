@@ -3484,3 +3484,175 @@ com.company.exceptions.SomethingIsWrongWithMyCodeException: No match found
 	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
 	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
 	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-18T17:15:16.569600200
+com.company.exceptions.InvalidLootFormatException
+Invalid Format to parse Loot: not enough Arguments
+com.company.exceptions.InvalidLootFormatException: Invalid Format to parse Loot: not enough Arguments
+	at com.company.datasets.other.loot.Loot.parseToLoot(Loot.java:34)
+	at com.company.utils.ParseUtils.toLootList(ParseUtils.java:53)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:261)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+com.company.exceptions.InvalidLootFormatException
+Invalid Format to parse Loot: not enough Arguments
+com.company.exceptions.InvalidLootFormatException: Invalid Format to parse Loot: not enough Arguments
+	at com.company.datasets.other.loot.Loot.parseToLoot(Loot.java:34)
+	at com.company.utils.ParseUtils.parseToLoot(ParseUtils.java:68)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:261)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+com.company.exceptions.InvalidInputFormatException
+Invalid Format to parse Loot: not enough Arguments
+com.company.exceptions.InvalidInputFormatException: Invalid Format to parse Loot: not enough Arguments
+	at com.company.utils.ParseUtils.parseToLoot(ParseUtils.java:70)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:261)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-18T21:08:57.150869700
+
+------------------------------
+2025-07-18T21:09:30.372051900
+com.company.exceptions.SomethingIsWrongWithMyCodeException
+No match found
+com.company.exceptions.SomethingIsWrongWithMyCodeException: No match found
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:279)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-18T21:12:13.063132500
+com.company.exceptions.SomethingIsWrongWithMyCodeException
+Range [1, 2) out of bounds for length 1
+com.company.exceptions.SomethingIsWrongWithMyCodeException: Range [1, 2) out of bounds for length 1
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:279)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-18T21:14:11.123422500
+
+------------------------------
+2025-07-18T21:20:07.195111200
+com.company.exceptions.SomethingIsWrongWithMyCodeException
+No enum constant com.company.datasets.other.jun.Safehouse.SafehouseType.
+com.company.exceptions.SomethingIsWrongWithMyCodeException: No enum constant com.company.datasets.other.jun.Safehouse.SafehouseType.
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:279)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-18T21:22:52.937883400
+com.company.exceptions.BoardStateDoesntMatchException
+No revealable member found
+com.company.exceptions.BoardStateDoesntMatchException: No revealable member found
+	at com.company.datasets.other.jun.Safehouse.revealMember(Safehouse.java:118)
+	at com.company.datasets.other.jun.Board.checkMember(Board.java:264)
+	at com.company.datasets.other.jun.Board.lambda$applyEncounter$0(Board.java:239)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at com.company.datasets.other.jun.Board.applyEncounter(Board.java:239)
+	at com.company.datacollector.JunDataCollector.finalizeData(JunDataCollector.java:155)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:163)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-19T10:34:24.971459400
+
+------------------------------
+2025-07-19T14:39:10.555360200
+com.company.exceptions.InvalidLootFormatException
+Invalid Format to parse Loot: not enough Arguments
+com.company.exceptions.InvalidLootFormatException: Invalid Format to parse Loot: not enough Arguments
+	at com.company.datasets.other.loot.Loot.parseToLoot(Loot.java:34)
+	at com.company.utils.ParseUtils.toLootList(ParseUtils.java:53)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:261)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-19T19:39:39.425588200
+
+------------------------------
+2025-07-20T06:42:52.083254700
+
+------------------------------
+2025-07-20T06:53:36.845190100
+com.company.exceptions.InvalidInputFormatException
+Action Intervention: Cameria(1)is not valid
+com.company.exceptions.InvalidInputFormatException: Action Intervention: Cameria(1)is not valid
+	at com.company.utils.ParseUtilsJun.toActions(ParseUtilsJun.java:94)
+	at com.company.utils.ParseUtilsJun.toEncounter(ParseUtilsJun.java:39)
+	at com.company.utils.ParseUtils.toEncounter(ParseUtils.java:162)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at com.company.datacollector.DataCollector.parseInputAndCallBuilder(DataCollector.java:261)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:156)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+com.company.exceptions.BoardStateDoesntMatchException
+No revealable member found
+com.company.exceptions.BoardStateDoesntMatchException: No revealable member found
+	at com.company.datasets.other.jun.Safehouse.revealMember(Safehouse.java:118)
+	at com.company.datasets.other.jun.Board.checkMember(Board.java:264)
+	at com.company.datasets.other.jun.Board.lambda$applyEncounter$0(Board.java:239)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at com.company.datasets.other.jun.Board.applyEncounter(Board.java:239)
+	at com.company.datacollector.JunDataCollector.finalizeData(JunDataCollector.java:155)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:163)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-20T07:02:40.673958700
+
+------------------------------
+2025-07-20T07:02:49.731710300
+com.company.exceptions.BoardStateDoesntMatchException
+No revealable member found
+com.company.exceptions.BoardStateDoesntMatchException: No revealable member found
+	at com.company.datasets.other.jun.Safehouse.revealMember(Safehouse.java:118)
+	at com.company.datasets.other.jun.Board.checkMember(Board.java:264)
+	at com.company.datasets.other.jun.Board.lambda$applyEncounter$0(Board.java:239)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at com.company.datasets.other.jun.Board.applyEncounter(Board.java:239)
+	at com.company.datacollector.JunDataCollector.finalizeData(JunDataCollector.java:155)
+	at com.company.datacollector.DataCollector.addDataGeneric(DataCollector.java:163)
+	at com.company.datacollector.DataCollector.collectData(DataCollector.java:52)
+	at com.company.Main.main(Main.java:54)
+
+------------------------------
+2025-07-20T07:09:36.452644300
+
+------------------------------
+2025-07-20T07:14:10.897314400
+
+------------------------------
+2025-07-20T07:30:36.073380300
+
+------------------------------
+2025-07-20T07:36:15.179027400
+
+------------------------------
+2025-07-20T07:41:25.519578
+
+------------------------------
+2025-07-20T07:44:50.657607200

@@ -152,6 +152,7 @@ public class Board {
     }
 
     private Safehouse getSafehouse(Safehouse.SafehouseType safehouseType) {
+        if (safehouseType == null) {return null;}
         return switch (safehouseType) {
             case TRANSPORTATION -> transportation;
             case FORTIFICATION -> fortification;
@@ -421,8 +422,9 @@ public class Board {
                 m -> {
                     getSafehouse(m.getPrisonSafehouse()).addIntelligence(m.getIntelligencePerTurn());
                     m.decrementPrisonTurns();
-                    if (m.getRank() < 1) {
+                    if (m.getRank() < 1 && m.getSafehouse() != null) {
                         getSafehouse(m.getSafehouse()).removeMember(m);
+                        freeMembers.add(m);
                     }
                 }
         );

@@ -275,6 +275,7 @@ public abstract class DataCollector<T extends DataSet> {
             }
             else {
                 e.printStackTrace();
+                newE.printStackTrace();
                 throw new SomethingIsWrongWithMyCodeException(newE.getMessage());
             }
         }

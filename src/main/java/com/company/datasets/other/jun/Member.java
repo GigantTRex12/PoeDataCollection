@@ -126,7 +126,7 @@ public class Member {
 
     public void decrementPrisonTurns() {
         this.prisonTurnsLeft--;
-        if (prisonTurnsLeft < 0) {
+        if (prisonTurnsLeft <= 0) {
             prisonSafehouse = null;
             intelligencePerTurn = null;
             rank--;

@@ -12,10 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.company.datasets.other.jun.Action.ActionType.*;
-import static com.company.datasets.other.jun.Action.ActionType.BETRAY__RAISE_ALL;
 import static com.company.utils.IOUtils.input;
 import static com.company.utils.IOUtils.multilineInput;
-import static com.company.utils.ParseUtils.toSafeHouse;
 
 public class ParseUtilsJun {
 
@@ -39,16 +37,16 @@ public class ParseUtilsJun {
             actions.add(toActions(line.trim()));
         }
 
-        String revealedRep = input("Give additional revealed members", "^$|\\w+\\(\\d[tfri]b?\\)(;\\w+\\(\\d[tfri]b?\\))?");
+        String revealedRep = input("Give additional revealed members", "^$|\\w+\\(\\d[tfri]?b?\\)(;\\w+\\(\\d[tfri]?b?\\))*");
         List<Member> revealed = new ArrayList<>();
         if (!revealedRep.isEmpty()) {
             for (String singleRevealed : revealedRep.split(";")) {
-                Matcher memberMatcher = Pattern.compile("(\\w+)\\((\\d)([trfi])(b?)\\)").matcher(singleRevealed);
+                Matcher memberMatcher = Pattern.compile("(\\w+)\\((\\d)([trfi])?(b?)\\)").matcher(singleRevealed);
                 if (memberMatcher.find()) {
                     revealed.add(new Member(
                             toMemberName(memberMatcher.group(1)),
                             Integer.parseInt(memberMatcher.group(2)),
-                            toSafeHouse(memberMatcher.group(3)),
+                            memberMatcher.group(3) == null ? null : Safehouse.SafehouseType.fromLetter(memberMatcher.group(3)),
                             memberMatcher.group(4) != null
                     ));
                 }
@@ -152,7 +150,7 @@ public class ParseUtilsJun {
         if (matcherSwitch.find()) {
             return new Action(member, BARGAIN__SWITCH, null, null,
                     toMemberName(matcherSwitch.group(1)),
-                    matcherSwitch.group(2) == null ? null : Safehouse.SafehouseType.fromLetter(matcherRecruit.group(2).substring(1, 2)));
+                    matcherSwitch.group(2) == null ? null : Safehouse.SafehouseType.fromLetter(matcherSwitch.group(2)));
         }
         if (rep.equals("remove self")) {
             return new Action(member, BARGAIN__LEAVE, null, null, null, null);

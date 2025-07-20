@@ -3,7 +3,6 @@ package com.company.datasets.other.jun;
 import com.company.exceptions.BoardStateDoesntMatchException;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 
 import java.util.ArrayList;

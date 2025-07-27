@@ -39,8 +39,8 @@ public class FileUtilsTest {
                 )
         );
 
-        String expectedJson1 = "{\"strategy\":{\"league\":\"3.25\",\"tree\":null,\"scarabs\":null,\"map\":null,\"mapRolling\":null,\"mapCraft\":null},\"type\":\"IN_MAP\",\"lakeTier\":null,\"amountPositive\":2,\"amountNegative\":3,\"amountNeutral\":0,\"itemText\":\"This is a dummy text.\\nThis is only for tests.\",\"itemType\":\"RARE_JEWELLRY_RING\",\"multiplier\":\"1.9\"}";
-        String expectedJson2 = "{\"strategy\":{\"league\":\"3.25\",\"tree\":null,\"scarabs\":null,\"map\":null,\"mapRolling\":null,\"mapCraft\":null},\"type\":\"ITEMIZED\",\"lakeTier\":null,\"amountPositive\":2,\"amountNegative\":1,\"amountNeutral\":1,\"itemText\":\"This is another dummy text.\\nThis is only for tests.\",\"itemType\":\"RARE_JEWELLRY_AMULET\",\"multiplier\":\"2.1\"}";
+        String expectedJson1 = "{\"strategy\":{\"league\":\"3.25\"},\"type\":\"IN_MAP\",\"lakeTier\":null,\"amountPositive\":2,\"amountNegative\":3,\"amountNeutral\":0,\"itemText\":\"This is a dummy text.\\nThis is only for tests.\",\"itemType\":\"RARE_JEWELLRY_RING\",\"multiplier\":\"1.9\"}";
+        String expectedJson2 = "{\"strategy\":{\"league\":\"3.25\"},\"type\":\"ITEMIZED\",\"lakeTier\":null,\"amountPositive\":2,\"amountNegative\":1,\"amountNeutral\":1,\"itemText\":\"This is another dummy text.\\nThis is only for tests.\",\"itemType\":\"RARE_JEWELLRY_AMULET\",\"multiplier\":\"2.1\"}";
 
         // when
         FileUtils.append(tempfile.toString(), list);

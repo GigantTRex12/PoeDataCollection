@@ -58,7 +58,7 @@ public class ParseUtilsJun {
     }
 
     private static Member toMember(String string) throws InvalidInputFormatException {
-        Matcher matcher = Pattern.compile("([\\w\\-]+)(\\(([1-3])?(b?)(f?)\\))?").matcher(string);
+        Matcher matcher = Pattern.compile("^(\\w+)(\\(([1-3])?(b?)(f?)\\))?$").matcher(string.toLowerCase());
         if (!matcher.find()) {
             throw new InvalidInputFormatException("Input doesn't match regex");
         }
@@ -148,7 +148,7 @@ public class ParseUtilsJun {
         }
         String rep = cutOne(string).toLowerCase();
 
-        Matcher matcherIntel = Pattern.compile("(\\w+)? ?(\\d+)([tfir])").matcher(rep);
+        Matcher matcherIntel = Pattern.compile("(\\w+ )?(\\d+)([tfir])").matcher(rep);
         Matcher matcherRecruit = Pattern.compile("move (\\w+)( [tfir])").matcher(rep);
         Matcher matcherSwitch = Pattern.compile("switch (\\w+)\\(([tfir])\\)").matcher(rep);
         Matcher matcherDestroy = Pattern.compile("destroy\\(([tfir])\\)").matcher(rep);
@@ -158,7 +158,7 @@ public class ParseUtilsJun {
         if (matcherIntel.find()) {
             return new Action(member, BARGAIN__INTELLIGENCE, null,
                     Integer.parseInt(matcherIntel.group(2)),
-                    matcherIntel.group(1) == null ? null : toMemberName(matcherIntel.group(1)),
+                    matcherIntel.group(1) == null ? null : toMemberName(matcherIntel.group(1).strip()),
                     Safehouse.SafehouseType.fromLetter(matcherIntel.group(3)));
         }
         if (matcherRecruit.find()) {
@@ -179,7 +179,7 @@ public class ParseUtilsJun {
         }
         if (matcherDestroy.find()) {
             return new Action(member, BARGAIN__DESTROY, null, null, null,
-                    Safehouse.SafehouseType.fromLetter(matcherRecruit.group(1)));
+                    Safehouse.SafehouseType.fromLetter(matcherDestroy.group(1)));
         }
         if (matcherNeutral.find()) {
             return new Action(member, BARGAIN__INTELLIGENCE_NEUTRAL, null,

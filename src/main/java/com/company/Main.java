@@ -1,7 +1,6 @@
 package com.company;
 
 import com.company.dataanalyzer.DataAnalyzer;
-import com.company.dataanalyzer.KalandraMistDataAnalyzer;
 import com.company.datacollector.*;
 
 import java.io.IOException;
@@ -56,13 +55,12 @@ public class Main {
         else if (action.equals("a") || action.equals("analyze")) {
             DataAnalyzer<?> analyzer = null;
             switch (dataType) {
-                case "mist" -> analyzer = new KalandraMistDataAnalyzer(filename);
                 default -> {
                     print("Exiting");
                     return;
                 }
             }
-            analyzer.analyzeData();
+            //analyzer.analyzeData();
         }
     }
 }

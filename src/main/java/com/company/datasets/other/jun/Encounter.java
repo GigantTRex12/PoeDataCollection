@@ -31,6 +31,7 @@ public class Encounter {
     @JsonProperty("revealed")
     private List<Member> revealed;
 
+    @JsonIgnore
     public List<Action> getDoneActions() {
         return actions == null ? new ArrayList<>() : actions.stream()
                 .map(actionList -> actionList.get(actionList.size() - 1))

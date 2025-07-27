@@ -81,4 +81,5 @@ public @interface InputProperty {
      * CURRENTLY NOT WORKING (throws NoSuchMethodException for some reason)
      */
     String cleanUpFunc() default "";
+
 }

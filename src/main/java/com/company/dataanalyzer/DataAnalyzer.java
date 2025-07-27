@@ -10,28 +10,14 @@ import java.util.Map;
 import java.util.function.Function;
 
 public abstract class DataAnalyzer<T extends DataSet> {
-    private String filename;
+
     protected List<T> data;
 
-    public DataAnalyzer(String filename) {
-        this.filename = filename;
+    public DataAnalyzer() {
         this.data = new ArrayList<T>();
     }
 
-    public abstract void analyzeData();
+    public void analyzeData() {
 
-    protected void readData(Class<T> clazz) throws IOException {
-    }
-
-    protected <R> Map<R, List<T>> filter(Function<T, R> func) {
-        Map<R, List<T>> map = new HashMap<>();
-
-        for (T t : this.data) {
-            R r = func.apply(t);
-            map.computeIfAbsent(r, k -> new ArrayList<>());
-            map.get(r).add(t);
-        }
-
-        return map;
     }
 }

@@ -5,19 +5,29 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-// Annotation for Fields or Methods in DataSets, marking their values to be possible to group by
-// If a Fields is annotated will group by that fields value
-// If a Method is annotated will group by that methods return value
-// Used by DataAnalyzers
+/**
+ * Annotation for Fields or Methods in DataSets, marking their values to be possible to group by
+ * If a Fields is annotated will group by that fields value
+ * If a Method is annotated will group by that methods return value
+ * Used by DataAnalyzers
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface Groupable {
-    // set to true to always group by the annotated value
+    /**
+     * set to true to always group by the annotated value
+     */
     boolean force() default false;
 
-    // set to true if the annotated value should be able to be evaluated numerically
-    boolean isNum() default false;
-
-    // set to true to filter out any datasets where the value is null
+    /**
+     * set to true to filter out any datasets where the value is null
+     */
     boolean ignoreNulls() default false;
+
+    /**
+     * set to true to instead filter for values that evaluate as true
+     * assumes return type can be casted to boolean
+     */
+    boolean filter() default false;
+
 }

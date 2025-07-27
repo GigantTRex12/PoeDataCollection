@@ -2,7 +2,6 @@ package com.company.utils;
 
 import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
-import com.company.datasets.other.jun.Action;
 import com.company.datasets.other.jun.Encounter;
 import com.company.datasets.other.jun.Member;
 import com.company.datasets.other.jun.Safehouse;
@@ -12,14 +11,9 @@ import com.company.exceptions.InvalidInputFormatException;
 import com.company.exceptions.InvalidLootFormatException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import static com.company.datasets.other.jun.Action.ActionType.*;
-import static com.company.utils.IOUtils.*;
+import static com.company.utils.IOUtils.print;
 import static com.company.utils.Utils.splitToChars;
 
 public class ParseUtils {
@@ -69,6 +63,10 @@ public class ParseUtils {
         } catch (InvalidLootFormatException e) {
             throw new InvalidInputFormatException(e.getMessage());
         }
+    }
+
+    public static Loot parseToBossLoot(String string) {
+        return new Loot(string, LootType.BOSS_UNIQUE_ITEM);
     }
 
     public static KalandraMistDataSet.MistType parseMistType(String string) {
@@ -165,8 +163,7 @@ public class ParseUtils {
     public static Member.MemberName toMember(String string) throws InvalidInputFormatException {
         try {
             return Member.MemberName.valueOf(string);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new InvalidInputFormatException(string + " is not a valid membername");
         }
     }

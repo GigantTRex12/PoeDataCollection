@@ -37,6 +37,11 @@ public class InputBuilder {
         return this;
     }
 
+    public InputBuilder multiLine() {
+        input += LINEBREAK;
+        return this;
+    }
+
     public void set() {
         IOUtils.setInputStream(input);
     }

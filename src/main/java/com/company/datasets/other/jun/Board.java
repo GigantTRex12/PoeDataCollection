@@ -28,8 +28,8 @@ public class Board {
     private static final Map<Integer, Integer> rankToIntelligencePerTurn = Map.ofEntries(
             entry(0, 1),
             entry(1, 2),
-            entry(2, 4),
-            entry(3, 6)
+            entry(2, 6),
+            entry(3, 9) // TODO: check value
     );
 
     @JsonProperty("transportation")
@@ -237,10 +237,10 @@ public class Board {
 
 
     public void applyEncounter(Encounter encounter) {
+        prisonRound();
         encounter.getMembers().forEach(m -> checkMember(m, encounter.getSafehouse()));
         encounter.getRevealed().forEach(m -> checkMember(m, m.getSafehouse()));
         encounter.getDoneActions().forEach(a -> checkAction(a, encounter.isJunTree(), encounter.getSafehouse()));
-        prisonRound();
     }
 
     // Don't use for name = UNKNOWN
@@ -376,7 +376,6 @@ public class Board {
                 otherSafehouse.addMember(member);
                 otherSafehouse.removeMember(otherMember);
                 thisSafehouse.addMember(otherMember);
-                setTrusted(member, otherMember);
             }
             case BARGAIN__LEAVE -> {
                 removeMember(member);

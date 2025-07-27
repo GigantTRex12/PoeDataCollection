@@ -35,7 +35,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 .line("n")
                 .line("y")
                 .line("n")
-                .line("Graven's Secret;bossunique")
+                .line("Graven's Secret")
                 .multiLine(new String[]{
                         "Awakened Multistrike Support;gemawakened",
                         "Orb of Conflict;currency;1"
@@ -74,7 +74,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 null,
                 "Was the boss witnessed by the Maven?",
                 null,
-                "What was the guaranteed drop?",
+                "Which unique was the guaranteed drop?",
                 "Input extra drops to track.",
                 "Enter the area quantity.",
                 "Format: ^$|^\\d+$",
@@ -92,7 +92,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 .line("n")
                 .line("y")
                 .line("n")
-                .line("Graven's Secret;bossunique")
+                .line("Graven's Secret")
                 .multiLine(new String[]{
                         "Awakened Multistrike Support;gemawakened",
                         "Orb of Conflict;currency;1"
@@ -150,7 +150,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 null,
                 "Was the boss witnessed by the Maven?",
                 null,
-                "What was the guaranteed drop?",
+                "Which unique was the guaranteed drop?",
                 "Input extra drops to track.",
                 "Enter the area quantity.",
                 "Format: ^$|^\\d+$",
@@ -163,7 +163,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 null,
                 "Was the boss witnessed by the Maven?",
                 null,
-                "What was the guaranteed drop?",
+                "Which unique was the guaranteed drop?",
                 "Input extra drops to track.",
                 "Enter the area quantity.",
                 "Format: ^$|^\\d+$",
@@ -180,7 +180,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "x" + LINEBREAK + "y" + LINEBREAK +
                 "y" + LINEBREAK +
                 "n" + LINEBREAK +
-                "randomthing" + LINEBREAK + "Impossible Escape;bossunique" + LINEBREAK +
+                "Impossible Escape" + LINEBREAK +
                 "invalid" + LINEBREAK + "  " + LINEBREAK + "invalid;invalid" + LINEBREAK + "Awakened Enlighten Support;gemawakened" + LINEBREAK + "Orb of Conflict;currency;zwei" + LINEBREAK + LINEBREAK +
                 "NaN" + LINEBREAK + LINEBREAK +
                 actions.get("Exit");
@@ -218,9 +218,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 null,
                 "Was the boss witnessed by the Maven?",
                 null,
-                "What was the guaranteed drop?",
-                INVALID,
-                "What was the guaranteed drop?",
+                "Which unique was the guaranteed drop?",
                 "Input extra drops to track.",
                 "Couldn't parse \"invalid\" to Loot. (skipped)",
                 "Couldn't parse \"  \" to Loot. (skipped)",

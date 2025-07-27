@@ -34,7 +34,7 @@ public class BossDropDataSet extends DataSet {
     private final boolean witnessed;
 
     @JsonProperty("guaranteedDrop")
-    @InputProperty(message = "What was the guaranteed drop?", order = 4, parsingFunc = "parseToLoot")
+    @InputProperty(message = "Which unique was the guaranteed drop?", order = 4, parsingFunc = "parseToBossLoot", emptyToNull = true)
     private final Loot guaranteedDrop;
 
     @JsonProperty("extraDrops")

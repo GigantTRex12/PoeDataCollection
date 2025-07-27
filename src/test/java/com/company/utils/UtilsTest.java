@@ -269,7 +269,7 @@ public class UtilsTest {
 
     @ParameterizedTest
     @MethodSource("splitToCharsProvider")
-    void test_splittoChars(String inp, char sep, char[] expected) {
+    void test_splitToChars(String inp, char sep, char[] expected) {
         // when
         char[] actual = Utils.splitToChars(inp, sep);
 
@@ -337,6 +337,11 @@ public class UtilsTest {
 
         // then
         assertFalse(actual);
+    }
+
+    @Test
+    void test() {
+        Assertions.assertEquals((23 / 10) * 10, 20);
     }
 
 }

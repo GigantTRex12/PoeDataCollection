@@ -32,7 +32,7 @@ public class JunDataCollector extends DataCollector<JunDataSet> {
     private Board currBoard;
 
     public JunDataCollector(String filename) throws FileNotFoundException, JsonProcessingException {
-        super();
+        super(JunDataSet.class, () -> null); // this class overrides both getGenericClass and createBuilder so these are not relevant
 
         List<String> previousReps = Arrays.stream(FileUtils.read(filename).split("\\n"))
                 .filter(s -> !s.isEmpty())
@@ -82,7 +82,7 @@ public class JunDataCollector extends DataCollector<JunDataSet> {
     }
 
     @Override
-    protected Class<? extends DataSet> getGenericClass() {
+    protected Class<? extends JunDataSet> getGenericClass() {
         return currClass;
     }
 

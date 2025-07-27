@@ -1,5 +1,6 @@
 package com.company.datasets.datasets;
 
+import com.company.datasets.annotations.Groupable;
 import com.company.datasets.annotations.InputProperty;
 import com.company.datasets.builder.DataSetBuilderInterface;
 import com.company.datasets.other.loot.Loot;
@@ -9,20 +10,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.List;
+import java.util.Locale;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @NoArgsConstructor(force = true)
 @Getter
-@EqualsAndHashCode
 @ToString(callSuper = true)
+@EqualsAndHashCode // only needed for tests
 public class BossDropDataSet extends DataSet {
+
     @JsonProperty("boss")
     @InputProperty(message = "Enter the name of the boss.", order = 0)
     private final String bossName;
 
     @JsonProperty("uber")
     @InputProperty(message = "Is the boss uber?", options = {"y", "n"}, order = 1, parsingFunc = "toBool")
+    @Groupable(force = true)
     private final boolean uber;
 
     @JsonProperty("pinnacle")
@@ -31,6 +35,7 @@ public class BossDropDataSet extends DataSet {
 
     @JsonProperty("witnessed")
     @InputProperty(message = "Was the boss witnessed by the Maven?", options = {"y", "n"}, order = 3, parsingFunc = "toBool")
+    @Groupable
     private final boolean witnessed;
 
     @JsonProperty("guaranteedDrop")
@@ -56,6 +61,11 @@ public class BossDropDataSet extends DataSet {
         this.guaranteedDrop = guaranteedDrop;
         this.extraDrops = extraDrops;
         this.quantity = quantity;
+    }
+
+    @Groupable(force = true)
+    public String lowerCaseBossname() {
+        return bossName.toLowerCase();
     }
 
     public static class BossDropDataSetBuilder implements DataSetBuilderInterface<BossDropDataSet> {

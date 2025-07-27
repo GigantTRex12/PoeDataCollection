@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.util.Map.entry;
@@ -39,7 +40,16 @@ public abstract class DataCollector<T extends DataSet> {
     protected Strategy currStrat;
     private Map<Integer, Strategy> strategyIds;
 
-    public DataCollector() {}
+    private Class<T> t;
+    private Supplier<DataSetBuilderInterface<T>> builderSupplier;
+
+    public DataCollector() {
+    }
+
+    public DataCollector(Class<T> t, Supplier<DataSetBuilderInterface<T>> builderSupplier) {
+        this.t = t;
+        this.builderSupplier = builderSupplier;
+    }
 
     public void collectData(String filename) {
         initializeAndPickStrat();
@@ -122,7 +132,8 @@ public abstract class DataCollector<T extends DataSet> {
         print("Added new Strategy and switched to new Strategy");
     }
 
-    protected void beforeAddData() {};
+    protected void beforeAddData() {
+    }
 
     protected DataSetBuilderInterface<T> finalizeData(DataSetBuilderInterface<T> builder) {
         return builder;
@@ -152,7 +163,9 @@ public abstract class DataCollector<T extends DataSet> {
             boolean inputNeeded = true;
             while (inputNeeded) {
                 try {
-                    if (ann.groupOrder() == 0) {input = getUserInput(ann);}
+                    if (ann.groupOrder() == 0) {
+                        input = getUserInput(ann);
+                    }
                     parseInputAndCallBuilder(input, builder, field, ann);
                     inputNeeded = false;
                 } catch (InvalidInputFormatException e) {
@@ -167,7 +180,9 @@ public abstract class DataCollector<T extends DataSet> {
         }
     }
 
-    protected Class<? extends DataSet> getGenericClass() {return DataSet.class;}
+    protected Class<? extends T> getGenericClass() {
+        return t;
+    }
 
     private List<Field> getAnnotatedFields() {
         return Arrays.stream(getGenericClass().getDeclaredFields())
@@ -178,8 +193,7 @@ public abstract class DataCollector<T extends DataSet> {
                             InputProperty ann2 = f2.getAnnotation(InputProperty.class);
                             if (ann1.order() == ann2.order()) {
                                 return Integer.compare(ann1.groupOrder(), ann2.groupOrder());
-                            }
-                            else {
+                            } else {
                                 return Integer.compare(ann1.order(), ann2.order());
                             }
                         }
@@ -188,30 +202,21 @@ public abstract class DataCollector<T extends DataSet> {
     }
 
     protected DataSetBuilderInterface<T> createBuilder() {
-        try {
-            DataSetBuilderInterface<T> builder = (DataSetBuilderInterface<T>) getGenericClass().getMethod("builder").invoke(null);
-            builder.strategy(currStrat);
-            return builder;
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            throw new SomethingIsWrongWithMyCodeException("¯\\_(ツ)_/¯");
-        }
+        return builderSupplier.get().strategy(currStrat);
     }
 
     private String getUserInput(InputProperty ann) {
         if (ann.message().isEmpty()) {
             if (ann.multiline()) {
                 return multilineInput();
-            }
-            else {
+            } else {
                 return input();
             }
-        }
-        else {
+        } else {
             String msg = ann.message();
             if (ann.multiline()) {
                 return multilineInput(msg);
-            }
-            else {
+            } else {
                 if (ann.options().length > 0) {
                     String[] options = ann.options();
                     boolean force = ann.forceOptions();
@@ -228,11 +233,9 @@ public abstract class DataCollector<T extends DataSet> {
                         return input(msg, optionsList, force);
                     }
                     return input(msg, options, force);
-                }
-                else if (!ann.regex().isEmpty()) {
+                } else if (!ann.regex().isEmpty()) {
                     return input(msg, ann.regex());
-                }
-                else {
+                } else {
                     return input(msg);
                 }
             }
@@ -244,42 +247,26 @@ public abstract class DataCollector<T extends DataSet> {
             Method builderFunc = builder.getClass().getMethod(field.getName(), field.getType());
             if (ann.emptyToNull() && inp.isEmpty()) {
                 builderFunc.invoke(builder, new Object[]{null});
-            }
-            else if (!ann.cleanUpFunc().isEmpty()) {
-                Method cleanupFunc = getClass().getMethod(ann.cleanUpFunc(), field.getType());
-                builderFunc.invoke(
-                        builder,
-                        cleanupFunc.invoke(
-                                this,
-                                ParseUtils.class.getMethod(ann.parsingFunc(), String.class).invoke(null, inp)
-                        )
-                );
-            }
-            else if (!ann.parsingFunc().isEmpty()) {
+            } else if (!ann.parsingFunc().isEmpty()) {
                 builderFunc.invoke(
                         builder,
                         ParseUtils.class.getMethod(ann.parsingFunc(), String.class).invoke(null, inp)
                 );
-            }
-            else if (field.getType() == String.class) {
+            } else if (field.getType() == String.class) {
                 builderFunc.invoke(builder, inp);
-            }
-            else {
+            } else {
                 throw new SomethingIsWrongWithMyCodeException("¯\\_(ツ)_/¯");
             }
-        }
-        catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             Throwable newE = e.getCause();
             if (newE instanceof InvalidInputFormatException) {
                 throw (InvalidInputFormatException) newE;
-            }
-            else {
+            } else {
                 e.printStackTrace();
                 newE.printStackTrace();
                 throw new SomethingIsWrongWithMyCodeException(newE.getMessage());
             }
-        }
-        catch (NoSuchMethodException | IllegalAccessException e) {
+        } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new SomethingIsWrongWithMyCodeException(e.getMessage());
         }
     }

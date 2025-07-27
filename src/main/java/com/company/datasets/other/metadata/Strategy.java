@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import static com.company.utils.Utils.parseJson;
 import static com.company.utils.Utils.toJson;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Getter
 @ToString
@@ -54,16 +56,6 @@ public class Strategy {
     @JsonProperty("mapCraft")
     @JsonInclude(NON_NULL)
     private final String mapCraft;
-
-    private Strategy() {
-        this.id = -1;
-        this.league = null;
-        this.tree = null;
-        this.scarabs = null;
-        this.mapLayout = null;
-        this.mapRolling = null;
-        this.mapCraft = null;
-    }
 
     @Override
     public boolean equals(Object o) {

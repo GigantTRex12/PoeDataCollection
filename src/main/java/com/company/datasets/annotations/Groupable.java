@@ -21,6 +21,7 @@ public @interface Groupable {
 
     /**
      * set to true to filter out any datasets where the value is null
+     * if this groupable isn't used then this filter won't apply
      */
     boolean ignoreNulls() default false;
 

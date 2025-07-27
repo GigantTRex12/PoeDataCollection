@@ -33,13 +33,6 @@ public class UltimatumDataSet extends DataSet {
             checkCondition = "isBoss")
     private final List<Loot> bossLoot;
 
-    public UltimatumDataSet(Strategy strategy, List<Loot> rewards) {
-        super(strategy);
-        this.rewards = rewards;
-        this.boss = false;
-        this.bossLoot = null;
-    }
-
     @Builder
     public UltimatumDataSet(Strategy strategy, List<Loot> rewards, boolean boss, List<Loot> bossLoot) {
         super(strategy);

@@ -1,14 +1,14 @@
 package com.company.datacollector;
 
-import com.company.datasets.datasets.DataSet;
 import com.company.datasets.datasets.UltimatumDataSet;
 
 import static com.company.utils.IOUtils.print;
 
 public class UltimatumDataCollector extends DataCollector<UltimatumDataSet> {
 
-    @Override
-    protected Class<? extends DataSet> getGenericClass() {return UltimatumDataSet.class;}
+    public UltimatumDataCollector() {
+        super(UltimatumDataSet.class, UltimatumDataSet::builder);
+    }
 
     @Override
     protected boolean validateDataSet(UltimatumDataSet dataSet) {

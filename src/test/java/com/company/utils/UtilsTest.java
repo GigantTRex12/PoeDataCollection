@@ -339,9 +339,4 @@ public class UtilsTest {
         assertFalse(actual);
     }
 
-    @Test
-    void test() {
-        Assertions.assertEquals((23 / 10) * 10, 20);
-    }
-
 }

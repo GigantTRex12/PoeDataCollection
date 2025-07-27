@@ -1,6 +1,7 @@
 package com.company.datacollector;
 
 import com.company.datasets.other.metadata.Strategy;
+import com.company.testutils.TestWithOutputs;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DataCollectorTest {
-    
+public class DataCollectorTest extends TestWithOutputs {
+
+    @Deprecated(forRemoval = true)
     protected static final String LINEBREAK = System.lineSeparator();
 
     protected static final Strategy nullStrat = new Strategy(null, null, null, null, null, null, null);
@@ -23,30 +25,14 @@ public class DataCollectorTest {
 
     protected Map<String, String> actions;
 
-    private DataCollector genericCollector;
-
     protected Path tempfile;
 
-    protected Path outputFile;
-
-    private PrintStream oldStream;
-
     @BeforeEach
-    void setup_All() throws IOException {
+    void setup_Content() throws IOException {
         actions = DataCollector.getActions();
 
         tempfile = Files.createTempFile("test", ".txt");
         tempfile.toFile().deleteOnExit();
-
-        oldStream = System.out;
-        outputFile = Files.createTempFile("output", ".txt");
-        outputFile.toFile().deleteOnExit();
-        System.setOut(new PrintStream(outputFile.toFile()));
-    }
-
-    @AfterEach
-    void cleanup_All() {
-        System.setOut(oldStream);
     }
 
     protected List<String> getContent() throws IOException {
@@ -54,22 +40,9 @@ public class DataCollectorTest {
                 .filter(s -> s.trim().length() > 0).collect(Collectors.toList());
     }
 
-    protected List<String> getOutputs() throws IOException {
-        return Files.readAllLines(outputFile);
+    @Override
+    protected void validateOutputs(String[] expectedOutputs) throws IOException {
+        validateOutputs(expectedOutputs, 2);
     }
 
-    protected void validateOutputs(String[] expectedOutputs) throws IOException {
-        List<String> output = getOutputs();
-        int pos = output.indexOf("What would you like to do?");
-        Assertions.assertTrue(pos > 2);
-        pos += 2;
-        for (String expected : expectedOutputs) {
-            if (expected != null) {
-                Assertions.assertEquals(expected, output.get(pos));
-            }
-            pos++;
-        }
-        pos++;
-        Assertions.assertEquals(pos, output.size());
-    }
 }

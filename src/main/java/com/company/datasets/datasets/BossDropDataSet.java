@@ -1,5 +1,6 @@
 package com.company.datasets.datasets;
 
+import com.company.datasets.annotations.Evaluate;
 import com.company.datasets.annotations.Groupable;
 import com.company.datasets.annotations.InputProperty;
 import com.company.datasets.builder.DataSetBuilderInterface;
@@ -12,6 +13,7 @@ import lombok.*;
 import java.util.List;
 import java.util.Locale;
 
+import static com.company.datasets.annotations.Evaluate.EvaluationMode.COUNTER_BASED;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @NoArgsConstructor(force = true)
@@ -26,7 +28,6 @@ public class BossDropDataSet extends DataSet {
 
     @JsonProperty("uber")
     @InputProperty(message = "Is the boss uber?", options = {"y", "n"}, order = 1, parsingFunc = "toBool")
-    @Groupable(force = true)
     private final boolean uber;
 
     @JsonProperty("pinnacle")
@@ -35,15 +36,17 @@ public class BossDropDataSet extends DataSet {
 
     @JsonProperty("witnessed")
     @InputProperty(message = "Was the boss witnessed by the Maven?", options = {"y", "n"}, order = 3, parsingFunc = "toBool")
-    @Groupable
+    @Groupable(order = 2, filterable = true)
     private final boolean witnessed;
 
     @JsonProperty("guaranteedDrop")
     @InputProperty(message = "Which unique was the guaranteed drop?", order = 4, parsingFunc = "parseToBossLoot", emptyToNull = true)
+    @Evaluate
     private final Loot guaranteedDrop;
 
     @JsonProperty("extraDrops")
     @InputProperty(message = "Input extra drops to track.", order = 5, parsingFunc = "toLootList", multiline = true)
+    @Evaluate(evaluationMode = COUNTER_BASED)
     private final List<Loot> extraDrops;
 
     @JsonProperty("quantity")
@@ -63,9 +66,15 @@ public class BossDropDataSet extends DataSet {
         this.quantity = quantity;
     }
 
-    @Groupable(force = true)
+    @Groupable(order = 1, force = true, filterable = true)
     public String lowerCaseBossname() {
+        if (uber) return "UBER " + bossName.toLowerCase();
         return bossName.toLowerCase();
+    }
+
+    @Groupable(order = 3, ignoreNulls = true, filterable = true)
+    public Integer quantInStepsOfTen() {
+        return quantity != null ? (quantity / 10) * 10 : null;
     }
 
     public static class BossDropDataSetBuilder implements DataSetBuilderInterface<BossDropDataSet> {

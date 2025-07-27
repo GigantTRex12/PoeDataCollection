@@ -1,0 +1,7 @@
+{"strategy":{"league":"3.26"},"boss":"The Elder","uber":false,"pinnacle":true,"witnessed":false,"guaranteedDrop":{"name":"Blasphemer's Grasp","type":"BOSS_UNIQUE_ITEM"},"extraDrops":[{"name":"Fragment of Terror","type":"FRAGMENT","stacksize":1}]}
+{"strategy":{"league":"3.26"},"boss":"The Elder","uber":false,"pinnacle":true,"witnessed":false,"guaranteedDrop":{"name":"Cyclopean Coil","type":"BOSS_UNIQUE_ITEM"},"extraDrops":[{"name":"Fragment of Emptiness","type":"FRAGMENT","stacksize":1}]}
+{"strategy":{"league":"3.26"},"boss":"The Maven","uber":false,"pinnacle":true,"witnessed":false,"guaranteedDrop":{"name":"Graven's Secret","type":"BOSS_UNIQUE_ITEM"},"extraDrops":[]}
+{"strategy":{"league":"3.26"},"boss":"The Maven","uber":false,"pinnacle":true,"witnessed":false,"guaranteedDrop":{"name":"Arn's Anguish","type":"BOSS_UNIQUE_ITEM"},"extraDrops":[]}
+{"strategy":{"league":"3.26"},"boss":"The Maven","uber":false,"pinnacle":true,"witnessed":false,"guaranteedDrop":{"name":"Graven's Secret","type":"BOSS_UNIQUE_ITEM"},"extraDrops":[]}
+{"strategy":{"league":"3.26"},"boss":"The Maven","uber":false,"pinnacle":true,"witnessed":false,"guaranteedDrop":{"name":"Legacy of Fury","type":"BOSS_UNIQUE_ITEM"},"extraDrops":[]}
+{"strategy":{"league":"3.26"},"boss":"The Maven","uber":false,"pinnacle":true,"witnessed":false,"guaranteedDrop":{"name":"Legacy of Fury","type":"BOSS_UNIQUE_ITEM"},"extraDrops":[]}

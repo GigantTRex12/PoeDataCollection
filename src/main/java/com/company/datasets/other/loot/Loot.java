@@ -137,6 +137,8 @@ public class Loot {
             boolean jewellry = lower.contains("jewellry");
             boolean gem = lower.contains("gem");
             boolean corrupted = lower.contains("corrupted");
+            boolean synth = lower.contains("synth");
+            boolean frac = lower.contains("fractured");
             if (lower.contains("essence")) {
                 type = ESSENCES;
             } else if (lower.contains("catalyst")) {
@@ -183,9 +185,13 @@ public class Loot {
                 if (lower.contains("boss")) type = BOSS_UNIQUE_ITEM;
                 else type = UNIQUE_ITEM;
             } else if (rare) {
-                if (weapon) type = RARE_WEAPON;
-                else if (armour) type = RARE_ARMOUR;
-                else if (jewellry) type = RARE_JEWELLRY;
+                if (weapon) type = synth ? RARE_WEAPON_SYNTHESISED : (frac ? RARE_WEAPON_FRACTURED : RARE_WEAPON);
+                else if (armour) type = synth ? RARE_ARMOUR_SYNTHESISED : (frac ? RARE_ARMOUR_FRACTURED : RARE_ARMOUR);
+                else if (jewellry) type = synth ? RARE_JEWELLRY_SYNTHESISED : (frac ? RARE_JEWELLRY_FRACTURED : RARE_JEWELLRY);
+                else if (lower.contains("jewel")) {
+                    if (lower.contains("abyss")) type = synth ? RARE_ABYSS_JEWEL_SYNTHESISED : (frac ? RARE_ABYSS_JEWEL_FRACTURED : RARE_ABYSS_JEWEL);
+                    else type = synth ? RARE_JEWEL_SYNTHESISED : (frac ? RARE_JEWEL_FRACTURED : RARE_JEWEL);
+                }
                 else type = RARE_ITEM;
             } else if (lower.contains("splinter")) {
                 if (lower.contains("breach")) type = SPLINTERS_BREACH;

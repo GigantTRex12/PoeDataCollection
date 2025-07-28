@@ -13,7 +13,7 @@ public class BossDropDataAnalyzerTest extends TestWithOutputs {
 
     // no special grouping, evaluate guaranteed drops
     @Test
-    @Disabled
+    @Disabled("WIP")
     void analyzerTest1() throws IOException {
         // given
         analyzer = new BossDropDataAnalyzer("src/test/resources/bossdrop_examples_1.txt");

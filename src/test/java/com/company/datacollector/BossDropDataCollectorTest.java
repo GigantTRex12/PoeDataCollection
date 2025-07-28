@@ -33,7 +33,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 .line(actions.get("AddData"))
                 .line("The Maven")
                 .line("n")
-                .line("y")
                 .line("n")
                 .line("Graven's Secret")
                 .multiLine(new String[]{
@@ -48,7 +47,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 nullStrat,
                 "The Maven",
                 false,
-                true,
                 false,
                 new Loot("Graven's Secret", BOSS_UNIQUE_ITEM),
                 List.of(
@@ -70,8 +68,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "Enter the name of the boss.",
                 "Is the boss uber?",
                 null,
-                "Is the boss a pinnacle boss?",
-                null,
                 "Was the boss witnessed by the Maven?",
                 null,
                 "Which unique was the guaranteed drop?",
@@ -90,7 +86,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 .line(actions.get("AddData"))
                 .line("The Maven")
                 .line("n")
-                .line("y")
                 .line("n")
                 .line("Graven's Secret")
                 .multiLine(new String[]{
@@ -101,7 +96,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 .line(actions.get("AddData"))
                 .line("The Infinite Hunger")
                 .line("n")
-                .line("y")
                 .line("n")
                 .emptyLine()
                 .multiLine(new String[]{})
@@ -113,7 +107,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 nullStrat,
                 "The Maven",
                 false,
-                true,
                 false,
                 new Loot("Graven's Secret", BOSS_UNIQUE_ITEM),
                 List.of(
@@ -126,7 +119,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 nullStrat,
                 "The Infinite Hunger",
                 false,
-                true,
                 false,
                 null,
                 List.of(),
@@ -146,8 +138,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 "Enter the name of the boss.",
                 "Is the boss uber?",
                 null,
-                "Is the boss a pinnacle boss?",
-                null,
                 "Was the boss witnessed by the Maven?",
                 null,
                 "Which unique was the guaranteed drop?",
@@ -158,8 +148,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 null,
                 "Enter the name of the boss.",
                 "Is the boss uber?",
-                null,
-                "Is the boss a pinnacle boss?",
                 null,
                 "Was the boss witnessed by the Maven?",
                 null,
@@ -178,7 +166,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 actions.get("AddData") + LINEBREAK +
                 "The Maven" + LINEBREAK +
                 "x" + LINEBREAK + "y" + LINEBREAK +
-                "y" + LINEBREAK +
                 "n" + LINEBREAK +
                 "Impossible Escape" + LINEBREAK +
                 "invalid" + LINEBREAK + "  " + LINEBREAK + "invalid;invalid" + LINEBREAK + "Awakened Enlighten Support;gemawakened" + LINEBREAK + "Orb of Conflict;currency;zwei" + LINEBREAK + LINEBREAK +
@@ -189,7 +176,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         BossDropDataSet dataSet = new BossDropDataSet(
                 nullStrat,
                 "The Maven",
-                true,
                 true,
                 false,
                 new Loot("Impossible Escape", BOSS_UNIQUE_ITEM),
@@ -213,8 +199,6 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                 null,
                 INVALID,
                 "Is the boss uber?",
-                null,
-                "Is the boss a pinnacle boss?",
                 null,
                 "Was the boss witnessed by the Maven?",
                 null,

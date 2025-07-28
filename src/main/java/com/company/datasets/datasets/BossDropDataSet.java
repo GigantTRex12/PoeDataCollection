@@ -30,10 +30,6 @@ public class BossDropDataSet extends DataSet {
     @InputProperty(message = "Is the boss uber?", options = {"y", "n"}, order = 1, parsingFunc = "toBool")
     private final boolean uber;
 
-    @JsonProperty("pinnacle")
-    @InputProperty(message = "Is the boss a pinnacle boss?", options = {"y", "n"}, order = 2, parsingFunc = "toBool")
-    private final boolean pinnacle;
-
     @JsonProperty("witnessed")
     @InputProperty(message = "Was the boss witnessed by the Maven?", options = {"y", "n"}, order = 3, parsingFunc = "toBool")
     @Groupable(order = 2, filterable = true)
@@ -55,11 +51,10 @@ public class BossDropDataSet extends DataSet {
     private final Integer quantity;
 
     @Builder
-    public BossDropDataSet(Strategy strategy, String bossName, boolean uber, boolean pinnacle, boolean witnessed, Loot guaranteedDrop, List<Loot> extraDrops, Integer quantity) {
+    public BossDropDataSet(Strategy strategy, String bossName, boolean uber, boolean witnessed, Loot guaranteedDrop, List<Loot> extraDrops, Integer quantity) {
         super(strategy);
         this.bossName = bossName;
         this.uber = uber;
-        this.pinnacle = pinnacle;
         this.witnessed = witnessed;
         this.guaranteedDrop = guaranteedDrop;
         this.extraDrops = extraDrops;

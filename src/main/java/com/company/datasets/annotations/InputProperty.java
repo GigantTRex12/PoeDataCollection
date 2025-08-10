@@ -42,7 +42,6 @@ public @interface InputProperty {
 
     /**
      * set to true to take input longer than one line
-     * ignored if message is empty
      */
     boolean multiline() default false;
 
@@ -71,7 +70,7 @@ public @interface InputProperty {
     /**
      * skips parsingFunc and passes null to the Field if the input String has length 0
      * does not bypass regex, but adds empty string to options automatically
-     * also applies is parsingFunc is empty
+     * also applies if parsingFunc is empty
      */
     boolean emptyToNull() default false;
 

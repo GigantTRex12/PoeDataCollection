@@ -69,4 +69,5 @@ public class Counter<T> extends HashMap<T, Integer> {
         }
         return sum;
     }
+
 }

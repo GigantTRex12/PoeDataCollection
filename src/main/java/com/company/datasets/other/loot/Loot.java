@@ -203,8 +203,9 @@ public class Loot {
                 type = INSCRIBED_ULTIMATUM;
             } else if (lower.contains("scouting") || lower.contains("report")) {
                 type = SCOUTING_REPORT;
-            }
-            if (type == null) {
+            } else if (lower.contains("contract")) {
+                type = CONTRACT;
+            } if (type == null) {
                 throw new InvalidLootFormatException("Invalid Format to parse Loot: Cannot parse Loottype");
             }
         }

@@ -1,4 +1,4 @@
-package com.company.annotations;
+package com.company.dataset.annotations;
 
 import com.company.datasets.datasets.*;
 import org.junit.jupiter.api.Assertions;

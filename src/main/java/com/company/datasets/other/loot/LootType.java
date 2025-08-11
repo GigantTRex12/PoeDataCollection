@@ -1,5 +1,7 @@
 package com.company.datasets.other.loot;
 
+import com.company.datasets.annotations.Legacy;
+
 public enum LootType {
     RARE_JEWELLRY,
     MAP,
@@ -56,10 +58,11 @@ public enum LootType {
     FOSSILS,
     INSCRIBED_ULTIMATUM,
     INCUBATOR,
-    GUFF_CRAFTING_BENCH,
-    TORA_CRAFTING_BENCH,
-    VORICI_CRAFTING_BENCH,
-    IT_THAT_FLED_BREACHSTONE_CRAFT,
+    @Legacy(legacySince = "3.26") GUFF_CRAFTING_BENCH,
+    @Legacy(legacySince = "3.26") TORA_CRAFTING_BENCH,
+    @Legacy(legacySince = "3.26") VORICI_CRAFTING_BENCH,
+    @Legacy(legacySince = "3.26") IT_THAT_FLED_BREACHSTONE_CRAFT,
+    SYNDICATE_CRAFTING_BENCH,
     SCOUTING_REPORT,
     BOSS_INVITATION,
     FORBIDDEN_TOME,

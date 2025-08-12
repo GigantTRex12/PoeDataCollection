@@ -117,7 +117,7 @@ public class ParseUtils {
         if (string.isEmpty()) {
             return null;
         }
-        return MapDropDataSet.getLootTypesMap().get(string.charAt(string.length() - 1));
+        return MapDropDataSet.getLootTypeFromMap(String.valueOf(string.charAt(string.length() - 1)));
     }
 
     public static int toConversionChance(String string) {
@@ -127,19 +127,24 @@ public class ParseUtils {
         return Integer.parseInt(string.substring(0, string.length() - 1));
     }
 
-    public static List<LootType> toMapDropList(String string, char split) {
+    public static List<LootType> toMapDropList(String string, char split) throws InvalidInputFormatException {
+        if (string.isEmpty()) return List.of();
         List<LootType> list = new ArrayList<>();
-        for (char c : splitToChars(string, split)) {
-            list.add(MapDropDataSet.getLootTypesMap().get(c));
+        for (String c : string.split(String.valueOf(split))) {
+            LootType nextType = MapDropDataSet.getLootTypeFromMap(c);
+            if (nextType == null) {
+                throw new InvalidInputFormatException(c + "is not a valid combination");
+            }
+            list.add(nextType);
         }
         return list;
     }
 
-    public static List<LootType> toMapDropList(String string) {
+    public static List<LootType> toMapDropList(String string) throws InvalidInputFormatException {
         return toMapDropList(string, '-');
     }
 
-    public static List<LootType> toBossMapDropList(String string) {
+    public static List<LootType> toBossMapDropList(String string) throws InvalidInputFormatException {
         if (string.isEmpty()) {
             return null;
         }

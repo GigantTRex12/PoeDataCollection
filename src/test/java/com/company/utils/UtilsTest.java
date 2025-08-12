@@ -7,8 +7,6 @@ import com.company.datasets.other.loot.LootType;
 import com.company.datasets.other.loot.StackableLoot;
 import com.company.datasets.other.metadata.Strategy;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -17,8 +15,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static com.company.datasets.other.loot.LootType.*;

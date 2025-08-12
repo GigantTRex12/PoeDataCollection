@@ -13,7 +13,7 @@ public abstract class DataSet {
     private final Strategy strategy;
 
     public DataSet() {
-        strategy = new Strategy(null, null, null, null, null, null, null);
+        strategy = new Strategy(null, null, null, null, null, null, null, null);
     }
 
     public DataSet(Strategy strategy) {

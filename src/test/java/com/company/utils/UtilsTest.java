@@ -211,7 +211,7 @@ public class UtilsTest {
     // ----------------------------------------------------------------------------------------------------------------
 
     private static Stream<Arguments> toJsonProvider() {
-        Strategy exampleStrat = new Strategy(null, "3.27", null, List.of("S1", "S2").toArray(new String[0]), "Mesa", "Alch&Go", "");
+        Strategy exampleStrat = new Strategy(null, "3.27", null, null, List.of("S1", "S2").toArray(new String[0]), "Mesa", "Alch&Go", "");
         String stratJson = "{\"league\":\"3.27\",\"scarabs\":[\"S1\",\"S2\"],\"map\":\"Mesa\",\"mapRolling\":\"Alch&Go\",\"mapCraft\":\"\"}";
         return Stream.of(
                 Arguments.of(exampleStrat, stratJson),

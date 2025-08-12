@@ -19,7 +19,7 @@ public class DataCollectorTest extends TestWithOutputs {
     @Deprecated(forRemoval = true)
     protected static final String LINEBREAK = System.lineSeparator();
 
-    protected static final Strategy nullStrat = new Strategy(null, null, null, null, null, null, null);
+    protected static final Strategy nullStrat = new Strategy(null, null, null, null, null, null, null, null);
 
     protected static final String INVALID = "Invalid input, try again";
 

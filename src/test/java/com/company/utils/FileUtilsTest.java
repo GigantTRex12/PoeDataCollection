@@ -22,7 +22,7 @@ public class FileUtilsTest {
 
         List<KalandraMistDataSet> list = List.of(
                 new KalandraMistDataSet(
-                        new Strategy(null, "3.25", null, null, null, null, null),
+                        new Strategy(null, "3.25", null, null, null, null, null, null),
                         KalandraMistDataSet.MistType.IN_MAP, null,
                         2, 3, 0,
                         "This is a dummy text.\nThis is only for tests.",
@@ -30,7 +30,7 @@ public class FileUtilsTest {
                         "1.9"
                 ),
                 new KalandraMistDataSet(
-                        new Strategy(null, "3.25", null, null, null, null, null),
+                        new Strategy(null, "3.25", null, null, null, null, null, null),
                         KalandraMistDataSet.MistType.ITEMIZED, null,
                         2, 1, 1,
                         "This is another dummy text.\nThis is only for tests.",

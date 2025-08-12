@@ -25,7 +25,6 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Getter
-@ToString
 public class Strategy {
     private static final String filename = "Data/strategies.txt";
 
@@ -40,6 +39,10 @@ public class Strategy {
     @JsonProperty("tree")
     @JsonInclude(NON_NULL)
     private final String tree;
+
+    @JsonProperty("treeUrl")
+    @JsonInclude(NON_NULL)
+    private final String treeUrl;
 
     @JsonProperty("scarabs")
     @JsonInclude(NON_NULL)
@@ -56,6 +59,11 @@ public class Strategy {
     @JsonProperty("mapCraft")
     @JsonInclude(NON_NULL)
     private final String mapCraft;
+
+    @Override
+    public String toString() {
+        return "Strategy: " + toJson(this);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -91,13 +99,13 @@ public class Strategy {
     }
 
     public Strategy copyWithoutId() {
-        return new Strategy(null, this.league, this.tree, this.scarabs, this.mapLayout, this.mapRolling, this.mapCraft);
+        return new Strategy(null, this.league, this.tree, this.treeUrl, this.scarabs, this.mapLayout, this.mapRolling, this.mapCraft);
     }
 
     private void addToFile() {
         try {
             if (this.id == null) {
-                create(this.league, this.tree, this.scarabs, this.mapLayout, this.mapRolling, this.mapCraft);
+                create(this.league, this.tree, this.treeUrl, this.scarabs, this.mapLayout, this.mapRolling, this.mapCraft);
             }
             else {
                 append(Strategy.filename, toJson(this));
@@ -137,25 +145,25 @@ public class Strategy {
     public static Strategy getById(int id) {
         Strategy strat = getAll().get(id);
         if (strat == null) {
-            strat = new Strategy(id, null, null, null, null, null, null);
+            strat = new Strategy(id, null, null, null, null, null, null, null);
             strat.addToFile();
         }
         return strat;
     }
 
-    public static Strategy create(int id, String league, String tree, String[] scarabs, String map, String mapRolling, String mapCraft) {
+    public static Strategy create(int id, String league, String tree, String treeUrl, String[] scarabs, String map, String mapRolling, String mapCraft) {
         Strategy strat = getAll().get(id);
         if (strat == null) {
-            strat = new Strategy(id, league, tree, scarabs, map, mapRolling, mapCraft);
+            strat = new Strategy(id, league, tree, treeUrl, scarabs, map, mapRolling, mapCraft);
             strat.addToFile();
         }
-        else if (!strat.equals(new Strategy(id, league, tree, scarabs, map, mapRolling, mapCraft))) {
+        else if (!strat.equals(new Strategy(id, league, tree, treeUrl, scarabs, map, mapRolling, mapCraft))) {
             print("Id conflicts with different existing Strategy");
         }
         return strat;
     }
 
-    public static Strategy create(String league, String tree, String[] scarabs, String map, String mapRolling, String mapCraft) {
+    public static Strategy create(String league, String tree, String treeUrl, String[] scarabs, String map, String mapRolling, String mapCraft) {
         Map<Integer, Strategy> strats = getAll();
         int id = 0;
         while (true) {
@@ -163,7 +171,7 @@ public class Strategy {
                 id++;
             }
             else {
-                Strategy strat = new Strategy(id, league, tree, scarabs, map, mapRolling, mapCraft);
+                Strategy strat = new Strategy(id, league, tree, treeUrl, scarabs, map, mapRolling, mapCraft);
                 strat.addToFile();
                 return strat;
             }
@@ -193,6 +201,8 @@ public class Strategy {
         String mapRolling = input("Enter a description of how the maps are rolled");
         String mapCraft = input("Enter which map craft is used");
         if (tree.isEmpty()) {tree = null;}
+        String treeUrl = input("Paste a Url for the tree");
+        if (treeUrl.isEmpty()) {treeUrl = null;}
         String[] scarabArray;
         if (scarabString.equals("_")) {scarabArray = null;}
         else if (scarabString.isEmpty()) {scarabArray = new String[0];}
@@ -201,7 +211,7 @@ public class Strategy {
         if (mapRolling.isEmpty()) {mapRolling = null;}
         if (mapCraft.isEmpty()) {mapCraft = null;}
 
-        Strategy newStrat = new Strategy(id, league, tree, scarabArray, map, mapRolling, mapCraft);
+        Strategy newStrat = new Strategy(id, league, tree, treeUrl, scarabArray, map, mapRolling, mapCraft);
         print(newStrat);
         String[] options = {"y", "yes", "n", "no"};
         String validation = input("Is this correct?", options).toLowerCase();

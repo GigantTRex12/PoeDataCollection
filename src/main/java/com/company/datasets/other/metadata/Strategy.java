@@ -182,9 +182,10 @@ public class Strategy {
         int id = getLowestFreeId();
         String league = input("Enter the league this strategy is run in");
         String tree = input("Enter a description of the tree");
+        String treeUrl = input("Paste a Url for the tree");
         String scarabString = input("Enter which scarabs are used in the format scarab1;2*scarab2" +
                         "\nEnter _ to not specify and leave empty for no scarabs",
-                "^((\\d+\\*)?\\w+)(;(\\d+\\*)?\\w+)$|^$|^_$");
+                "^((\\d+\\*)?[\\w\\s]+)(;(\\d+\\*)?[\\w\\s]+)*$|^$|^_$");
         List<String> scarabs = new ArrayList<String>();
         for (String scarab : scarabString.split(";")) {
             String[] rep = scarab.split("\\*");
@@ -200,8 +201,8 @@ public class Strategy {
         String map = input("Enter the name of the map");
         String mapRolling = input("Enter a description of how the maps are rolled");
         String mapCraft = input("Enter which map craft is used");
+
         if (tree.isEmpty()) {tree = null;}
-        String treeUrl = input("Paste a Url for the tree");
         if (treeUrl.isEmpty()) {treeUrl = null;}
         String[] scarabArray;
         if (scarabString.equals("_")) {scarabArray = null;}

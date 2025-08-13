@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class InputPropertyTest extends AnnotationTest {
 
-    protected Map<Field, InputProperty> getAnnotations(Class<?> clazz) {
+    private Map<Field, InputProperty> getAnnotations(Class<?> clazz) {
         return getAnnotatedFields(clazz, InputProperty.class);
     }
 

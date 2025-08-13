@@ -2,6 +2,7 @@ package com.company.datacollector;
 
 import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.other.loot.LootType;
+import com.company.testutils.InputBuilder;
 import com.company.utils.IOUtils;
 import com.company.utils.Utils;
 import org.junit.jupiter.api.Assertions;
@@ -54,7 +55,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
         int pos = output.indexOf("What would you like to do?");
         Assertions.assertTrue(pos > 2);
         Assertions.assertEquals("What type of mist does this item come from?", output.get(pos + 2));
-        Assertions.assertEquals("Format: ^in map$|^itemized$|^lake \\d+$", output.get(pos + 3));
+        Assertions.assertEquals("Format: ^in map$|^itemized( guff)?$|^lake \\d+$", output.get(pos + 3));
         Assertions.assertEquals("Enter how many mods are positive, negative or neutral", output.get(pos + 4));
         Assertions.assertEquals("Format: ^\\d+\\/\\d+(\\/\\d+)?$", output.get(pos + 5));
         Assertions.assertEquals("Enter the multiplier. Leave Empty to skip", output.get(pos + 6));
@@ -68,27 +69,34 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
     @Test
     void add_multipleDataSets() throws IOException {
         // given
-        String inputs ="0" + LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
-                "in map" + LINEBREAK +
-                "2/3" + LINEBREAK +
-                LINEBREAK +
-                "r" + LINEBREAK +
-                "This is a dummy text." + LINEBREAK + "This is only for tests." + LINEBREAK + LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
-                "itemized" + LINEBREAK +
-                "2/1/1" + LINEBREAK +
-                "2.1" + LINEBREAK +
-                "a" + LINEBREAK +
-                LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
-                "lake 5" + LINEBREAK +
-                "3/2" + LINEBREAK +
-                "2.05" + LINEBREAK +
-                "r" + LINEBREAK +
-                "Dummy text nr3" + LINEBREAK + LINEBREAK +
-                actions.get("Exit");
-        IOUtils.setInputStream(inputs);
+        InputBuilder.start()
+                .line(0)
+                .line(actions.get("AddData"))
+                .line("in map")
+                .line("2/3")
+                .emptyLine()
+                .line("r")
+                .multiLine(new String[]{"This is a dummy text.", "This is only for tests."})
+                .line(actions.get("AddData"))
+                .line("itemized")
+                .line("2/1/1")
+                .line("2.1")
+                .line("a")
+                .multiLine()
+                .line(actions.get("AddData"))
+                .line("lake 5")
+                .line("3/2")
+                .line("2.05")
+                .line("r")
+                .multiLine(new String[]{"Dummy text nr3"})
+                .line(actions.get("AddData"))
+                .line("itemized guff")
+                .line("3/3")
+                .emptyLine()
+                .emptyLine()
+                .multiLine()
+                .line(actions.get("Exit"))
+                .set();
 
         KalandraMistDataSet dataSet1 = new KalandraMistDataSet(
                 nullStrat,
@@ -114,49 +122,69 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
                 LootType.RARE_JEWELLRY_RING,
                 "2.05"
         );
+        KalandraMistDataSet dataSet4 = new KalandraMistDataSet(
+                nullStrat,
+                KalandraMistDataSet.MistType.ITEMIZED_GUFF, null,
+                3, 3, 0,
+                "", null, null
+        );
 
         // when
         collector.collectData(tempfile.toString());
 
         // then
         List<String> content = getContent();
-        Assertions.assertEquals(3, content.size());
+        Assertions.assertEquals(4, content.size());
         Assertions.assertEquals(Utils.toJson(dataSet1), content.get(0).trim());
         Assertions.assertEquals(Utils.toJson(dataSet2), content.get(1).trim());
         Assertions.assertEquals(Utils.toJson(dataSet3), content.get(2).trim());
+        Assertions.assertEquals(Utils.toJson(dataSet4), content.get(3).trim());
 
-        // validate console outputs
-        List<String> output = getOutputs();
-        int pos = output.indexOf("What would you like to do?");
-        Assertions.assertTrue(pos > 2);
-        Assertions.assertEquals("What type of mist does this item come from?", output.get(pos + 2));
-        Assertions.assertEquals("Format: ^in map$|^itemized$|^lake \\d+$", output.get(pos + 3));
-        Assertions.assertEquals("Enter how many mods are positive, negative or neutral", output.get(pos + 4));
-        Assertions.assertEquals("Format: ^\\d+\\/\\d+(\\/\\d+)?$", output.get(pos + 5));
-        Assertions.assertEquals("Enter the multiplier. Leave Empty to skip", output.get(pos + 6));
-        Assertions.assertEquals("Format: ^$|^\\d+\\.?\\d*$", output.get(pos + 7));
-        Assertions.assertEquals("What type is the item?", output.get(pos + 8));
-        Assertions.assertEquals("Paste the item text", output.get(pos + 10));
-        Assertions.assertEquals("What would you like to do?", output.get(pos + 11));
-        Assertions.assertEquals("What type of mist does this item come from?", output.get(pos + 13));
-        Assertions.assertEquals("Format: ^in map$|^itemized$|^lake \\d+$", output.get(pos + 14));
-        Assertions.assertEquals("Enter how many mods are positive, negative or neutral", output.get(pos + 15));
-        Assertions.assertEquals("Format: ^\\d+\\/\\d+(\\/\\d+)?$", output.get(pos + 16));
-        Assertions.assertEquals("Enter the multiplier. Leave Empty to skip", output.get(pos + 17));
-        Assertions.assertEquals("Format: ^$|^\\d+\\.?\\d*$", output.get(pos + 18));
-        Assertions.assertEquals("What type is the item?", output.get(pos + 19));
-        Assertions.assertEquals("Paste the item text", output.get(pos + 21));
-        Assertions.assertEquals("What would you like to do?", output.get(pos + 22));
-        Assertions.assertEquals("What type of mist does this item come from?", output.get(pos + 24));
-        Assertions.assertEquals("Format: ^in map$|^itemized$|^lake \\d+$", output.get(pos + 25));
-        Assertions.assertEquals("Enter how many mods are positive, negative or neutral", output.get(pos + 26));
-        Assertions.assertEquals("Format: ^\\d+\\/\\d+(\\/\\d+)?$", output.get(pos + 27));
-        Assertions.assertEquals("Enter the multiplier. Leave Empty to skip", output.get(pos + 28));
-        Assertions.assertEquals("Format: ^$|^\\d+\\.?\\d*$", output.get(pos + 29));
-        Assertions.assertEquals("What type is the item?", output.get(pos + 30));
-        Assertions.assertEquals("Paste the item text", output.get(pos + 32));
-        Assertions.assertEquals("What would you like to do?", output.get(pos + 33));
-        Assertions.assertEquals(pos + 35, output.size());
+        validateOutputs(new String[]{
+                "What type of mist does this item come from?",
+                "Format: ^in map$|^itemized( guff)?$|^lake \\d+$",
+                "Enter how many mods are positive, negative or neutral",
+                "Format: ^\\d+\\/\\d+(\\/\\d+)?$",
+                "Enter the multiplier. Leave Empty to skip",
+                "Format: ^$|^\\d+\\.?\\d*$",
+                "What type is the item?",
+                null,
+                "Paste the item text",
+                "What would you like to do?",
+                null,
+                "What type of mist does this item come from?",
+                "Format: ^in map$|^itemized( guff)?$|^lake \\d+$",
+                "Enter how many mods are positive, negative or neutral",
+                "Format: ^\\d+\\/\\d+(\\/\\d+)?$",
+                "Enter the multiplier. Leave Empty to skip",
+                "Format: ^$|^\\d+\\.?\\d*$",
+                "What type is the item?",
+                null,
+                "Paste the item text",
+                "What would you like to do?",
+                null,
+                "What type of mist does this item come from?",
+                "Format: ^in map$|^itemized( guff)?$|^lake \\d+$",
+                "Enter how many mods are positive, negative or neutral",
+                "Format: ^\\d+\\/\\d+(\\/\\d+)?$",
+                "Enter the multiplier. Leave Empty to skip",
+                "Format: ^$|^\\d+\\.?\\d*$",
+                "What type is the item?",
+                null,
+                "Paste the item text",
+                "What would you like to do?",
+                null,
+                "What type of mist does this item come from?",
+                "Format: ^in map$|^itemized( guff)?$|^lake \\d+$",
+                "Enter how many mods are positive, negative or neutral",
+                "Format: ^\\d+\\/\\d+(\\/\\d+)?$",
+                "Enter the multiplier. Leave Empty to skip",
+                "Format: ^$|^\\d+\\.?\\d*$",
+                "What type is the item?",
+                null,
+                "Paste the item text",
+                "What would you like to do?",
+        });
     }
 
     @Test
@@ -194,10 +222,10 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
         Assertions.assertTrue(pos > 2);
         String invalid = "Invalid input, try again";
         Assertions.assertEquals("What type of mist does this item come from?", output.get(pos + 2));
-        Assertions.assertEquals("Format: ^in map$|^itemized$|^lake \\d+$", output.get(pos + 3));
+        Assertions.assertEquals("Format: ^in map$|^itemized( guff)?$|^lake \\d+$", output.get(pos + 3));
         Assertions.assertEquals(invalid, output.get(pos + 4));
         Assertions.assertEquals("What type of mist does this item come from?", output.get(pos + 5));
-        Assertions.assertEquals("Format: ^in map$|^itemized$|^lake \\d+$", output.get(pos + 6));
+        Assertions.assertEquals("Format: ^in map$|^itemized( guff)?$|^lake \\d+$", output.get(pos + 6));
         Assertions.assertEquals("Enter how many mods are positive, negative or neutral", output.get(pos + 7));
         Assertions.assertEquals("Format: ^\\d+\\/\\d+(\\/\\d+)?$", output.get(pos + 8));
         Assertions.assertEquals(invalid, output.get(pos + 9));

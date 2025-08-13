@@ -73,6 +73,9 @@ public class ParseUtils {
         if ("in map".equalsIgnoreCase(string)) {
             return KalandraMistDataSet.MistType.IN_MAP;
         }
+        if ("itemized guff".equalsIgnoreCase(string)) {
+            return KalandraMistDataSet.MistType.ITEMIZED_GUFF;
+        }
         if ("itemized".equalsIgnoreCase(string)) {
             return KalandraMistDataSet.MistType.ITEMIZED;
         }

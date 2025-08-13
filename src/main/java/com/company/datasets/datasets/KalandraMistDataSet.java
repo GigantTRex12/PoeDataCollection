@@ -19,7 +19,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 @ToString(callSuper = true)
 public class KalandraMistDataSet extends DataSet {
     @JsonProperty("type")
-    @InputProperty(message = "What type of mist does this item come from?", regex = "^in map$|^itemized$|^lake \\d+$",
+    @InputProperty(message = "What type of mist does this item come from?", regex = "^in map$|^itemized( guff)?$|^lake \\d+$",
             order = 0, parsingFunc = "parseMistType")
     private final MistType type;
 
@@ -75,7 +75,7 @@ public class KalandraMistDataSet extends DataSet {
     }
 
     public enum MistType {
-        IN_MAP, ITEMIZED, LAKE
+        IN_MAP, ITEMIZED, LAKE, ITEMIZED_GUFF
     }
 
     @Deprecated

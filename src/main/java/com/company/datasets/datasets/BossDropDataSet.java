@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.List;
-import java.util.Locale;
 
 import static com.company.datasets.annotations.Evaluate.EvaluationMode.COUNTER_BASED;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -32,7 +31,7 @@ public class BossDropDataSet extends DataSet {
 
     @JsonProperty("witnessed")
     @InputProperty(message = "Was the boss witnessed by the Maven?", options = {"y", "n"}, order = 3, parsingFunc = "toBool")
-    @Groupable(order = 2, filterable = true)
+    @Groupable(order = 2, filterByValue = true)
     private final boolean witnessed;
 
     @JsonProperty("guaranteedDrop")
@@ -61,13 +60,13 @@ public class BossDropDataSet extends DataSet {
         this.quantity = quantity;
     }
 
-    @Groupable(order = 1, force = true, filterable = true)
+    @Groupable(order = 1, force = true, filterByValue = true)
     public String lowerCaseBossname() {
         if (uber) return "UBER " + bossName.toLowerCase();
         return bossName.toLowerCase();
     }
 
-    @Groupable(order = 3, ignoreNulls = true, filterable = true)
+    @Groupable(order = 3, ignoreNulls = true, filterByValue = true)
     public Integer quantInStepsOfTen() {
         return quantity != null ? (quantity / 10) * 10 : null;
     }

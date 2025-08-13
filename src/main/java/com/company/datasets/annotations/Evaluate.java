@@ -32,6 +32,11 @@ public @interface Evaluate {
          * especially useful for List values
          */
         COUNTER_BASED,
+        /**
+         * statistic based on numbers in form of a grap
+         * only use on whole number types (byte, int, long) including the Wrapper classes
+         */
+        NUMBER_STATISTIC_GRAPH,
     }
 
 }

@@ -2,6 +2,7 @@ package com.company.datasets.other.metadata;
 
 import com.company.exceptions.StrategyCreationInterruptedException;
 import com.company.utils.Counter;
+import com.company.utils.Utils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -62,7 +63,25 @@ public class Strategy {
 
     @Override
     public String toString() {
-        return "Strategy: " + toJson(this);
+        String rep = "Strategy: {ID: " + this.id;
+        if (league != null) {rep += ", league: " + league;}
+        if (tree != null) {rep += ", tree: " + tree;}
+        if (scarabs != null) {
+            if (scarabs.length == 0) {rep += ", scarabs: none";}
+            else {
+                Counter<String> scarabsCounter = new Counter<>(this.scarabs);
+                List<String> scarabsRep = scarabsCounter.keySet().stream()
+                        .map(scarab -> scarabsCounter.get(scarab) + "*" + scarab)
+                        .collect(Collectors.toList());
+                rep += ", scarabs: " + Utils.join(scarabsRep, "; ");
+            }
+        }
+        if (mapLayout != null && mapRolling != null) {rep += ", map: " + mapRolling + " " + mapLayout;}
+        else if (mapLayout != null) {rep += ", map: " + mapLayout;}
+        else if (mapRolling != null) {rep += ", map: " + mapRolling;}
+        if (mapCraft != null) {rep += ", map craft: " + mapCraft;}
+        rep += "}";
+        return rep;
     }
 
     @Override

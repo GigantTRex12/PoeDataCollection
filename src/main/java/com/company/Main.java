@@ -70,3 +70,5 @@ public class Main {
         }
     }
 }
+
+// mvn clean compile exec:java

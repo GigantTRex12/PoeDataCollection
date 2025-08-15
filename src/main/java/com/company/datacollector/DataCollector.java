@@ -26,25 +26,25 @@ public abstract class DataCollector<T extends DataSet> {
     @Getter
     private static final Map<String, String> actions = Map.ofEntries(
             entry("AddData", "a"),
-            entry("AddFromSingleInput", "af"),
-            entry("AddMultipleFromSingleInput", "am"),
+            //entry("AddFromSingleInput", "af"),
+            //entry("AddMultipleFromSingleInput", "am"),
             entry("ClearData", "c"),
             entry("Save", "s"),
             entry("PrintData", "p"),
             entry("AddStrat", "as"),
             entry("ChangeStrat", "cs"),
+            entry("FixChoices", "fc"),
+            entry("ClearFixedChoices", "cc"),
             entry("Exit", "e")
     );
 
     protected List<T> data = new ArrayList<>();
     protected Strategy currStrat;
     private Map<Integer, Strategy> strategyIds;
+    private final Map<InputProperty, String> preSetChoices = new HashMap<>();
 
-    private Class<T> t;
-    private Supplier<DataSetBuilderInterface<T>> builderSupplier;
-
-    public DataCollector() {
-    }
+    private final Class<T> t;
+    private final Supplier<DataSetBuilderInterface<T>> builderSupplier;
 
     public DataCollector(Class<T> t, Supplier<DataSetBuilderInterface<T>> builderSupplier) {
         this.t = t;
@@ -90,6 +90,14 @@ public abstract class DataCollector<T extends DataSet> {
                 case ("changestrat"):
                 case ("cs"):
                     this.currStrat = pickStrat();
+                    break;
+                case ("fixchoices"):
+                case ("fc"):
+                    this.setPreSetChoices();
+                    break;
+                case ("clearfixedchoices"):
+                case ("cc"):
+                    this.preSetChoices.clear();
                     break;
                 case ("exit"):
                 case ("e"):
@@ -169,12 +177,14 @@ public abstract class DataCollector<T extends DataSet> {
                     parseInputAndCallBuilder(input, builder, field, ann);
                     inputNeeded = false;
                 } catch (InvalidInputFormatException e) {
-                    print("Invalid input, try again");
+                    if (preSetChoices.remove(ann) == null) {
+                        print("Invalid input, try again");
+                    }
                 }
             }
         }
         builder = finalizeData(builder);
-        T dataSet = (T) builder.build();
+        T dataSet = builder.build();
         if (validateDataSet(dataSet)) {
             this.data.add(dataSet);
         }
@@ -206,6 +216,10 @@ public abstract class DataCollector<T extends DataSet> {
     }
 
     private String getUserInput(InputProperty ann) {
+        if (preSetChoices.get(ann) != null) {
+            return preSetChoices.get(ann);
+        }
+
         if (ann.message().isEmpty()) {
             if (ann.multiline()) {
                 return multilineInput();
@@ -282,4 +296,27 @@ public abstract class DataCollector<T extends DataSet> {
     protected void addMultipleDataFull() {
         print("Not supported for this type of data yet");
     }
+
+    private void setPreSetChoices() {
+        preSetChoices.clear();
+        print("Pick responses to always set, empty to not set and \\ for empty response");
+        getAnnotatedFields().stream().map(f -> f.getAnnotation(InputProperty.class)).forEach(ann -> {
+            if (ann.groupOrder() == 0) {
+                String response;
+                if (ann.multiline()) {
+                    response = multilineInput(ann.message());
+                }
+                else {
+                    response = input(ann.message());
+                }
+                if (response.equals("\\")) {
+                    preSetChoices.put(ann, "");
+                }
+                else if (!response.isEmpty()) {
+                    preSetChoices.put(ann, response);
+                }
+            }
+        });
+    }
+
 }

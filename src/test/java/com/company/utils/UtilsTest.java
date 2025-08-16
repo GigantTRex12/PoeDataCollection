@@ -1,18 +1,21 @@
 package com.company.utils;
 
 import com.company.datasets.datasets.BossDropDataSet;
+import com.company.datasets.datasets.DataSet;
 import com.company.datasets.other.loot.GemLoot;
 import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.loot.LootType;
 import com.company.datasets.other.loot.StackableLoot;
 import com.company.datasets.other.metadata.Strategy;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -334,6 +337,15 @@ public class UtilsTest {
 
         // then
         assertFalse(actual);
+    }
+
+    @Test
+    void test_getGetter() throws NoSuchFieldException, NoSuchMethodException {
+        // when
+        Method actual = Utils.getGetter(DataSet.class.getDeclaredField("strategy"));
+
+        // then
+        assertEquals(DataSet.class.getMethod("getStrategy"), actual);
     }
 
 }

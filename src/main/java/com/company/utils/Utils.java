@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.company.datasets.other.loot.LootType;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -117,6 +119,27 @@ public class Utils {
     public static String cutOne(String string) {
         String trimmed = string.trim();
         return trimmed.substring(1, trimmed.length() - 1).trim();
+    }
+
+    // returns the getter method of a field, assuming it's name is getFieldName or isFieldName for primitive booleans
+    // returns null if no such getter exists
+    public static Method getGetter(Field field) {
+        String getterName = field.getName();
+        if (field.getType() == Boolean.TYPE) {
+            getterName = "is" + getterName.substring(0, 1).toUpperCase() + getterName.substring(1);
+        }
+        else {
+            getterName = "get" + getterName.substring(0, 1).toUpperCase() + getterName.substring(1);
+        }
+        try {
+            Method getter = field.getDeclaringClass().getMethod(getterName);
+            if (getter.getReturnType() != field.getType()) {
+                throw new NoSuchMethodException("Return type of getter doesn't match");
+            }
+            return getter;
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
     }
 
 }

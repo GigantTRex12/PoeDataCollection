@@ -2,6 +2,7 @@ package com.company.dataset.annotations;
 
 import com.company.datasets.annotations.Groupable;
 import com.company.testutils.TestUtils;
+import com.company.utils.Utils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -16,7 +17,7 @@ public class GroupableTest extends AnnotationTest {
     private Map<Method, Groupable> getAnnotations(Class<?> clazz) {
         Map<Method, Groupable> annotations = new HashMap<>(getAnnotatedMethods(clazz, Groupable.class));
         getAnnotatedFields(clazz, Groupable.class).forEach((f, a) -> {
-            annotations.put(TestUtils.getGetter(f), a);
+            annotations.put(Utils.getGetter(f), a);
         });
         return annotations;
     }

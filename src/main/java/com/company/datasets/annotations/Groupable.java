@@ -34,14 +34,14 @@ public @interface Groupable {
     boolean filterBool() default false;
 
     /**
-     * set to true to enable but not force this being filterable in addition to being groupable
-     * does not assume return type is a boolean, allows filtering by specific values for non boolean types
+     * set to true to enable but not force this being filterable by specific values in addition to being groupable
      */
     boolean filterByValue() default false;
 
     /**
      * order in which the groups are applied
      * recommended to put annotations with any extra flags first
+     * if annotation is present on superclasses as well the superclass is done first, the order can repeat between class and superclass
      */
     int order();
 

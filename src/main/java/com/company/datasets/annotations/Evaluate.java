@@ -28,8 +28,7 @@ public @interface Evaluate {
          */
         PERCENTAGE_BASED,
         /**
-         * puts all results in a Counter and displays the counter
-         * especially useful for List values
+         * used for Collections to count occurences with a Counter
          */
         COUNTER_BASED,
         /**

@@ -19,6 +19,8 @@ public class BossDropDataAnalyzerTest extends TestWithOutputs {
         analyzer = new BossDropDataAnalyzer("src/test/resources/bossdrop_examples_1.txt");
         InputBuilder.start()
                 .line("a")
+                .emptyLine() // don't group by strategy
+                .emptyLine() // don't group by league
                 .emptyLine() // no filter on boss name
                 .line("n") // don't group by witness
                 .line("n") // don't group by quant
@@ -31,6 +33,10 @@ public class BossDropDataAnalyzerTest extends TestWithOutputs {
 
         // then
         validateOutputs(new String[]{
+                "Do you want to group by strategy?",
+                null,
+                "Do you want to group by league?",
+                null,
                 "Pick a lowerCaseBossname to filter by (leave empty to evaluate all)",
                 null,
                 "Do you want to group by witnessed?",
@@ -42,7 +48,7 @@ public class BossDropDataAnalyzerTest extends TestWithOutputs {
                 // TODO: figure out order
                 "lowerCaseBossname: the elder",
                 "Cyclopean Coil: 33.3%",
-                "Blasphemer's Grasp: 66.6%",
+                "Blasphemer's Grasp: 66.7%",
                 "lowerCaseBossname: the maven",
                 "Arn's Anguish: 20%",
                 "Graven's Secret: 40%",

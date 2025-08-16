@@ -2,7 +2,6 @@ package com.company.datasets.datasets;
 
 import com.company.datasets.annotations.InputProperty;
 import com.company.datasets.builder.DataSetBuilderInterface;
-import com.company.datasets.datasets.DataSet;
 import com.company.datasets.other.loot.LootType;
 import com.company.datasets.other.metadata.Strategy;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -19,13 +18,13 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 @ToString(callSuper = true)
 public class KalandraMistDataSet extends DataSet {
     @JsonProperty("type")
-    @InputProperty(message = "What type of mist does this item come from?", regex = "^in map$|^itemized( guff)?$|^lake \\d+$",
+    @InputProperty(message = "What type of mist does this item come from?", regex = "^in map$|^itemized( guff [1-3])?$|^lake \\d+$",
             order = 0, parsingFunc = "parseMistType")
     private final MistType type;
 
-    @JsonProperty("lakeTier")
-    @InputProperty(order = 0, groupOrder = 1, parsingFunc = "parseLakeTier")
-    private final Integer lakeTier;
+    @JsonProperty("tier")
+    @InputProperty(order = 0, groupOrder = 1, parsingFunc = "parseTier")
+    private final Integer tier;
 
     @JsonProperty("amountPositive")
     @InputProperty(message = "Enter how many mods are positive, negative or neutral", regex = "^\\d+\\/\\d+(\\/\\d+)?$",
@@ -61,11 +60,11 @@ public class KalandraMistDataSet extends DataSet {
     private final Boolean inMap;
 
     @Builder
-    public KalandraMistDataSet(Strategy strategy, MistType type, Integer lakeTier, int amountPositive, int amountNegative, int amountNeutral, String itemText, LootType itemType, String multiplier) {
+    public KalandraMistDataSet(Strategy strategy, MistType type, Integer tier, int amountPositive, int amountNegative, int amountNeutral, String itemText, LootType itemType, String multiplier) {
         super(strategy);
         this.inMap = null;
         this.type = type;
-        this.lakeTier = lakeTier;
+        this.tier = tier;
         this.amountPositive = amountPositive;
         this.amountNegative = amountNegative;
         this.amountNeutral = amountNeutral;
@@ -87,7 +86,7 @@ public class KalandraMistDataSet extends DataSet {
         else {
             this.type = MistType.ITEMIZED;
         }
-        this.lakeTier = null;
+        this.tier = null;
         this.amountPositive = amountPositive;
         this.amountNegative = amountNegative;
         this.amountNeutral = amountNeutral;

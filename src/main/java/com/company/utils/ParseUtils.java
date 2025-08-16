@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.company.utils.IOUtils.print;
-import static com.company.utils.Utils.splitToChars;
 
 public class ParseUtils {
 
@@ -73,7 +72,7 @@ public class ParseUtils {
         if ("in map".equalsIgnoreCase(string)) {
             return KalandraMistDataSet.MistType.IN_MAP;
         }
-        if ("itemized guff".equalsIgnoreCase(string)) {
+        if (string.toLowerCase().startsWith("itemized guff")) {
             return KalandraMistDataSet.MistType.ITEMIZED_GUFF;
         }
         if ("itemized".equalsIgnoreCase(string)) {
@@ -85,9 +84,12 @@ public class ParseUtils {
         return null;
     }
 
-    public static Integer parseLakeTier(String string) {
+    public static Integer parseTier(String string) {
         if (string.toLowerCase().startsWith("lake ")) {
             return Integer.parseInt(string.substring(5));
+        }
+        if (string.toLowerCase().startsWith("itemized guff ")) {
+            return Integer.parseInt(string.substring(14));
         }
         return null;
     }

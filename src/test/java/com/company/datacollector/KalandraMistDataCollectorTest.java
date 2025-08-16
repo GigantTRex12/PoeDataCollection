@@ -55,7 +55,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
         int pos = output.indexOf("What would you like to do?");
         Assertions.assertTrue(pos > 2);
         Assertions.assertEquals("What type of mist does this item come from?", output.get(pos + 2));
-        Assertions.assertEquals("Format: ^in map$|^itemized( guff)?$|^lake \\d+$", output.get(pos + 3));
+        Assertions.assertEquals("Format: ^in map$|^itemized( guff [1-3])?$|^lake \\d+$", output.get(pos + 3));
         Assertions.assertEquals("Enter how many mods are positive, negative or neutral", output.get(pos + 4));
         Assertions.assertEquals("Format: ^\\d+\\/\\d+(\\/\\d+)?$", output.get(pos + 5));
         Assertions.assertEquals("Enter the multiplier. Leave Empty to skip", output.get(pos + 6));
@@ -90,9 +90,9 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
                 .line("r")
                 .multiLine(new String[]{"Dummy text nr3"})
                 .line(actions.get("AddData"))
-                .line("itemized guff")
+                .line("itemized guff 3")
                 .line("3/3")
-                .emptyLine()
+                .line("1.4")
                 .emptyLine()
                 .multiLine()
                 .line(actions.get("Exit"))
@@ -124,9 +124,9 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
         );
         KalandraMistDataSet dataSet4 = new KalandraMistDataSet(
                 nullStrat,
-                KalandraMistDataSet.MistType.ITEMIZED_GUFF, null,
+                KalandraMistDataSet.MistType.ITEMIZED_GUFF, 3,
                 3, 3, 0,
-                "", null, null
+                "", null, "1.4"
         );
 
         // when
@@ -142,7 +142,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
 
         validateOutputs(new String[]{
                 "What type of mist does this item come from?",
-                "Format: ^in map$|^itemized( guff)?$|^lake \\d+$",
+                "Format: ^in map$|^itemized( guff [1-3])?$|^lake \\d+$",
                 "Enter how many mods are positive, negative or neutral",
                 "Format: ^\\d+\\/\\d+(\\/\\d+)?$",
                 "Enter the multiplier. Leave Empty to skip",
@@ -153,7 +153,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
                 "What would you like to do?",
                 null,
                 "What type of mist does this item come from?",
-                "Format: ^in map$|^itemized( guff)?$|^lake \\d+$",
+                "Format: ^in map$|^itemized( guff [1-3])?$|^lake \\d+$",
                 "Enter how many mods are positive, negative or neutral",
                 "Format: ^\\d+\\/\\d+(\\/\\d+)?$",
                 "Enter the multiplier. Leave Empty to skip",
@@ -164,7 +164,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
                 "What would you like to do?",
                 null,
                 "What type of mist does this item come from?",
-                "Format: ^in map$|^itemized( guff)?$|^lake \\d+$",
+                "Format: ^in map$|^itemized( guff [1-3])?$|^lake \\d+$",
                 "Enter how many mods are positive, negative or neutral",
                 "Format: ^\\d+\\/\\d+(\\/\\d+)?$",
                 "Enter the multiplier. Leave Empty to skip",
@@ -175,7 +175,7 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
                 "What would you like to do?",
                 null,
                 "What type of mist does this item come from?",
-                "Format: ^in map$|^itemized( guff)?$|^lake \\d+$",
+                "Format: ^in map$|^itemized( guff [1-3])?$|^lake \\d+$",
                 "Enter how many mods are positive, negative or neutral",
                 "Format: ^\\d+\\/\\d+(\\/\\d+)?$",
                 "Enter the multiplier. Leave Empty to skip",
@@ -222,10 +222,10 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
         Assertions.assertTrue(pos > 2);
         String invalid = "Invalid input, try again";
         Assertions.assertEquals("What type of mist does this item come from?", output.get(pos + 2));
-        Assertions.assertEquals("Format: ^in map$|^itemized( guff)?$|^lake \\d+$", output.get(pos + 3));
+        Assertions.assertEquals("Format: ^in map$|^itemized( guff [1-3])?$|^lake \\d+$", output.get(pos + 3));
         Assertions.assertEquals(invalid, output.get(pos + 4));
         Assertions.assertEquals("What type of mist does this item come from?", output.get(pos + 5));
-        Assertions.assertEquals("Format: ^in map$|^itemized( guff)?$|^lake \\d+$", output.get(pos + 6));
+        Assertions.assertEquals("Format: ^in map$|^itemized( guff [1-3])?$|^lake \\d+$", output.get(pos + 6));
         Assertions.assertEquals("Enter how many mods are positive, negative or neutral", output.get(pos + 7));
         Assertions.assertEquals("Format: ^\\d+\\/\\d+(\\/\\d+)?$", output.get(pos + 8));
         Assertions.assertEquals(invalid, output.get(pos + 9));

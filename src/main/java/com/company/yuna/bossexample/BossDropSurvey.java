@@ -33,10 +33,9 @@ import static com.company.yuna.bossexample.Validators.isNotEmpty;
  *       predictable.</li>
  *   <li><b>Type-safety at boundaries:</b> Validation/normalization are plain functions; conversions
  *       are explicit and testable.</li>
- *   <li><b>Testability:</b> Pure functions and simple wiring; no annotation processors or runtime
- *       scanners to mock.</li>
+ *   <li><b>Code:</b> Fewer complexity when handling Annotations.</li>
  *   <li><b>Security & portability:</b> No deep reflective access, fewer permissions, works in
- *       restricted/serverless runtimes.</li>
+ *       restricted/serverless runtimes. No ObjectMapper or JSON handler needed which comes with a couple of CVE's</li>
  *   <li><b>Maintainability:</b> Behavior lives in code, making refactors obvious and reviewable.</li>
  * </ul>
  *

@@ -28,6 +28,8 @@ public class Normalizers {
         try {
             //FIXME: complex object in simple may cause issues when using "toJson"
             //FIXME: Validation mixed with normalization is not ideal here, maybe a Question.parse() method could handle this
+            // Can't catch the exception here. If this exception is thrown the loop is supposed to restart for a new user input
+            // The logic might be too complex for a validator to handle without literally duplicating the logic of the normalizer
             return s.isEmpty() ? null : parseToLoot(s);
         } catch (InvalidLootFormatException e) {
             System.err.println(e.getMessage());

@@ -62,6 +62,7 @@ public class BossDropSurvey {
                         .build(),
 
                 // order = 3, grouped, but grouping is dataset-level concern; we just collect the value
+                // this isn't grouped, it's just that order = 2 doesn't exist (probably I removed something or whatever, it doesn't really matter)
                 Question.ask("witnessed", "Was the boss witnessed by the Maven? (y/n)")
                         .validate(VALIDATE_YES_NO)
                         .normalize(TO_BOOLEAN)
@@ -85,6 +86,9 @@ public class BossDropSurvey {
         );
 
         // No idea what this is :D
+        // this basically contains some metadata that might be relevant like for example the current patch
+        // the DataCollector has a field for this and the moment the survey starts the DataCollector would already have a value here
+        // Might want to add it to the answers map since it could be used in a Validator
         final Strategy strategy = new Strategy(null, null, null, null, null, null, null, null);
 
         final BossDropDataSet dataSet = toDataSet(answers, strategy);
@@ -94,6 +98,8 @@ public class BossDropSurvey {
 
     // FIXME: Could be moved to the Constructor of BossDropDataSet
     // FIXME: DataSet objects aren't needed at all if the further processing is done on the simple TypeMap - no objectmapper or other heavy libs needed
+    // I would prefer keeping the actual class, makes it easier to test and actually keep track of what the objects look like
+    // Also I'll need the classes for the DataAnalyzer aswell :)
     public static BossDropDataSet toDataSet(final LinkedTypeMap answers, final Strategy strategy) {
         return BossDropDataSet.builder()
                 .strategy(strategy)

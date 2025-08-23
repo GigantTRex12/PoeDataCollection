@@ -41,7 +41,6 @@ public class InputPropertyTest extends AnnotationTest {
     private void checkRegex(InputProperty annotation) {
         if (!annotation.regex().isEmpty()) {
             assertFalse(annotation.message().isEmpty(), "regex is ignored if message is empty");
-            assertFalse(annotation.multiline(), "regex is ignored if multiline is true");
             assertEquals(0, annotation.options().length, "regex is ignored if options is not empty");
         }
     }

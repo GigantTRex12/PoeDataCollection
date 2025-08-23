@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import static com.company.utils.Utils.*;
+import static java.lang.System.lineSeparator;
 
 public class IOUtils {
     private static Scanner scanner = new Scanner(System.in);
@@ -177,6 +178,19 @@ public class IOUtils {
     public static String multilineInput(String message) {
         print(message);
         return multilineInput();
+    }
+
+    public static String multilineInput(String message, String regex) {
+        print(message);
+        print("Format: " + regex);
+        List<String> inputs = new ArrayList<>();
+        while (true) {
+            String input = input();
+            if (input.isEmpty()) break;
+            if (Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(input).find()) inputs.add(input);
+            else print("Line did not match regex");
+        }
+        return join(inputs, lineSeparator());
     }
 
     public static int inputInteger(String message) {

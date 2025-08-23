@@ -221,15 +221,12 @@ public abstract class DataCollector<T extends DataSet> {
         }
 
         if (ann.message().isEmpty()) {
-            if (ann.multiline()) {
-                return multilineInput();
-            } else {
-                return input();
-            }
+            if (ann.multiline()) return multilineInput();
+            else return input();
         } else {
             String msg = ann.message();
             if (ann.multiline()) {
-                return multilineInput(msg);
+                return ann.regex().isEmpty() ? multilineInput(msg) : multilineInput(msg, ann.regex());
             } else {
                 if (ann.options().length > 0) {
                     String[] options = ann.options();

@@ -1,8 +1,8 @@
 package com.company.utils;
 
+import com.company.datasets.other.loot.LootType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.company.datasets.other.loot.LootType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,6 +23,20 @@ public class Utils {
                 result.append(sep);
             }
             result.append(strings[i]);
+        }
+        return result.toString();
+    }
+
+    public static String join(String[] strings1, String[] strings2, String sep) {
+        if (strings1.length != strings2.length) {
+            throw new IllegalArgumentException("Can't join two arrays of different length");
+        }
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < strings1.length; i++) {
+            if (i != 0) {
+                result.append(sep);
+            }
+            result.append(strings1[i]).append("(").append(strings2[i]).append(")");
         }
         return result.toString();
     }
@@ -127,8 +141,7 @@ public class Utils {
         String getterName = field.getName();
         if (field.getType() == Boolean.TYPE) {
             getterName = "is" + getterName.substring(0, 1).toUpperCase() + getterName.substring(1);
-        }
-        else {
+        } else {
             getterName = "get" + getterName.substring(0, 1).toUpperCase() + getterName.substring(1);
         }
         try {

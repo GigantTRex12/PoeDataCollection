@@ -2,15 +2,10 @@ package com.company.yuna;
 
 import berlin.yuna.typemap.model.LinkedTypeMap;
 import berlin.yuna.typemap.model.Type;
-import com.company.exceptions.InvalidInputFormatException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
 import java.util.List;
 
-import static java.lang.System.lineSeparator;
+import static com.company.utils.IOUtils.*;
 
 /**
  * Utility class to execute a sequence of {@link Question}s in order, collecting
@@ -38,20 +33,22 @@ public class Survey {
      */
     public static LinkedTypeMap run(final List<Question> questions) {
         final LinkedTypeMap answers = new LinkedTypeMap();
-        final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         for (final Question question : questions) {
             if (!question.condition().test(answers)) continue;
 
             while (true) {
-                final String raw = readLine(in, question.prompt() + ": " + lineSeparator());
+                // already have methods for this, no need to implement a new one
+                final String raw = question.multiline() ? multilineInput(question.prompt()) : input(question.prompt());
                 final Type<String> input = Type.typeOf(raw);
 
                 final Type<String> error = question.validator().apply(input, answers);
                 if (error.isPresent()) {
-                    System.err.println("Invalid input: " + error.asString());
+                    print("Invalid input: " + error.asString()); // no need for error level at this point
+                    // also there's some weirdness when this is at error level that causes this to happen after the next input() call
                     continue;
                 }
 
+                // TODO
                 //try {
                     final Object normalized = question.normalizer().apply(input, answers);
                     answers.put(question.key(), (normalized instanceof Type<?> t) ? t.value() : normalized);
@@ -63,23 +60,6 @@ public class Survey {
             }
         }
         return answers;
-    }
-
-    /**
-     * Reads a single line of text input from the user via the console.
-     *
-     * @param in     the buffered reader to use
-     * @param prompt the message to show before reading
-     * @return the trimmed user input, never null
-     */
-    private static String readLine(final BufferedReader in, final String prompt) {
-        System.out.print(prompt);
-        try {
-            final String line = in.readLine();
-            return line != null ? line.trim() : "";
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
     }
 
     /**

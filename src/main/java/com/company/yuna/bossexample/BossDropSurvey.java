@@ -4,15 +4,11 @@ import berlin.yuna.typemap.model.LinkedTypeMap;
 import com.company.datasets.datasets.BossDropDataSet;
 import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.metadata.Strategy;
+import com.company.utils.ParseUtils;
 import com.company.yuna.Question;
 import com.company.yuna.Survey;
 
-import static com.company.yuna.bossexample.Normalizers.TO_BOOLEAN;
-import static com.company.yuna.bossexample.Normalizers.TO_INTEGER;
-import static com.company.yuna.bossexample.Normalizers.TO_LOOT;
-import static com.company.yuna.bossexample.Normalizers.TO_STRING;
-import static com.company.yuna.bossexample.Validators.IS_NUMBER;
-import static com.company.yuna.bossexample.Validators.VALIDATE_YES_NO;
+import static com.company.yuna.bossexample.Normalizers.*;
 import static com.company.yuna.bossexample.Validators.isNotEmpty;
 
 /**
@@ -56,32 +52,34 @@ public class BossDropSurvey {
                         .build(),
 
                 // order = 1
-                Question.ask("uber", "Is the boss uber? (y/n)")
-                        .validate(VALIDATE_YES_NO)
+                Question.ask("uber", "Is the boss uber?")
+                        .options(new String[]{"y", "n"})
                         .normalize(TO_BOOLEAN)
                         .build(),
 
                 // order = 3, grouped, but grouping is dataset-level concern; we just collect the value
                 // this isn't grouped, it's just that order = 2 doesn't exist (probably I removed something or whatever, it doesn't really matter)
-                Question.ask("witnessed", "Was the boss witnessed by the Maven? (y/n)")
-                        .validate(VALIDATE_YES_NO)
+                Question.ask("witnessed", "Was the boss witnessed by the Maven?")
+                        .options(new String[]{"y", "n"})
                         .normalize(TO_BOOLEAN)
                         .build(),
 
                 // order = 4, emptyToNull = true, parsingFunc = parseToBossLoot
                 Question.ask("guaranteedDrop", "Which unique was the guaranteed drop?")
-                        .normalize(TO_LOOT)
+                        .normalize((t, m) -> ParseUtils.parseToBossLoot(t.orElse("")))
                         .build(),
 
                 // order = 5, multiline = true, parsingFunc = toLootList
-                Question.ask("extraDrops", "Input extra drops to track. (comma or newline separated)")
-                        .normalize(TO_LOOT)
+                Question.ask("extraDrops", "Input extra drops to track.")
+                        .normalize((t, m) -> ParseUtils.toLootList(t.orElse("")))
+                        .multiline()
                         .build(),
 
                 // order = 6, regex ^$|^\d+$, emptyToNull = true, parsingFunc = toInt
                 Question.ask("quantity", "Enter the area quantity.")
-                        .validate(IS_NUMBER)
+                        .regex("^$|^\\d+$")
                         .normalize(TO_INTEGER)
+                        .emptyToNull()
                         .build()
         );
 
@@ -89,7 +87,7 @@ public class BossDropSurvey {
         // this basically contains some metadata that might be relevant like for example the current patch
         // the DataCollector has a field for this and the moment the survey starts the DataCollector would already have a value here
         // Might want to add it to the answers map since it could be used in a Validator
-        final Strategy strategy = new Strategy(null, null, null, null, null, null, null, null);
+        final Strategy strategy = new Strategy(null, "3.26", null, null, null, null, null, null);
 
         final BossDropDataSet dataSet = toDataSet(answers, strategy);
         System.out.println("\nAnswers:\n" + answers.toJson());

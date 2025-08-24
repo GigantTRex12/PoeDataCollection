@@ -4,10 +4,12 @@ import berlin.yuna.typemap.model.LinkedTypeMap;
 import berlin.yuna.typemap.model.Type;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.InvalidInputFormatException;
+import com.company.exceptions.SomethingIsWrongWithMyCodeException;
 
 import java.util.List;
 
 import static com.company.utils.IOUtils.*;
+import static java.lang.System.lineSeparator;
 
 /**
  * Utility class to execute a sequence of {@link Question}s in order, collecting
@@ -44,16 +46,11 @@ public class Survey {
                 final String raw = question.multiline() ? multilineInput(question.prompt()) : input(question.prompt());
                 final Type<String> input = Type.typeOf(raw);
 
-                final Type<String> error = question.validator().apply(input, answers);
-                if (error.isPresent()) {
-                    print("Invalid input: " + error.asString()); // no need for error level at this point
-                    // also there's some weirdness when this is at error level that causes this to happen after the next input() call
-                    continue;
-                }
+                if (!validateAndPrintError(input, question, answers)) continue;
 
                 try {
                     final Object normalized = question.normalizer().apply(input, answers);
-                    answers.put(question.key(), (normalized instanceof Type<?> t) ? t.value() : normalized);
+                    putInMap(answers, question.key(), (normalized instanceof Type<?> t) ? t.value() : normalized);
                 } catch (InvalidInputFormatException e) {
                     print("Invalid input: " + e.getMessage());
                     continue;
@@ -62,6 +59,35 @@ public class Survey {
             }
         }
         return answers;
+    }
+
+    private static boolean validateAndPrintError(Type<String> input, Question question, LinkedTypeMap answers) {
+        Type<String> error = Type.empty();
+        if (question.multiline() && !input.orElse("").equals("")) {
+            for (String s : input.value().split(lineSeparator())) {
+                error = question.validator().apply(Type.typeOf(s), answers);
+                if (error.isPresent()) break;
+            }
+        } else error = question.validator().apply(input, answers);
+        if (error.isPresent()) {
+            print("Invalid input: " + error.asString()); // no need for error level at this point
+            // also there's some weirdness when this is at error level that causes this to happen after the next input() call
+            return false;
+        }
+        return true;
+    }
+
+    private static void putInMap(LinkedTypeMap answers, String key, Object value) {
+        if (key.contains("&")) {
+            if (!(value instanceof List)) throw new SomethingIsWrongWithMyCodeException("For multiple fields value has to be a List");
+            List<?> values = (List<?>) value;
+            String[] keys = key.split("&");
+            if (values.size() != keys.length) throw new SomethingIsWrongWithMyCodeException("Different amount of keys and values.");
+            for (int i = 0; i < keys.length; i++) {
+                answers.put(keys[i], values.get(i));
+            }
+        }
+        else answers.put(key, value);
     }
 
     /**

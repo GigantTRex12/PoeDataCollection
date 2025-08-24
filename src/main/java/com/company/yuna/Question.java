@@ -6,6 +6,8 @@ import com.company.exceptions.InvalidInputFormatException;
 import com.company.utils.ThrowingFunction;
 import com.company.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -21,10 +23,10 @@ import static java.util.Objects.requireNonNull;
  * user input without relying on reflection.
  */
 public record Question(
-        String key,
+        String key, // use "&" for multiple values in one question
         String prompt,
         Predicate<LinkedTypeMap> condition,
-        BiFunction<Type<String>, LinkedTypeMap, Type<String>> validator,
+        BiFunction<Type<String>, LinkedTypeMap, Type<String>> validator, // on multilines this validates each line seperately
         NormalizerBiFunction normalizer,
         boolean multiline
 ) {
@@ -92,6 +94,24 @@ public record Question(
         public Builder emptyToNull() {
             validator = validator == null ? null : (t, m) -> "".equals(t.orElse("")) ? Type.empty() : validator.apply(t, m);
             normalizer = normalizer == null ? null : (t, m) -> "".equals(t.orElse("")) ? null : normalizer.apply(t, m);
+            return this;
+        }
+
+        // multiple values in one question need multiple normalizers -> instead return list of results
+        public Builder normalizers(final NormalizerBiFunction... normalizers) {
+            this.normalizer = (answer, answers) -> {
+                List<Object> list = new ArrayList<>();
+                for (NormalizerBiFunction n : normalizers) list.add(n.apply(answer, answers));
+                return list;
+            };
+            return this;
+        }
+        public Builder normalizers(final ThrowingFunction<String, Object, InvalidInputFormatException>... parsers) {
+            this.normalizer = (answer, answers) -> {
+                List<Object> list = new ArrayList<>();
+                for (ThrowingFunction<String, Object, InvalidInputFormatException> parser : parsers) list.add(parser.apply(answer.asString().strip()));
+                return list;
+            };
             return this;
         }
 

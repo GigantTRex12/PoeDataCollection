@@ -1,5 +1,6 @@
 package com.company.datacollector;
 
+import berlin.yuna.typemap.model.LinkedTypeMap;
 import com.company.datasets.annotations.InputProperty;
 import com.company.datasets.builder.DataSetBuilderInterface;
 import com.company.datasets.datasets.DataSet;
@@ -9,6 +10,8 @@ import com.company.exceptions.SomethingIsWrongWithMyCodeException;
 import com.company.exceptions.StrategyCreationInterruptedException;
 import com.company.utils.ParseUtils;
 import com.company.utils.Utils;
+import com.company.yuna.Question;
+import com.company.yuna.Survey;
 import lombok.Getter;
 
 import java.lang.reflect.Field;
@@ -18,14 +21,15 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static java.util.Map.entry;
 import static com.company.utils.FileUtils.append;
 import static com.company.utils.IOUtils.*;
+import static java.util.Map.entry;
 
 public abstract class DataCollector<T extends DataSet> {
     @Getter
     private static final Map<String, String> actions = Map.ofEntries(
             entry("AddData", "a"),
+            entry("AddDataFunctionl", "af"),
             //entry("AddFromSingleInput", "af"),
             //entry("AddMultipleFromSingleInput", "am"),
             entry("ClearData", "c"),
@@ -59,16 +63,20 @@ public abstract class DataCollector<T extends DataSet> {
             switch (action) {
                 case ("adddata"):
                 case ("a"):
-                    this.addDataGeneric();
+                    this.addDataReflection();
                     break;
-                case ("addfromsingleinput"):
+                case ("AddDataFunctionl"):
+                case ("af"):
+                    this.addDataFunctional();
+                    break;
+                /*case ("addfromsingleinput"):
                 case ("af"):
                     this.addDataFull();
                     break;
                 case ("addmultiplefromsingleinput"):
                 case ("am"):
                     this.addMultipleDataFull();
-                    break;
+                    break;*/
                 case ("cleardata"):
                 case ("c"):
                     this.data.clear();
@@ -147,7 +155,7 @@ public abstract class DataCollector<T extends DataSet> {
         return builder;
     }
 
-    private void addDataGeneric() {
+    private void addDataReflection() {
         beforeAddData();
         List<Field> fields = getAnnotatedFields();
         DataSetBuilderInterface<T> builder = createBuilder();
@@ -286,6 +294,22 @@ public abstract class DataCollector<T extends DataSet> {
         return true;
     }
 
+    private void addDataFunctional() {
+        LinkedTypeMap typeMap = Survey.run(getQuestions());
+        T dataSet = mapToDataset(typeMap);
+        if (validateDataSet(dataSet)) {
+            this.data.add(dataSet);
+        }
+    }
+
+    protected List<Question> getQuestions() {
+        throw new UnsupportedOperationException("Functional Data collecting not supported yet");
+    }
+
+    protected T mapToDataset(LinkedTypeMap map) {
+        throw new UnsupportedOperationException("Functional Data collecting not supported yet");
+    }
+
     protected void addDataFull() {
         print("Not supported for this type of data yet");
     }
@@ -302,14 +326,12 @@ public abstract class DataCollector<T extends DataSet> {
                 String response;
                 if (ann.multiline()) {
                     response = multilineInput(ann.message());
-                }
-                else {
+                } else {
                     response = input(ann.message());
                 }
                 if (response.equals("\\")) {
                     preSetChoices.put(ann, "");
-                }
-                else if (!response.isEmpty()) {
+                } else if (!response.isEmpty()) {
                     preSetChoices.put(ann, response);
                 }
             }

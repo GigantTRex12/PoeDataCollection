@@ -2,6 +2,7 @@ package com.company.yuna;
 
 import berlin.yuna.typemap.model.LinkedTypeMap;
 import berlin.yuna.typemap.model.Type;
+import com.company.exceptions.InvalidInputFormatException;
 
 import java.util.List;
 
@@ -48,14 +49,13 @@ public class Survey {
                     continue;
                 }
 
-                // TODO
-                //try {
+                try {
                     final Object normalized = question.normalizer().apply(input, answers);
                     answers.put(question.key(), (normalized instanceof Type<?> t) ? t.value() : normalized);
-                /*} catch (InvalidInputFormatException  e) {
-                    System.err.println("Invalid input: " + e.getMessage());
+                } catch (InvalidInputFormatException e) {
+                    print("Invalid input: " + e.getMessage());
                     continue;
-                }*/
+                }
                 break;
             }
         }

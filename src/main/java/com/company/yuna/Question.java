@@ -2,6 +2,8 @@ package com.company.yuna;
 
 import berlin.yuna.typemap.model.Type;
 import berlin.yuna.typemap.model.LinkedTypeMap;
+import com.company.exceptions.InvalidInputFormatException;
+import com.company.utils.ThrowingFunction;
 import com.company.utils.Utils;
 
 import java.util.function.BiFunction;
@@ -23,7 +25,7 @@ public record Question(
         String prompt,
         Predicate<LinkedTypeMap> condition,
         BiFunction<Type<String>, LinkedTypeMap, Type<String>> validator,
-        BiFunction<Type<String>, LinkedTypeMap, Object> normalizer,
+        NormalizerBiFunction normalizer,
         boolean multiline
 ) {
     public Question {
@@ -45,7 +47,7 @@ public record Question(
         private final String prompt;
         private Predicate<LinkedTypeMap> condition;
         private BiFunction<Type<String>, LinkedTypeMap, Type<String>> validator;
-        private BiFunction<Type<String>, LinkedTypeMap, Object> normalizer;
+        private NormalizerBiFunction normalizer;
         private boolean multiline = false;
         private String conditionPrompt;
 
@@ -53,9 +55,16 @@ public record Question(
 
         public Builder when(final Predicate<LinkedTypeMap> condition) { this.condition = condition; return this; }
         public Builder validate(final BiFunction<Type<String>, LinkedTypeMap, Type<String>> validator) { this.validator = validator; this.conditionPrompt = null; return this; }
-        public Builder normalize(final BiFunction<Type<String>, LinkedTypeMap, Object> normalizer) { this.normalizer = normalizer; return this; }
+        public Builder normalize(final NormalizerBiFunction normalizer) { this.normalizer = normalizer; return this; }
         public Builder multiline() { multiline = !multiline; return this; }
-        // easier ways to create validator
+        // easier ways to create validator/normalizer
+        public Builder normalize(final ThrowingFunction<String, Object, InvalidInputFormatException> parser) {
+            this.normalizer = (answer, answers) -> {
+                final String string = answer.asString().strip();
+                return parser.apply(string);
+            };
+            return this;
+        }
         public Builder regex(final String regex) {
             validator = (t, m) -> {
                 if (Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(t.orElse("")).find()) return Type.empty();

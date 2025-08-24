@@ -66,12 +66,12 @@ public class BossDropSurvey {
 
                 // order = 4, emptyToNull = true, parsingFunc = parseToBossLoot
                 Question.ask("guaranteedDrop", "Which unique was the guaranteed drop?")
-                        .normalize((t, m) -> ParseUtils.parseToBossLoot(t.orElse("")))
+                        .normalize(ParseUtils::parseToLoot)
                         .build(),
 
                 // order = 5, multiline = true, parsingFunc = toLootList
                 Question.ask("extraDrops", "Input extra drops to track.")
-                        .normalize((t, m) -> ParseUtils.toLootList(t.orElse("")))
+                        .normalize(ParseUtils::toLootList)
                         .multiline()
                         .build(),
 

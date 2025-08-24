@@ -54,14 +54,10 @@ public class ParseUtils {
     }
 
     public static Loot parseToLoot(String string) throws InvalidInputFormatException {
-        try {
-            if (string.trim().isEmpty()) {
-                return null;
-            }
-            return Loot.parseToLoot(string);
-        } catch (InvalidLootFormatException e) {
-            throw new InvalidInputFormatException(e.getMessage());
+        if (string.trim().isEmpty()) {
+            return null;
         }
+        return Loot.parseToLoot(string);
     }
 
     public static Loot parseToBossLoot(String string) {

@@ -2,6 +2,7 @@ package com.company.yuna;
 
 import berlin.yuna.typemap.model.LinkedTypeMap;
 import berlin.yuna.typemap.model.Type;
+import com.company.datasets.other.metadata.Strategy;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -38,7 +39,7 @@ public class Main {
                         .build()
         );
 
-        final LinkedTypeMap answers = Survey.run(survey);
+        final LinkedTypeMap answers = Survey.run(survey, new Strategy());
         System.out.println(answers.toJson());
     }
 

@@ -96,8 +96,12 @@ public record Question(
         }
 
         public Question build() { return new Question(
-                key, conditionPrompt == null ? prompt : prompt + lineSeparator() + conditionPrompt,
-                condition, validator, normalizer, multiline
+                key,
+                conditionPrompt == null ? prompt : prompt + lineSeparator() + conditionPrompt,
+                condition,
+                validator,
+                normalizer,
+                multiline
         ); }
     }
 }

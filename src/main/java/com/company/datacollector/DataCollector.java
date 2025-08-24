@@ -12,6 +12,7 @@ import com.company.utils.ParseUtils;
 import com.company.utils.Utils;
 import com.company.yuna.Question;
 import com.company.yuna.Survey;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 
 import java.lang.reflect.Field;
@@ -30,8 +31,6 @@ public abstract class DataCollector<T extends DataSet> {
     private static final Map<String, String> actions = Map.ofEntries(
             entry("AddData", "a"),
             entry("AddDataFunctionl", "af"),
-            //entry("AddFromSingleInput", "af"),
-            //entry("AddMultipleFromSingleInput", "am"),
             entry("ClearData", "c"),
             entry("Save", "s"),
             entry("PrintData", "p"),
@@ -69,14 +68,6 @@ public abstract class DataCollector<T extends DataSet> {
                 case ("af"):
                     this.addDataFunctional();
                     break;
-                /*case ("addfromsingleinput"):
-                case ("af"):
-                    this.addDataFull();
-                    break;
-                case ("addmultiplefromsingleinput"):
-                case ("am"):
-                    this.addMultipleDataFull();
-                    break;*/
                 case ("cleardata"):
                 case ("c"):
                     this.data.clear();
@@ -295,7 +286,7 @@ public abstract class DataCollector<T extends DataSet> {
     }
 
     private void addDataFunctional() {
-        LinkedTypeMap typeMap = Survey.run(getQuestions());
+        LinkedTypeMap typeMap = Survey.run(getQuestions(), currStrat);
         T dataSet = mapToDataset(typeMap);
         if (validateDataSet(dataSet)) {
             this.data.add(dataSet);
@@ -307,15 +298,11 @@ public abstract class DataCollector<T extends DataSet> {
     }
 
     protected T mapToDataset(LinkedTypeMap map) {
-        throw new UnsupportedOperationException("Functional Data collecting not supported yet");
-    }
-
-    protected void addDataFull() {
-        print("Not supported for this type of data yet");
-    }
-
-    protected void addMultipleDataFull() {
-        print("Not supported for this type of data yet");
+        try {
+            return Utils.parseJson(map.toJson(), getGenericClass());
+        } catch (JsonProcessingException e) {
+            throw new SomethingIsWrongWithMyCodeException(e.getMessage());
+        }
     }
 
     private void setPreSetChoices() {

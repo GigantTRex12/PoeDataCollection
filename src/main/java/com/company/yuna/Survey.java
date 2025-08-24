@@ -2,6 +2,7 @@ package com.company.yuna;
 
 import berlin.yuna.typemap.model.LinkedTypeMap;
 import berlin.yuna.typemap.model.Type;
+import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.InvalidInputFormatException;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public class Survey {
      * @param questions the survey questions to ask
      * @return a map of keys to validated, normalized user answers
      */
-    public static LinkedTypeMap run(final Question... questions) {
-        return run(List.of(questions));
+    public static LinkedTypeMap run(Strategy strategy, final Question... questions) {
+        return run(List.of(questions), strategy);
     }
 
     /**
@@ -32,8 +33,9 @@ public class Survey {
      * @param questions the survey questions to ask
      * @return a map of keys to validated, normalized user answers
      */
-    public static LinkedTypeMap run(final List<Question> questions) {
+    public static LinkedTypeMap run(final List<Question> questions, Strategy strategy) {
         final LinkedTypeMap answers = new LinkedTypeMap();
+        answers.put("strategy", strategy);
         for (final Question question : questions) {
             if (!question.condition().test(answers)) continue;
 

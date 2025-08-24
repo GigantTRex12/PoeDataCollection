@@ -286,10 +286,14 @@ public abstract class DataCollector<T extends DataSet> {
     }
 
     private void addDataFunctional() {
-        LinkedTypeMap typeMap = Survey.run(getQuestions(), currStrat.copyWithoutId());
-        T dataSet = mapToDataset(typeMap);
-        if (validateDataSet(dataSet)) {
-            this.data.add(dataSet);
+        try {
+            LinkedTypeMap typeMap = Survey.run(getQuestions(), currStrat.copyWithoutId());
+            T dataSet = mapToDataset(typeMap);
+            if (validateDataSet(dataSet)) {
+                this.data.add(dataSet);
+            }
+        } catch (UnsupportedOperationException e) {
+            print("Adding data this way is not supported yet for this type of dataset");
         }
     }
 

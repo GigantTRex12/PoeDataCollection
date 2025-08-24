@@ -286,7 +286,7 @@ public abstract class DataCollector<T extends DataSet> {
     }
 
     private void addDataFunctional() {
-        LinkedTypeMap typeMap = Survey.run(getQuestions(), currStrat);
+        LinkedTypeMap typeMap = Survey.run(getQuestions(), currStrat.copyWithoutId());
         T dataSet = mapToDataset(typeMap);
         if (validateDataSet(dataSet)) {
             this.data.add(dataSet);
@@ -299,7 +299,7 @@ public abstract class DataCollector<T extends DataSet> {
 
     protected T mapToDataset(LinkedTypeMap map) {
         try {
-            return Utils.parseJson(map.toJson(), getGenericClass());
+            return Utils.parseJson(Utils.toJson(map), getGenericClass());
         } catch (JsonProcessingException e) {
             throw new SomethingIsWrongWithMyCodeException(e.getMessage());
         }

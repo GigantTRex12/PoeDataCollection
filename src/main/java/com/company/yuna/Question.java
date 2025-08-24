@@ -92,8 +92,8 @@ public record Question(
             return this;
         }
         public Builder emptyToNull() {
-            validator = validator == null ? null : (t, m) -> "".equals(t.orElse("")) ? Type.empty() : validator.apply(t, m);
-            normalizer = normalizer == null ? null : (t, m) -> "".equals(t.orElse("")) ? null : normalizer.apply(t, m);
+            validator = validator == null ? null : new EmptyIfEmptyBiFunction(validator);
+            normalizer = normalizer == null ? null : new NullIfEmptyNormalizer(normalizer);
             return this;
         }
 

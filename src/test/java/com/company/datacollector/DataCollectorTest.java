@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DataCollectorTest extends TestWithOutputs {
 
@@ -43,6 +44,12 @@ public class DataCollectorTest extends TestWithOutputs {
     @Override
     protected void validateOutputs(String[] expectedOutputs) throws IOException {
         validateOutputs(expectedOutputs, 2);
+    }
+
+    protected static Stream<String> provideAddActions() {
+        return Stream.of(
+                "a", "af"
+        );
     }
 
 }

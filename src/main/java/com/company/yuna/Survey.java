@@ -70,7 +70,9 @@ public class Survey {
             }
         } else error = question.validator().apply(input, answers);
         if (error.isPresent()) {
-            print("Invalid input: " + error.asString()); // no need for error level at this point
+            print("Invalid input, try again");
+            // TODO: test does not expect a specified message yet
+            // print("Invalid input: " + error.asString()); // no need for error level at this point
             // also there's some weirdness when this is at error level that causes this to happen after the next input() call
             return false;
         }

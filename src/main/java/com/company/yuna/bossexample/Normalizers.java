@@ -1,6 +1,6 @@
 package com.company.yuna.bossexample;
 
-import com.company.yuna.NormalizerBiFunction;
+import com.company.datacollector.Survey.NormalizerBiFunction;
 
 @SuppressWarnings({"SameParameterValue", "java:S106"})
 public class Normalizers {

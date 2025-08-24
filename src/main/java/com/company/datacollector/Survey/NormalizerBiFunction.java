@@ -1,4 +1,4 @@
-package com.company.yuna;
+package com.company.datacollector.Survey;
 
 import berlin.yuna.typemap.model.LinkedTypeMap;
 import berlin.yuna.typemap.model.Type;

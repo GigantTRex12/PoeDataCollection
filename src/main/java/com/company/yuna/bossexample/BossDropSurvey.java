@@ -2,12 +2,11 @@ package com.company.yuna.bossexample;
 
 import berlin.yuna.typemap.model.LinkedTypeMap;
 import com.company.datasets.datasets.BossDropDataSet;
-import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.utils.ParseUtils;
 import com.company.utils.Utils;
-import com.company.yuna.Question;
-import com.company.yuna.Survey;
+import com.company.datacollector.Survey.Question;
+import com.company.datacollector.Survey.Survey;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import static com.company.yuna.bossexample.Normalizers.*;

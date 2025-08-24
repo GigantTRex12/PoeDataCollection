@@ -2,7 +2,7 @@ package com.company.datacollector;
 
 import com.company.datasets.datasets.BossDropDataSet;
 import com.company.utils.ParseUtils;
-import com.company.yuna.Question;
+import com.company.datacollector.Survey.Question;
 
 import java.util.List;
 

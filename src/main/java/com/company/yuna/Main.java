@@ -2,6 +2,8 @@ package com.company.yuna;
 
 import berlin.yuna.typemap.model.LinkedTypeMap;
 import berlin.yuna.typemap.model.Type;
+import com.company.datacollector.Survey.Question;
+import com.company.datacollector.Survey.Survey;
 import com.company.datasets.other.metadata.Strategy;
 
 import java.util.List;

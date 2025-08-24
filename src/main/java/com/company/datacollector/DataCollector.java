@@ -1,6 +1,8 @@
 package com.company.datacollector;
 
 import berlin.yuna.typemap.model.LinkedTypeMap;
+import com.company.datacollector.Survey.Question;
+import com.company.datacollector.Survey.Survey;
 import com.company.datasets.annotations.InputProperty;
 import com.company.datasets.builder.DataSetBuilderInterface;
 import com.company.datasets.datasets.DataSet;
@@ -10,8 +12,6 @@ import com.company.exceptions.SomethingIsWrongWithMyCodeException;
 import com.company.exceptions.StrategyCreationInterruptedException;
 import com.company.utils.ParseUtils;
 import com.company.utils.Utils;
-import com.company.yuna.Question;
-import com.company.yuna.Survey;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 

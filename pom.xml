@@ -30,6 +30,12 @@
             <version>2.13.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>berlin.yuna</groupId>
+            <artifactId>type-map</artifactId>
+            <version>2025.08.2200717</version>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.junit.platform</groupId>

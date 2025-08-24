@@ -1,5 +1,6 @@
 package com.company.utils;
 
+import berlin.yuna.typemap.model.Pair;
 import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
 import com.company.datasets.other.jun.Encounter;
@@ -12,8 +13,11 @@ import com.company.exceptions.InvalidLootFormatException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.company.utils.IOUtils.print;
+import static java.lang.System.lineSeparator;
 
 public class ParseUtils {
 
@@ -54,14 +58,10 @@ public class ParseUtils {
     }
 
     public static Loot parseToLoot(String string) throws InvalidInputFormatException {
-        try {
-            if (string.trim().isEmpty()) {
-                return null;
-            }
-            return Loot.parseToLoot(string);
-        } catch (InvalidLootFormatException e) {
-            throw new InvalidInputFormatException(e.getMessage());
+        if (string.trim().isEmpty()) {
+            return null;
         }
+        return Loot.parseToLoot(string);
     }
 
     public static Loot parseToBossLoot(String string) {
@@ -176,6 +176,17 @@ public class ParseUtils {
         } catch (IllegalArgumentException e) {
             throw new InvalidInputFormatException(string + " is not a valid membername");
         }
+    }
+
+    public static List<Pair<String, Integer>> toMap(String string) {
+        if (string.isEmpty()) return List.of();
+        List<Pair<String, Integer>> pairs = new ArrayList<>();
+        for (String s : string.split(lineSeparator())) {
+            Matcher matcher = Pattern.compile("^(.*) (\\d+)$").matcher(s);
+            if (matcher.find()) pairs.add(new Pair<>(matcher.group(1), Integer.parseInt(matcher.group(2))));
+            else print("Couldn't parse \"" + s + "\" to Cost. (skipped)");
+        }
+        return pairs;
     }
 
 }

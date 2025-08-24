@@ -22,7 +22,8 @@ public abstract class AnnotationTest {
                 BossDropDataSet.class,
                 MapDropDataSet.class,
                 KalandraMistDataSet.class,
-                UltimatumDataSet.class
+                UltimatumDataSet.class,
+                CadiroDataSet.class
         );
     }
 

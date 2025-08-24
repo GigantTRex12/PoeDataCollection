@@ -1,5 +1,8 @@
 package com.company.datacollector;
 
+import berlin.yuna.typemap.model.LinkedTypeMap;
+import com.company.datacollector.Survey.Question;
+import com.company.datacollector.Survey.Survey;
 import com.company.datasets.annotations.InputProperty;
 import com.company.datasets.builder.DataSetBuilderInterface;
 import com.company.datasets.datasets.DataSet;
@@ -9,6 +12,7 @@ import com.company.exceptions.SomethingIsWrongWithMyCodeException;
 import com.company.exceptions.StrategyCreationInterruptedException;
 import com.company.utils.ParseUtils;
 import com.company.utils.Utils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 
 import java.lang.reflect.Field;
@@ -18,16 +22,15 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static java.util.Map.entry;
 import static com.company.utils.FileUtils.append;
 import static com.company.utils.IOUtils.*;
+import static java.util.Map.entry;
 
 public abstract class DataCollector<T extends DataSet> {
     @Getter
     private static final Map<String, String> actions = Map.ofEntries(
             entry("AddData", "a"),
-            //entry("AddFromSingleInput", "af"),
-            //entry("AddMultipleFromSingleInput", "am"),
+            entry("AddDataFunctionl", "af"),
             entry("ClearData", "c"),
             entry("Save", "s"),
             entry("PrintData", "p"),
@@ -59,15 +62,11 @@ public abstract class DataCollector<T extends DataSet> {
             switch (action) {
                 case ("adddata"):
                 case ("a"):
-                    this.addDataGeneric();
+                    this.addDataReflection();
                     break;
-                case ("addfromsingleinput"):
+                case ("AddDataFunctionl"):
                 case ("af"):
-                    this.addDataFull();
-                    break;
-                case ("addmultiplefromsingleinput"):
-                case ("am"):
-                    this.addMultipleDataFull();
+                    this.addDataFunctional();
                     break;
                 case ("cleardata"):
                 case ("c"):
@@ -147,7 +146,7 @@ public abstract class DataCollector<T extends DataSet> {
         return builder;
     }
 
-    private void addDataGeneric() {
+    private void addDataReflection() {
         beforeAddData();
         List<Field> fields = getAnnotatedFields();
         DataSetBuilderInterface<T> builder = createBuilder();
@@ -286,12 +285,28 @@ public abstract class DataCollector<T extends DataSet> {
         return true;
     }
 
-    protected void addDataFull() {
-        print("Not supported for this type of data yet");
+    private void addDataFunctional() {
+        try {
+            LinkedTypeMap typeMap = Survey.run(getQuestions(), currStrat.copyWithoutId());
+            T dataSet = mapToDataset(typeMap);
+            if (validateDataSet(dataSet)) {
+                this.data.add(dataSet);
+            }
+        } catch (UnsupportedOperationException e) {
+            print("Adding data this way is not supported yet for this type of dataset");
+        }
     }
 
-    protected void addMultipleDataFull() {
-        print("Not supported for this type of data yet");
+    protected List<Question> getQuestions() {
+        throw new UnsupportedOperationException("Functional Data collecting not supported yet");
+    }
+
+    protected T mapToDataset(LinkedTypeMap map) {
+        try {
+            return Utils.parseJson(Utils.toJson(map), getGenericClass());
+        } catch (JsonProcessingException e) {
+            throw new SomethingIsWrongWithMyCodeException(e.getMessage());
+        }
     }
 
     private void setPreSetChoices() {
@@ -302,14 +317,12 @@ public abstract class DataCollector<T extends DataSet> {
                 String response;
                 if (ann.multiline()) {
                     response = multilineInput(ann.message());
-                }
-                else {
+                } else {
                     response = input(ann.message());
                 }
                 if (response.equals("\\")) {
                     preSetChoices.put(ann, "");
-                }
-                else if (!response.isEmpty()) {
+                } else if (!response.isEmpty()) {
                     preSetChoices.put(ann, response);
                 }
             }

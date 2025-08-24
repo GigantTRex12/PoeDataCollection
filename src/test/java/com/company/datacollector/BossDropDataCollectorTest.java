@@ -9,6 +9,8 @@ import com.company.utils.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,12 +27,13 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         collector = new BossDropDataCollector();
     }
 
-    @Test
-    void add_oneDataSet() throws IOException {
+    @ParameterizedTest
+    @MethodSource("provideAddActions")
+    void add_oneDataSet(String addAction) throws IOException {
         // given
         InputBuilder.start()
                 .line(0)
-                .line(actions.get("AddData"))
+                .line(addAction)
                 .line("The Maven")
                 .line("n")
                 .line("n")
@@ -78,12 +81,13 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         });
     }
 
-    @Test
-    void add_multipleDataSets() throws IOException {
+    @ParameterizedTest
+    @MethodSource("provideAddActions")
+    void add_multipleDataSets(String addAction) throws IOException {
         // given
         InputBuilder.start()
                 .line(0)
-                .line(actions.get("AddData"))
+                .line(addAction)
                 .line("The Maven")
                 .line("n")
                 .line("n")
@@ -93,7 +97,7 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
                         "Orb of Conflict;currency;1"
                 })
                 .emptyLine()
-                .line(actions.get("AddData"))
+                .line(addAction)
                 .line("The Infinite Hunger")
                 .line("n")
                 .line("n")
@@ -159,11 +163,12 @@ public class BossDropDataCollectorTest extends DataCollectorTest{
         });
     }
 
-    @Test
-    void add_attemptInvalidInputs() throws IOException {
+    @ParameterizedTest
+    @MethodSource("provideAddActions")
+    void add_attemptInvalidInputs(String addAction) throws IOException {
         // given
         String inputs = "0" + LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
+                addAction + LINEBREAK +
                 "The Maven" + LINEBREAK +
                 "x" + LINEBREAK + "y" + LINEBREAK +
                 "n" + LINEBREAK +

@@ -2,6 +2,7 @@ package com.company.utils;
 
 import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
+import com.company.datasets.other.UniqueAndGoldCostPair;
 import com.company.datasets.other.jun.Encounter;
 import com.company.datasets.other.jun.Member;
 import com.company.datasets.other.jun.Safehouse;
@@ -176,12 +177,12 @@ public class ParseUtils {
         }
     }
 
-    public static List<Pair<String, Integer>> toUniqueCostPairs(String string) {
+    public static List<UniqueAndGoldCostPair> toUniqueCostPairs(String string) {
         if (string.isEmpty()) return List.of();
-        List<Pair<String, Integer>> pairs = new ArrayList<>();
+        List<UniqueAndGoldCostPair> pairs = new ArrayList<>();
         for (String s : string.split("\n")) {
             Matcher matcher = Pattern.compile("^(.*) (\\d+)$").matcher(s);
-            if (matcher.find()) pairs.add(new Pair<>(matcher.group(1), Integer.parseInt(matcher.group(2))));
+            if (matcher.find()) pairs.add(new UniqueAndGoldCostPair(matcher.group(1), Integer.parseInt(matcher.group(2))));
             else print("Couldn't parse \"" + s + "\" to Cost. (skipped)");
         }
         return pairs;

@@ -2,7 +2,7 @@ package com.company.datacollector;
 
 import com.company.datasets.datasets.CadiroDataSet;
 import com.company.testutils.InputBuilder;
-import com.company.utils.Pair;
+import com.company.datasets.other.UniqueAndGoldCostPair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,9 +43,9 @@ public class CadiroDataCollectorTest extends DataCollectorTest {
                 nullStrat,
                 3,
                 List.of(
-                        new Pair<>("Mistwall", 17932),
-                        new Pair<>("Pyre", 6545),
-                        new Pair<>("Squirming Terror", 16531)
+                        new UniqueAndGoldCostPair("Mistwall", 17932),
+                        new UniqueAndGoldCostPair("Pyre", 6545),
+                        new UniqueAndGoldCostPair("Squirming Terror", 16531)
                 )
         );
 
@@ -106,9 +106,9 @@ public class CadiroDataCollectorTest extends DataCollectorTest {
                 nullStrat,
                 2,
                 List.of(
-                        new Pair<>("Agnerod East", 12700),
-                        new Pair<>("Doomsower", 13969),
-                        new Pair<>("Kaom's Binding", 14182)
+                        new UniqueAndGoldCostPair("Agnerod East", 12700),
+                        new UniqueAndGoldCostPair("Doomsower", 13969),
+                        new UniqueAndGoldCostPair("Kaom's Binding", 14182)
                 )
         );
 

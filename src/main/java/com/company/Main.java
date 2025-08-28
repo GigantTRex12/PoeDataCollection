@@ -19,7 +19,8 @@ public class Main {
                 entry("mist", "mist.txt"),
                 entry("ultimatum", "ultimatum.txt"),
                 entry("map drops", "mapDrops.txt"),
-                entry("boss drops", "bossDrops.txt")
+                entry("boss drops", "bossDrops.txt"),
+                entry("cadiro", "cadiro.txt")
                 //entry("jun", "junEncounters.txt")
         );
 
@@ -46,6 +47,7 @@ public class Main {
                     case "map drops" -> collector = new MapDropDataCollector();
                     case "ultimatum" -> collector = new UltimatumDataCollector();
                     case "boss drops" -> collector = new BossDropDataCollector();
+                    case "cadiro" -> collector = new CadiroDataCollector();
                     case "jun" -> collector = new JunDataCollector(filename);
                     default -> {
                         print("Exiting");

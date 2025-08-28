@@ -1,9 +1,9 @@
 package com.company.datasets.datasets;
 
-import berlin.yuna.typemap.model.Pair;
 import com.company.datasets.annotations.InputProperty;
 import com.company.datasets.builder.DataSetBuilderInterface;
 import com.company.datasets.other.metadata.Strategy;
+import com.company.utils.Pair;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,11 +18,11 @@ import java.util.List;
 public class CadiroDataSet extends DataSet {
 
     @JsonProperty("tier")
-    @InputProperty(order = 1, parsingFunc = "toInt", regex = "^[0-3]$", message = "What is the tier?")
+    @InputProperty(order = 1, parsingFunc = "toInt", regex = "^[1-3]$", message = "What is the tier?")
     private final Integer tier;
 
     @JsonProperty("uniquesWithCost")
-    @InputProperty(order = 2, parsingFunc = "toMap", multiline = true, regex = "^.* \\d+$", message = "Enter the prices.")
+    @InputProperty(order = 2, parsingFunc = "toUniqueCostPairs", multiline = true, regex = "^.* \\d+$", message = "Enter the prices.")
     private final List<Pair<String, Integer>> uniquesWithCost;
 
     @Builder

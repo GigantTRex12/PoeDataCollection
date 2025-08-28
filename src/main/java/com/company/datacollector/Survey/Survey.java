@@ -42,7 +42,6 @@ public class Survey {
             if (!question.condition().test(answers)) continue;
 
             while (true) {
-                // already have methods for this, no need to implement a new one
                 final String raw = question.multiline() ? multilineInput(question.prompt()) : input(question.prompt());
                 final Type<String> input = Type.typeOf(raw);
 
@@ -64,7 +63,7 @@ public class Survey {
     private static boolean validateAndPrintError(Type<String> input, Question question, LinkedTypeMap answers) {
         Type<String> error = Type.empty();
         if (question.multiline() && !input.orElse("").equals("")) {
-            for (String s : input.value().split(lineSeparator())) {
+            for (String s : input.value().split("\n")) {
                 error = question.validator().apply(Type.typeOf(s), answers);
                 if (error.isPresent()) break;
             }

@@ -190,7 +190,7 @@ public class IOUtils {
             if (Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(input).find()) inputs.add(input);
             else print("Line did not match regex");
         }
-        return join(inputs, lineSeparator());
+        return join(inputs, "\n");
     }
 
     public static int inputInteger(String message) {

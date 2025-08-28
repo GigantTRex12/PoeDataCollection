@@ -1,6 +1,5 @@
 package com.company.utils;
 
-import berlin.yuna.typemap.model.Pair;
 import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
 import com.company.datasets.other.jun.Encounter;
@@ -17,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.company.utils.IOUtils.print;
-import static java.lang.System.lineSeparator;
 
 public class ParseUtils {
 
@@ -178,10 +176,10 @@ public class ParseUtils {
         }
     }
 
-    public static List<Pair<String, Integer>> toMap(String string) {
+    public static List<Pair<String, Integer>> toUniqueCostPairs(String string) {
         if (string.isEmpty()) return List.of();
         List<Pair<String, Integer>> pairs = new ArrayList<>();
-        for (String s : string.split(lineSeparator())) {
+        for (String s : string.split("\n")) {
             Matcher matcher = Pattern.compile("^(.*) (\\d+)$").matcher(s);
             if (matcher.find()) pairs.add(new Pair<>(matcher.group(1), Integer.parseInt(matcher.group(2))));
             else print("Couldn't parse \"" + s + "\" to Cost. (skipped)");

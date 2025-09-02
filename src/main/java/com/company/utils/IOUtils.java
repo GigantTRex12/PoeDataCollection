@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import static com.company.utils.Utils.*;
 import static java.lang.System.lineSeparator;
+import static java.util.Map.entry;
 
 public class IOUtils {
     private static Scanner scanner = new Scanner(System.in);
@@ -201,6 +202,11 @@ public class IOUtils {
             }
             print("Invalid Format, an integer is expected");
         }
+    }
+
+    public static boolean inputBool(String message) {
+        String inp = input(message, Map.ofEntries(entry("y", "yes"), entry("n", "no")));
+        return inp.equalsIgnoreCase("y") || inp.equalsIgnoreCase("yes");
     }
 
     public static void setInputStream(String input) { // Is needed for tests

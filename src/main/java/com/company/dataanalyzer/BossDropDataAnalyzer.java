@@ -10,4 +10,5 @@ public class BossDropDataAnalyzer extends DataAnalyzer<BossDropDataSet> {
     public BossDropDataAnalyzer(String filename) throws FileNotFoundException, JsonProcessingException {
         super(filename, BossDropDataSet.class);
     }
+
 }

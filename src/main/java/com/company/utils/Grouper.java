@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
 
-public class Grouper<T extends Comparable<T>> extends LinkedHashMap<List<?>, List<T>> {
+public class Grouper<T> extends LinkedHashMap<List<?>, List<T>> {
 
     private List<T> all;
 
@@ -20,10 +20,8 @@ public class Grouper<T extends Comparable<T>> extends LinkedHashMap<List<?>, Lis
 
     public Grouper(List<T> list) {
         super(ofEntries(entry(List.of(), new ArrayList<>(list))));
-        all = new ArrayList<>(list);
-        all.sort(Comparable::compareTo);
+        all = super.get(List.of());
         groupings = new LinkedList<>();
-        get(List.of()).sort(Comparable::compareTo);
     }
 
     public <R> HashSet<R> getAllReturns(Function<T, R> method, boolean filterNulls) {
@@ -36,7 +34,8 @@ public class Grouper<T extends Comparable<T>> extends LinkedHashMap<List<?>, Lis
         return set;
     }
 
-    public <R extends Comparable<R>> void groupBy(Function<T, R> method, boolean filterNulls) {
+    // TODO: ensure R is Comparable or fallback if it's not
+    public <R> void groupBy(Function<T, R> method, boolean filterNulls) {
         ArrayList<Map.Entry<List<?>, List<T>>> entries = new ArrayList<>(entrySet());
         entries.forEach(e -> {
             getReturns(method, e.getValue(), filterNulls).stream().sorted().forEach(r -> {

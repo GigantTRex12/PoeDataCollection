@@ -24,18 +24,23 @@ public @interface Evaluate {
 
     enum EvaluationMode {
         /**
-         * Evaluate value as percantages of each different value
+         * Evaluate value as percentages of each different value
          */
         PERCENTAGE_BASED,
         /**
-         * used for Collections to count occurences with a Counter
+         * used for Collections to count occurrences with a Counter
          */
         COUNTER_BASED,
         /**
-         * statistic based on numbers in form of a grap
+         * statistic based on numbers in form of a graph
          * only use on whole number types (byte, int, long) including the Wrapper classes
          */
         NUMBER_STATISTIC_GRAPH,
+        /**
+         * custom evaluation mode
+         * Analyzer needs to overwrite customMode() method and have manual implementation for each custom evaluation mode
+         */
+        CUSTOM
     }
 
 }

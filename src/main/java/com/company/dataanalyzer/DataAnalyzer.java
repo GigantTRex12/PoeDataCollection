@@ -7,7 +7,6 @@ import com.company.datasets.datasets.DataSet;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
 import com.company.utils.FileUtils;
 import com.company.utils.Grouper;
-import com.company.utils.IOUtils;
 import com.company.utils.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -19,8 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.company.utils.IOUtils.input;
-import static com.company.utils.IOUtils.inputBool;
+import static com.company.utils.IOUtils.*;
 
 public abstract class DataAnalyzer<T extends DataSet> {
 
@@ -97,7 +95,40 @@ public abstract class DataAnalyzer<T extends DataSet> {
     }
 
     private void evaluateData(Grouper<T> grouper) {
+        print("Evaluating Datasets of type " + getGenericClass().getSimpleName() + " with groupings:");
+        printList(grouper.getGroupings());
+        grouper.forEach((groupValues, datasets) -> {
+            print("Groupings values:");
+            printList(groupValues);
+            getEvaluatableMethods().forEach(p -> {
+                Method m = p.getKey();
+                Evaluate ann = p.getValue();
+                Function<T, Object> f = t -> {
+                    try {
+                        return m.invoke(t);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        throw new SomethingIsWrongWithMyCodeException("Method " + m.getName() + " with annotation @Evaluate is not invokable.");
+                    }
+                };
 
+                switch (ann.evaluationMode()) {
+                    case PERCENTAGE_BASED -> {
+                        percentageBased(datasets.stream().map(f).toList());
+                        break;
+                    }
+                    case COUNTER_BASED -> {
+                        // TODO casting thing
+                        break;
+                    }
+                    case NUMBER_STATISTIC_GRAPH -> {
+                        // TODO casting thing
+                        break;
+                    }
+                    case CUSTOM -> custom(datasets, f);
+                }
+            });
+        });
+        print("---Evaluation complete---");
     }
 
     protected Class<T> getGenericClass() {
@@ -125,6 +156,22 @@ public abstract class DataAnalyzer<T extends DataSet> {
                         .filter(m -> m.isAnnotationPresent(Evaluate.class))
                         .map(m -> new Pair<>(m, m.getAnnotation(Evaluate.class)))
         ).collect(Collectors.toList());
+    }
+
+    protected void percentageBased(List<?> values) {
+
+    }
+
+    protected void counterBased(List<Collection<?>> values) {
+        // TODO
+    }
+
+    protected void numberStatisticsGraph(List<Long> values) {
+        // TODO
+    }
+
+    protected void custom(List<T> datasets, Function<T, ?> function) {
+        throw new UnsupportedOperationException("Analyzer needs to overwrite this method to use custom evaluation mode");
     }
 
 }

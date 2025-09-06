@@ -9,7 +9,6 @@ import com.company.exceptions.SomethingIsWrongWithMyCodeException;
 import java.util.List;
 
 import static com.company.utils.IOUtils.*;
-import static java.lang.System.lineSeparator;
 
 /**
  * Utility class to execute a sequence of {@link Question}s in order, collecting
@@ -80,18 +79,18 @@ public class Survey {
 
     private static void putInMap(LinkedTypeMap answers, String key, Object value) {
         if (key.contains("&")) {
-            if (!(value instanceof List)) throw new SomethingIsWrongWithMyCodeException("For multiple fields value has to be a List");
+            if (!(value instanceof List))
+                throw new SomethingIsWrongWithMyCodeException("For multiple fields value has to be a List");
             List<?> values = (List<?>) value;
             String[] keys = key.split("&");
-            if (values.size() != keys.length) throw new SomethingIsWrongWithMyCodeException("Different amount of keys and values.");
+            if (values.size() != keys.length)
+                throw new SomethingIsWrongWithMyCodeException("Different amount of keys and values.");
             for (int i = 0; i < keys.length; i++) answers.put(keys[i], values.get(i));
         } else answers.put(key, value);
     }
 
-    /**
-     * Private constructor to prevent instantiation of this utility class.
-     */
     private Survey() {
         // Utility class, no instances allowed
     }
+
 }

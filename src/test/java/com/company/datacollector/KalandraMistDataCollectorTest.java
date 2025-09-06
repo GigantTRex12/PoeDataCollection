@@ -7,7 +7,8 @@ import com.company.utils.IOUtils;
 import com.company.utils.Utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,17 +22,18 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
         collector = new KalandraMistDatacollector();
     }
 
-    @Test
-    void add_oneDataSet() throws IOException {
+    @ParameterizedTest
+    @MethodSource("provideAddActions")
+    void add_oneDataSet(String addAction) throws IOException {
         // given
         String inputs = "0" + LINEBREAK +
-                        actions.get("AddData") + LINEBREAK +
-                        "in map" + LINEBREAK +
-                        "2/3" + LINEBREAK +
-                        "1.9" + LINEBREAK +
-                        "r" + LINEBREAK +
-                        "This is a dummy text." + LINEBREAK + "This is only for tests." + LINEBREAK + LINEBREAK +
-                        actions.get("Exit");
+                addAction + LINEBREAK +
+                "in map" + LINEBREAK +
+                "2/3" + LINEBREAK +
+                "1.9" + LINEBREAK +
+                "r" + LINEBREAK +
+                "This is a dummy text." + LINEBREAK + "This is only for tests." + LINEBREAK + LINEBREAK +
+                actions.get("Exit");
         IOUtils.setInputStream(inputs);
 
         KalandraMistDataSet dataSet = new KalandraMistDataSet(
@@ -66,30 +68,31 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
         Assertions.assertEquals(pos + 13, output.size());
     }
 
-    @Test
-    void add_multipleDataSets() throws IOException {
+    @ParameterizedTest
+    @MethodSource("provideAddActions")
+    void add_multipleDataSets(String addAction) throws IOException {
         // given
         InputBuilder.start()
                 .line(0)
-                .line(actions.get("AddData"))
+                .line(addAction)
                 .line("in map")
                 .line("2/3")
                 .emptyLine()
                 .line("r")
                 .multiLine(new String[]{"This is a dummy text.", "This is only for tests."})
-                .line(actions.get("AddData"))
+                .line(addAction)
                 .line("itemized")
                 .line("2/1/1")
                 .line("2.1")
                 .line("a")
                 .multiLine()
-                .line(actions.get("AddData"))
+                .line(addAction)
                 .line("lake 5")
                 .line("3/2")
                 .line("2.05")
                 .line("r")
                 .multiLine(new String[]{"Dummy text nr3"})
-                .line(actions.get("AddData"))
+                .line(addAction)
                 .line("itemized guff 3")
                 .line("3/3")
                 .line("1.4")
@@ -187,18 +190,26 @@ public class KalandraMistDataCollectorTest extends DataCollectorTest {
         });
     }
 
-    @Test
-    void add_attemptInvalidInputs() throws IOException {
+    @ParameterizedTest
+    @MethodSource("provideAddActions")
+    void add_attemptInvalidInputs(String addAction) throws IOException {
         // given
-        String inputs = "0" + LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
-                "bla" + LINEBREAK + "in map" + LINEBREAK +
-                "ble" + LINEBREAK + "15" + LINEBREAK + "-1/3" + LINEBREAK + "4/0" + LINEBREAK +
-                "bli" + LINEBREAK + "2" + LINEBREAK +
-                "blo" + LINEBREAK +
-                "blu" + LINEBREAK + LINEBREAK +
-                actions.get("Exit");
-        IOUtils.setInputStream(inputs);
+        InputBuilder.start()
+                .line(0)
+                .line(addAction)
+                .line("bla")
+                .line("in map")
+                .line("ble")
+                .line("15")
+                .line("-1/3")
+                .line("4/0")
+                .line("bli")
+                .line(2)
+                .line("blo")
+                .multiLine(new String[]{"blu"})
+                .line(actions.get("Exit"))
+                .set();
+
 
         KalandraMistDataSet dataSet = new KalandraMistDataSet(
                 nullStrat,

@@ -116,9 +116,11 @@ public record Question(
             return this;
         }
 
+        // only use after setting a validator/normalizer
         public Builder emptyToNull() {
             validator = validator == null ? null : new EmptyIfEmptyBiFunction(validator);
-            normalizer = normalizer == null ? null : new NullIfEmptyNormalizer(normalizer);
+            if (normalizer == null) normalizer = (answer, answers) -> answer.asString().strip();
+            normalizer = new NullIfEmptyNormalizer(normalizer);
             return this;
         }
 
@@ -139,6 +141,11 @@ public record Question(
                     list.add(parser.apply(answer.asString().strip()));
                 return list;
             };
+            return this;
+        }
+
+        public Builder dontValidate() {
+            this.validator = null;
             return this;
         }
 

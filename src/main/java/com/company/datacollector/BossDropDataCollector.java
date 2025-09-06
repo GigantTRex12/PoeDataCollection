@@ -7,6 +7,7 @@ import com.company.datacollector.Survey.Question;
 import java.util.List;
 
 public class BossDropDataCollector extends DataCollector<BossDropDataSet> {
+
     public BossDropDataCollector() {
         super(BossDropDataSet.class, BossDropDataSet::builder);
     }

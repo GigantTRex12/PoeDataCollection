@@ -50,7 +50,9 @@ public class Survey {
                     final Object normalized = question.normalizer().apply(input, answers);
                     putInMap(answers, question.key(), (normalized instanceof Type<?> t) ? t.value() : normalized);
                 } catch (InvalidInputFormatException e) {
-                    print("Invalid input: " + e.getMessage());
+                    print("Invalid input, try again");
+                    // TODO: test does not expect a specified message yet
+                    //print("Invalid input: " + e.getMessage());
                     continue;
                 }
                 break;

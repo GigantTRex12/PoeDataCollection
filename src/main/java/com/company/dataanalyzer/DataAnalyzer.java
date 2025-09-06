@@ -25,7 +25,7 @@ public abstract class DataAnalyzer<T extends DataSet> {
     @Getter
     private static final Map<String, String> actions = Map.ofEntries(
             entry("AnalyzeData", "a"),
-            //entry("AnalyzeDataFunctionl", "af"),
+            //entry("AnalyzeDataFunctional", "af"),
             entry("PrintData", "p"),
             entry("Exit", "e")
     );
@@ -141,7 +141,7 @@ public abstract class DataAnalyzer<T extends DataSet> {
                     }
                     case CUSTOM -> custom(datasets, m);
                 }
-                print("");
+                print("-----");
             });
         });
         print("---Evaluation complete---");
@@ -171,7 +171,8 @@ public abstract class DataAnalyzer<T extends DataSet> {
                 Arrays.stream(getGenericClass().getDeclaredMethods())
                         .filter(m -> m.isAnnotationPresent(Evaluate.class))
                         .map(m -> new Pair<>(m, m.getAnnotation(Evaluate.class)))
-        ).collect(Collectors.toList());
+        ).sorted(Comparator.comparingInt(p -> p.value().order()))
+                .collect(Collectors.toList());
     }
 
     protected <R> void percentageBased(List<R> values) {

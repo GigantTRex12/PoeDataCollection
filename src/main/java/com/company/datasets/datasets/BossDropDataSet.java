@@ -36,12 +36,12 @@ public class BossDropDataSet extends DataSet {
 
     @JsonProperty("guaranteedDrop")
     @InputProperty(message = "Which unique was the guaranteed drop?", order = 4, parsingFunc = "parseToBossLoot", emptyToNull = true)
-    @Evaluate
+    @Evaluate(order = 0)
     private final Loot guaranteedDrop;
 
     @JsonProperty("extraDrops")
     @InputProperty(message = "Input extra drops to track.", order = 5, parsingFunc = "toLootList", multiline = true)
-    @Evaluate(evaluationMode = COUNTER_BASED)
+    @Evaluate(order = 1, evaluationMode = COUNTER_BASED)
     private final List<Loot> extraDrops;
 
     @JsonProperty("quantity")

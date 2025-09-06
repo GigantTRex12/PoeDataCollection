@@ -30,7 +30,7 @@ public abstract class DataCollector<T extends DataSet> {
     @Getter
     private static final Map<String, String> actions = Map.ofEntries(
             entry("AddData", "a"),
-            entry("AddDataFunctionl", "af"),
+            entry("AddDataFunctional", "af"),
             entry("ClearData", "c"),
             entry("Save", "s"),
             entry("PrintData", "p"),

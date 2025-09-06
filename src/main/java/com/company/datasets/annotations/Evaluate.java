@@ -48,4 +48,6 @@ public @interface Evaluate {
         CUSTOM
     }
 
+    int order();
+
 }

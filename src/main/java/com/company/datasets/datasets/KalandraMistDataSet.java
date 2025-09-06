@@ -52,13 +52,13 @@ public class KalandraMistDataSet extends DataSet {
             options = {"a", "r"}, options2 = {"amulet", "ring"}, forceOptions = false,
             order = 3, parsingFunc = "parseToMistLoottype", emptyToNull = true)
     @Groupable(order = 3, ignoreNulls = true)
-    @Evaluate
+    @Evaluate(order = 2)
     private final LootType itemType;
 
     @JsonProperty("multiplier")
     @InputProperty(message = "Enter the multiplier. Leave Empty to skip", regex = "^$|^\\d+\\.?\\d*$", order = 2,
             emptyToNull = true)
-    @Evaluate
+    @Evaluate(order = 1)
     private final String multiplier;
 
     @JsonInclude(NON_NULL)
@@ -89,8 +89,8 @@ public class KalandraMistDataSet extends DataSet {
         return amountPositive + amountNegative + amountNeutral;
     }
 
-    @Evaluate
-    public int result() {
+    @Evaluate(order = 0)
+    public int amountPositives() {
         return Math.max(amountPositive, amountNegative);
     }
 

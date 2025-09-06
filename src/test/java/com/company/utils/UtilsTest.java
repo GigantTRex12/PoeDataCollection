@@ -10,10 +10,7 @@ import com.company.datasets.other.metadata.Strategy;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -346,6 +343,21 @@ public class UtilsTest {
 
         // then
         assertEquals(DataSet.class.getMethod("getStrategy"), actual);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1,2,1,50.0%",
+            "1,3,1,33.3%",
+            "1,5,0,20%",
+            "5,27,2,18.52%"
+    })
+    void test_toPercentage(int dividend, int divisor, int digits, String expected) {
+        // when
+        String actual = Utils.toPercentage(dividend, divisor, digits);
+
+        // then
+        assertEquals(expected, actual);
     }
 
 }

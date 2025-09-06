@@ -6,10 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Utils {
     public static String join(String[] strings) {
@@ -153,6 +151,28 @@ public class Utils {
         } catch (NoSuchMethodException e) {
             return null;
         }
+    }
+
+    public static Collection<Field> getAllFields(Class<?> clazz) {
+        List<Field> fields = new ArrayList<>(Arrays.stream(clazz.getDeclaredFields()).toList());
+
+        Class<?> currClass = clazz.getSuperclass();
+        while (currClass != null) {
+            fields.addAll(Arrays.stream(currClass.getDeclaredFields()).toList());
+            currClass = currClass.getSuperclass();
+        }
+
+        return fields;
+    }
+
+    public static String toPercentage(int dividend, int divisor, int digits) {
+        if (digits <= 0) return (100 * dividend / divisor) + "%";
+        float result = (float) dividend / (float) divisor;
+        result *= 100;
+        double tens = Math.pow(10, digits);
+        result *= tens;
+        String rep = String.valueOf(Math.round(result));
+        return rep.substring(0, rep.length() - digits) + "." + rep.substring(rep.length() - digits) + "%";
     }
 
 }

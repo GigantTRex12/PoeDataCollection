@@ -116,18 +116,12 @@ public abstract class DataAnalyzer<T extends DataSet> {
 
     private void evaluateData(Grouper<T> grouper) {
         print("Evaluating Datasets of type " + getGenericClass().getSimpleName() + " with groupings:");
-        printList(grouper.getGroupings());
+        printList(grouper.getGroupings(), ", ");
         getEvaluatableMethods().forEach(p -> {
             Method m = p.getKey();
             if (!inputBool("Want to evaluate " + m.getName() + "?")) return;
             Evaluate ann = p.getValue();
-            Function<T, Object> f = t -> {
-                try {
-                    return m.invoke(t);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new SomethingIsWrongWithMyCodeException("Method " + m.getName() + " with annotation @Evaluate is not invokable.");
-                }
-            };
+            Function<T, Object> f = new PrintableFunction<>(m);
             grouper.forEach((groupValues, datasets) -> {
                 print("Groupings values for " + datasets.size() + " datasets:");
                 printList(groupValues, ", ");
@@ -159,10 +153,10 @@ public abstract class DataAnalyzer<T extends DataSet> {
 
     private List<Pair<Method, Groupable>> getGroupableMethods() {
         return Stream.concat(
-                Arrays.stream(getGenericClass().getDeclaredFields())
+                Utils.getAllFields(getGenericClass()).stream()
                         .filter(f -> f.isAnnotationPresent(Groupable.class))
                         .map(f -> new Pair<>(Utils.getGetter(f), f.getAnnotation(Groupable.class))),
-                Arrays.stream(getGenericClass().getDeclaredMethods())
+                Arrays.stream(getGenericClass().getMethods())
                         .filter(m -> m.isAnnotationPresent(Groupable.class))
                         .map(m -> new Pair<>(m, m.getAnnotation(Groupable.class)))
         ).sorted(Comparator.comparingInt(p -> p.value().order()))
@@ -183,11 +177,18 @@ public abstract class DataAnalyzer<T extends DataSet> {
     protected <R> void percentageBased(List<R> values) {
         Counter<R> counter = new Counter<>(values);
         int total = counter.sum();
-        counter.forEachNonZero((value, amount) -> print((value != null ? value.toString() : "null") + ": " + (100 * amount / total) + "%"));
+        counter.forEachNonZero((value, amount) -> print(
+                (value != null ? value.toString() : "null") + ": "
+                        + Utils.toPercentage(amount, total, 1))
+        );
     }
 
     protected <R> void counterBased(List<Iterable<R>> values) {
-        // TODO
+        Counter<R> counter = new Counter<>();
+        for (Iterable<R> iterable : values) {
+            counter.add(iterable);
+        }
+        counter.forEachNonZero((value, amount) -> print("Total of " + amount + " " + value.toString() + "."));
     }
 
     protected void numberStatisticsGraph(List<Long> values) {

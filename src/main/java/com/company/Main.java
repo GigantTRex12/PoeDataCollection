@@ -2,6 +2,7 @@ package com.company;
 
 import com.company.dataanalyzer.BossDropDataAnalyzer;
 import com.company.dataanalyzer.DataAnalyzer;
+import com.company.dataanalyzer.KalandraMistDataAnalyzer;
 import com.company.datacollector.*;
 
 import java.io.IOException;
@@ -58,8 +59,8 @@ public class Main {
             } else if (action.equals("a") || action.equals("analyze")) {
                 DataAnalyzer<?> analyzer = null;
                 switch (dataType) {
-                    case "boss drops" ->
-                            analyzer = new BossDropDataAnalyzer(filename);
+                    case "mist" -> analyzer = new KalandraMistDataAnalyzer(filename);
+                    case "boss drops" -> analyzer = new BossDropDataAnalyzer(filename);
                     default -> {
                         print("Exiting");
                         return;

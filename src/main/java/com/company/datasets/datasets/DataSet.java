@@ -11,7 +11,7 @@ import lombok.ToString;
 public abstract class DataSet {
 
     @JsonProperty("strategy")
-    @Groupable(order = 1, filterByValue = true)
+    @Groupable(order = -2, filterByValue = true)
     private final Strategy strategy;
 
     public DataSet() {
@@ -22,7 +22,7 @@ public abstract class DataSet {
         this.strategy = strategy.copyWithoutId();
     }
 
-    @Groupable(order = 2, filterByValue = true, ignoreNulls = true)
+    @Groupable(order = -1, filterByValue = true, ignoreNulls = true)
     public String league() {
         return strategy.getLeague();
     }

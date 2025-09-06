@@ -28,6 +28,11 @@ public @interface Evaluate {
          */
         PERCENTAGE_BASED,
         /**
+         * Like PERCENTAGE_BASED but also gives a varianz of the probability based on number of attempts
+         * (the probability range the actual probability is in with 99% probability according to the data)
+         */
+        PERCENTAGE_BASED_VARIANCE,
+        /**
          * used for Collections to count occurrences with a Counter
          */
         COUNTER_BASED,

@@ -1,5 +1,7 @@
 package com.company.datasets.datasets;
 
+import com.company.datasets.annotations.Evaluate;
+import com.company.datasets.annotations.Groupable;
 import com.company.datasets.annotations.InputProperty;
 import com.company.datasets.builder.DataSetBuilderInterface;
 import com.company.datasets.other.loot.LootType;
@@ -20,10 +22,12 @@ public class KalandraMistDataSet extends DataSet {
     @JsonProperty("type")
     @InputProperty(message = "What type of mist does this item come from?", regex = "^in map$|^itemized( guff [1-3])?$|^lake \\d+$",
             order = 0, parsingFunc = "parseMistType")
+    @Groupable(order = 0, filterByValue = true)
     private final MistType type;
 
     @JsonProperty("tier")
     @InputProperty(order = 0, groupOrder = 1, parsingFunc = "parseTier")
+    @Groupable(order = 1)
     private final Integer tier;
 
     @JsonProperty("amountPositive")
@@ -47,11 +51,14 @@ public class KalandraMistDataSet extends DataSet {
     @InputProperty(message = "What type is the item?",
             options = {"a", "r"}, options2 = {"amulet", "ring"}, forceOptions = false,
             order = 3, parsingFunc = "parseToMistLoottype", emptyToNull = true)
+    @Groupable(order = 3, ignoreNulls = true)
+    @Evaluate
     private final LootType itemType;
 
     @JsonProperty("multiplier")
     @InputProperty(message = "Enter the multiplier. Leave Empty to skip", regex = "^$|^\\d+\\.?\\d*$", order = 2,
             emptyToNull = true)
+    @Evaluate
     private final String multiplier;
 
     @JsonInclude(NON_NULL)
@@ -75,6 +82,16 @@ public class KalandraMistDataSet extends DataSet {
 
     public enum MistType {
         IN_MAP, ITEMIZED, LAKE, ITEMIZED_GUFF
+    }
+
+    @Groupable(order = 2, force = true)
+    public int totalMods() {
+        return amountPositive + amountNegative + amountNeutral;
+    }
+
+    @Evaluate
+    public int result() {
+        return Math.max(amountPositive, amountNegative);
     }
 
     @Deprecated

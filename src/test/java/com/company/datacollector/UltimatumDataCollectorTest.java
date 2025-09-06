@@ -9,6 +9,8 @@ import com.company.utils.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,11 +29,12 @@ public class UltimatumDataCollectorTest extends DataCollectorTest{
         collector = new UltimatumDataCollector();
     }
 
-    @Test
-    void add_oneDataSet() throws IOException {
+    @ParameterizedTest
+    @MethodSource("provideAddActions")
+    void add_oneDataSet(String addAction) throws IOException {
         // given
         String inputs = "0" + LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
+                addAction + LINEBREAK +
                 "Honour Wrap Necromancer Silks;rarearmorcorrupted;1" +
                 LINEBREAK + "Whispering Bite Murderous Eye Jewel;rare" +
                 LINEBREAK + "Instrinsic Catalyst;catalyst;3" +
@@ -93,11 +96,12 @@ public class UltimatumDataCollectorTest extends DataCollectorTest{
         Assertions.assertEquals(pos + 9, output.size());
     }
 
-    @Test
-    void add_multipleDataSets() throws IOException {
+    @ParameterizedTest
+    @MethodSource("provideAddActions")
+    void add_multipleDataSets(String addAction) throws IOException {
         // given
         String inputs = "0" + LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
+                addAction + LINEBREAK +
                 "Honour Wrap Necromancer Silks;rarearmorcorrupted;1" +
                 LINEBREAK + "Whispering Bite Murderous Eye Jewel;rare" +
                 LINEBREAK + "Instrinsic Catalyst;catalyst;3" +
@@ -114,7 +118,7 @@ public class UltimatumDataCollectorTest extends DataCollectorTest{
                 LINEBREAK + "Intrinsic Catalyst;catalyst;10" +
                 LINEBREAK + "Tainted Catalyst;catalyst;9" +
                 LINEBREAK + LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
+                addAction + LINEBREAK +
                 "-" +
                 LINEBREAK + "-" +
                 LINEBREAK + "Instrinsic Catalyst;catalyst;3" +
@@ -132,7 +136,7 @@ public class UltimatumDataCollectorTest extends DataCollectorTest{
                 LINEBREAK + "Whispering Bite Murderous Eye Jewel;rare" +
                 LINEBREAK + "Instrinsic Catalyst;catalyst;3" +
                 LINEBREAK + LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
+                addAction + LINEBREAK +
                 "Honour Wrap Necromancer Silks;rarearmorcorrupted;1" +
                 LINEBREAK + "Whispering Bite Murderous Eye Jewel;rare" +
                 LINEBREAK + "Instrinsic Catalyst;catalyst;3" +
@@ -251,13 +255,14 @@ public class UltimatumDataCollectorTest extends DataCollectorTest{
         Assertions.assertEquals(pos + 23, output.size());
     }
 
-    @Test
-    void add_attemptInvalidInputs() throws IOException {
+    @ParameterizedTest
+    @MethodSource("provideAddActions")
+    void add_attemptInvalidInputs(String addAction) throws IOException {
         // given
         String inputs = "0" + LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
+                addAction + LINEBREAK +
                 LINEBREAK +
-                actions.get("AddData") + LINEBREAK +
+                addAction + LINEBREAK +
                 "invalid" +
                 LINEBREAK + "Honour Wrap Necromancer Silks;rarearmorcorrupted;1" +
                 LINEBREAK + "also invalid" +

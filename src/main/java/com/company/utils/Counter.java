@@ -1,6 +1,8 @@
 package com.company.utils;
 
 import java.util.HashMap;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class Counter<T> extends HashMap<T, Integer> {
 
@@ -68,6 +70,12 @@ public class Counter<T> extends HashMap<T, Integer> {
             sum += this.get(t);
         }
         return sum;
+    }
+
+    public void forEachNonZero(BiConsumer<T, Integer> consumer) {
+        forEach((t, i) -> {
+            if (i != 0) consumer.accept(t, i);
+        });
     }
 
 }

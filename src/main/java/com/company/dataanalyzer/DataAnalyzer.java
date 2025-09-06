@@ -5,10 +5,9 @@ import com.company.datasets.annotations.Evaluate;
 import com.company.datasets.annotations.Groupable;
 import com.company.datasets.datasets.DataSet;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
-import com.company.utils.FileUtils;
-import com.company.utils.Grouper;
-import com.company.utils.Utils;
+import com.company.utils.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.Getter;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
@@ -19,8 +18,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.company.utils.IOUtils.*;
+import static java.util.Map.entry;
 
 public abstract class DataAnalyzer<T extends DataSet> {
+
+    @Getter
+    private static final Map<String, String> actions = Map.ofEntries(
+            entry("AnalyzeData", "a"),
+            //entry("AnalyzeDataFunctionl", "af"),
+            entry("PrintData", "p"),
+            entry("Exit", "e")
+    );
 
     protected final List<T> data;
 
@@ -36,8 +44,26 @@ public abstract class DataAnalyzer<T extends DataSet> {
     }
 
     public void analyzeData() {
-        Grouper<T> grouper = groupData();
-        evaluateData(grouper);
+        while (true) {
+            String action = input("What would you like to do?", actions).toLowerCase();
+            boolean exit = false;
+            switch (action) {
+                case "analyzedata":
+                case "a":
+                    Grouper<T> grouper = groupData();
+                    evaluateData(grouper);
+                    break;
+                case ("printdata"):
+                case ("p"):
+                    printList(this.data);
+                    break;
+                case ("exit"):
+                case ("e"):
+                    exit = true;
+                    break;
+            }
+            if (exit) break;
+        }
     }
 
     private Grouper<T> groupData() {
@@ -46,13 +72,7 @@ public abstract class DataAnalyzer<T extends DataSet> {
         getGroupableMethods().forEach(p -> {
             Method m = p.getKey();
             Groupable ann = p.getValue();
-            Function<T, Object> f = t -> {
-                try {
-                    return m.invoke(t);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new SomethingIsWrongWithMyCodeException("Method " + m.getName() + " with annotation @Groupable is not invokable.");
-                }
-            };
+            Function<T, Object> f = new PrintableFunction<>(m);
 
             if (!ann.force()) {
                 String message;
@@ -97,19 +117,20 @@ public abstract class DataAnalyzer<T extends DataSet> {
     private void evaluateData(Grouper<T> grouper) {
         print("Evaluating Datasets of type " + getGenericClass().getSimpleName() + " with groupings:");
         printList(grouper.getGroupings());
-        grouper.forEach((groupValues, datasets) -> {
-            print("Groupings values:");
-            printList(groupValues);
-            getEvaluatableMethods().forEach(p -> {
-                Method m = p.getKey();
-                Evaluate ann = p.getValue();
-                Function<T, Object> f = t -> {
-                    try {
-                        return m.invoke(t);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new SomethingIsWrongWithMyCodeException("Method " + m.getName() + " with annotation @Evaluate is not invokable.");
-                    }
-                };
+        getEvaluatableMethods().forEach(p -> {
+            Method m = p.getKey();
+            if (!inputBool("Want to evaluate " + m.getName() + "?")) return;
+            Evaluate ann = p.getValue();
+            Function<T, Object> f = t -> {
+                try {
+                    return m.invoke(t);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new SomethingIsWrongWithMyCodeException("Method " + m.getName() + " with annotation @Evaluate is not invokable.");
+                }
+            };
+            grouper.forEach((groupValues, datasets) -> {
+                print("Groupings values for " + datasets.size() + " datasets:");
+                printList(groupValues, ", ");
 
                 switch (ann.evaluationMode()) {
                     case PERCENTAGE_BASED -> {
@@ -124,8 +145,9 @@ public abstract class DataAnalyzer<T extends DataSet> {
                         // TODO casting thing
                         break;
                     }
-                    case CUSTOM -> custom(datasets, f);
+                    case CUSTOM -> custom(datasets, m);
                 }
+                print("");
             });
         });
         print("---Evaluation complete---");
@@ -158,11 +180,13 @@ public abstract class DataAnalyzer<T extends DataSet> {
         ).collect(Collectors.toList());
     }
 
-    protected void percentageBased(List<?> values) {
-
+    protected <R> void percentageBased(List<R> values) {
+        Counter<R> counter = new Counter<>(values);
+        int total = counter.sum();
+        counter.forEachNonZero((value, amount) -> print((value != null ? value.toString() : "null") + ": " + (100 * amount / total) + "%"));
     }
 
-    protected void counterBased(List<Collection<?>> values) {
+    protected <R> void counterBased(List<Iterable<R>> values) {
         // TODO
     }
 
@@ -170,7 +194,7 @@ public abstract class DataAnalyzer<T extends DataSet> {
         // TODO
     }
 
-    protected void custom(List<T> datasets, Function<T, ?> function) {
+    protected void custom(List<T> datasets, Method method) {
         throw new UnsupportedOperationException("Analyzer needs to overwrite this method to use custom evaluation mode");
     }
 

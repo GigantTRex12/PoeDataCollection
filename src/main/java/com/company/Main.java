@@ -1,5 +1,6 @@
 package com.company;
 
+import com.company.dataanalyzer.BossDropDataAnalyzer;
 import com.company.dataanalyzer.DataAnalyzer;
 import com.company.datacollector.*;
 
@@ -37,7 +38,6 @@ public class Main {
                 return;
             }
             String dataType = input("Which type of Data would you like to work with?", typeToFilename.keySet()).toLowerCase();
-
             String filename = dataPath + typeToFilename.get(dataType.toLowerCase());
 
             if (action.equals("c") || action.equals("collect")) {
@@ -58,12 +58,14 @@ public class Main {
             } else if (action.equals("a") || action.equals("analyze")) {
                 DataAnalyzer<?> analyzer = null;
                 switch (dataType) {
+                    case "boss drops" ->
+                            analyzer = new BossDropDataAnalyzer(filename);
                     default -> {
                         print("Exiting");
                         return;
                     }
                 }
-                //analyzer.analyzeData();
+                if (analyzer != null) analyzer.analyzeData();
             }
             else {
                 print("Exiting");

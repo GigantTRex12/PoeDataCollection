@@ -78,9 +78,7 @@ public abstract class DataCollector<T extends DataSet> {
                     break;
                 case ("printdata"):
                 case ("p"):
-                    for (DataSet ds : this.data) {
-                        print(ds);
-                    }
+                    printList(this.data);
                     break;
                 case ("addstrat"):
                 case ("as"):
@@ -104,9 +102,7 @@ public abstract class DataCollector<T extends DataSet> {
                     exit = true;
                     break;
             }
-            if (exit) {
-                break;
-            }
+            if (exit) break;
         }
     }
 

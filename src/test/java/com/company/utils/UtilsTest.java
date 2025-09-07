@@ -350,11 +350,27 @@ public class UtilsTest {
             "1,2,1,50.0%",
             "1,3,1,33.3%",
             "1,5,0,20%",
-            "5,27,2,18.52%"
+            "5,27,2,18.52%",
+            "3,200,0,2%"
     })
     void test_toPercentage(int dividend, int divisor, int digits, String expected) {
         // when
         String actual = Utils.toPercentage(dividend, divisor, digits);
+
+        // then
+        assertEquals(expected, actual);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "30,50,2,(46.42% - 73.58%)",
+            "14,200,1,(3.5% - 10.5%)",
+            "98,10405,3,(.756% - 1.127%)",
+            "37,39,2,(87.95% - 100.00%)"
+    })
+    void test_toBinomialConfidenceRange(int successes, int sampleSize, int digits, String expected) {
+        // when
+        String actual = Utils.toBinomialConfidenceRange(successes, sampleSize, digits);
 
         // then
         assertEquals(expected, actual);

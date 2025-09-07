@@ -54,7 +54,7 @@ public class EvaluateTest extends AnnotationTest {
             default:
                 assertTrue(List.of(
                         Evaluate.EvaluationMode.PERCENTAGE_BASED,
-                        Evaluate.EvaluationMode.PERCENTAGE_BASED_VARIANCE
+                        Evaluate.EvaluationMode.PERCENTAGE_BASED_CONFIDENCE
                 ).contains(mode), "Test does not know the mode " + mode);
         }
     }

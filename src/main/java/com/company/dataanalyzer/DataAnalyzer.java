@@ -131,6 +131,10 @@ public abstract class DataAnalyzer<T extends DataSet> {
                         percentageBased(datasets.stream().map(f).toList());
                         break;
                     }
+                    case PERCENTAGE_BASED_CONFIDENCE -> {
+                        percentageBasedConfidence(datasets.stream().map(f).toList());
+                        break;
+                    }
                     case COUNTER_BASED -> {
                         // TODO casting thing
                         break;
@@ -178,6 +182,16 @@ public abstract class DataAnalyzer<T extends DataSet> {
     protected <R> void percentageBased(List<R> values) {
         Counter<R> counter = new Counter<>(values);
         int total = counter.sum();
+        counter.forEachNonZero((value, amount) -> print(
+                (value != null ? value.toString() : "null") + ": "
+                        + Utils.toPercentage(amount, total, 1))
+        );
+    }
+
+    protected <R> void percentageBasedConfidence(List<R> values) {
+        Counter<R> counter = new Counter<>(values);
+        int total = counter.sum();
+        // TODO: confidence
         counter.forEachNonZero((value, amount) -> print(
                 (value != null ? value.toString() : "null") + ": "
                         + Utils.toPercentage(amount, total, 1))

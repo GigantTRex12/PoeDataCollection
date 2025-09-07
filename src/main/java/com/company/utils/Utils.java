@@ -166,13 +166,33 @@ public class Utils {
     }
 
     public static String toPercentage(int dividend, int divisor, int digits) {
-        if (digits <= 0) return (100 * dividend / divisor) + "%";
+        if (digits <= 0) return Math.round(100 * (float) dividend / (float) divisor) + "%";
         float result = (float) dividend / (float) divisor;
         result *= 100;
         double tens = Math.pow(10, digits);
         result *= tens;
         String rep = String.valueOf(Math.round(result));
         return rep.substring(0, rep.length() - digits) + "." + rep.substring(rep.length() - digits) + "%";
+    }
+
+    // 95% confidence
+    public static String toBinomialConfidenceRange(int successes, int sampleSize, int digits) {
+        float p = (float) successes / (float) sampleSize;
+        double lowEnd = p - 1.96 * Math.sqrt((p * (1 - p)) / (float) sampleSize);
+        double highEnd = p + 1.96 * Math.sqrt((p * (1 - p)) / (float) sampleSize);
+        if (highEnd > 1) highEnd = 1;
+
+        // rounding and converting to percentage
+        lowEnd *= 100;
+        highEnd *= 100;
+        double tens = Math.pow(10, digits);
+        lowEnd *= tens;
+        highEnd *= tens;
+        String repLow = String.valueOf(Math.round(lowEnd));
+        String repHigh = String.valueOf(Math.round(highEnd));
+        repLow = repLow.substring(0, repLow.length() - digits) + "." + repLow.substring(repLow.length() - digits) + "%";
+        repHigh = repHigh.substring(0, repHigh.length() - digits) + "." + repHigh.substring(repHigh.length() - digits) + "%";
+        return "(" + repLow + " - " + repHigh + ")";
     }
 
 }

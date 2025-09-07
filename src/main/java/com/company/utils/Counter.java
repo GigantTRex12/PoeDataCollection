@@ -2,7 +2,6 @@ package com.company.utils;
 
 import java.util.HashMap;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class Counter<T> extends HashMap<T, Integer> {
 

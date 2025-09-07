@@ -41,7 +41,7 @@ public class EvaluateTest extends AnnotationTest {
         switch (mode) {
             case COUNTER_BASED:
                 assertTrue(
-                        Collection.class.isAssignableFrom(method.getReturnType()),
+                        Iterable.class.isAssignableFrom(method.getReturnType()),
                         "Method should return a Collection for mode " + mode
                 );
                 break;

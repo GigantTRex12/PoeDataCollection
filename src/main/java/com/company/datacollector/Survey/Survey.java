@@ -81,9 +81,8 @@ public class Survey {
 
     private static void putInMap(LinkedTypeMap answers, String key, Object value) {
         if (key.contains("&")) {
-            if (!(value instanceof List))
+            if (!(value instanceof List<?> values))
                 throw new SomethingIsWrongWithMyCodeException("For multiple fields value has to be a List");
-            List<?> values = (List<?>) value;
             String[] keys = key.split("&");
             if (values.size() != keys.length)
                 throw new SomethingIsWrongWithMyCodeException("Different amount of keys and values.");

@@ -3,11 +3,12 @@ package com.company.utils;
 import com.company.datasets.other.loot.LootType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.math3.stat.interval.ConfidenceInterval;
+import org.apache.commons.math3.stat.interval.WilsonScoreInterval;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Utils {
     public static String join(String[] strings) {
@@ -166,33 +167,34 @@ public class Utils {
     }
 
     public static String toPercentage(int dividend, int divisor, int digits) {
-        if (digits <= 0) return Math.round(100 * (float) dividend / (float) divisor) + "%";
-        float result = (float) dividend / (float) divisor;
-        result *= 100;
-        double tens = Math.pow(10, digits);
-        result *= tens;
-        String rep = String.valueOf(Math.round(result));
-        return rep.substring(0, rep.length() - digits) + "." + rep.substring(rep.length() - digits) + "%";
+        return numbertoStringWithComma(Math.round((double) (dividend * 100 * (long) Math.pow(10, digits)) / (double) divisor), digits) + "%";
     }
 
-    // 95% confidence
-    public static String toBinomialConfidenceRange(int successes, int sampleSize, int digits) {
-        float p = (float) successes / (float) sampleSize;
-        double lowEnd = p - 1.96 * Math.sqrt((p * (1 - p)) / (float) sampleSize);
-        double highEnd = p + 1.96 * Math.sqrt((p * (1 - p)) / (float) sampleSize);
-        if (highEnd > 1) highEnd = 1;
+    public static String toBinomialConfidenceRange(int successes, int sampleSize, double confidence, int digits) {
+        ConfidenceInterval interval = new WilsonScoreInterval().createInterval(sampleSize, successes, confidence);
+        long tens = (long) Math.pow(10, digits);
+        long lower = Math.round(100 * tens * interval.getLowerBound());
+        long higher = Math.round(100 * tens * interval.getUpperBound());
+        return "[" + numbertoStringWithComma(lower, digits) + "% - " + numbertoStringWithComma(higher, digits) + "%]";
+    }
 
-        // rounding and converting to percentage
-        lowEnd *= 100;
-        highEnd *= 100;
-        double tens = Math.pow(10, digits);
-        lowEnd *= tens;
-        highEnd *= tens;
-        String repLow = String.valueOf(Math.round(lowEnd));
-        String repHigh = String.valueOf(Math.round(highEnd));
-        repLow = repLow.substring(0, repLow.length() - digits) + "." + repLow.substring(repLow.length() - digits) + "%";
-        repHigh = repHigh.substring(0, repHigh.length() - digits) + "." + repHigh.substring(repHigh.length() - digits) + "%";
-        return "(" + repLow + " - " + repHigh + ")";
+    private static String numbertoStringWithComma(long number, int digits) {
+        if (digits <= 0) return String.valueOf(number);
+        String rep = String.valueOf(number);
+        int pos = rep.length() - digits;
+
+        if (pos < 0) return "0." + new String(new char[-pos]).replace('\0', '0') + rep;
+        if (pos == 0) {
+            while (rep.endsWith("0")) rep = rep.substring(0, rep.length() - 1);
+            return "0." + rep;
+        }
+
+        String before = rep.substring(0, pos);
+        String after = rep.substring(pos);
+        while (after.endsWith("0")) after = after.substring(0, after.length() - 1);
+
+        if (after.isEmpty()) return before;
+        return before + "." + after;
     }
 
 }

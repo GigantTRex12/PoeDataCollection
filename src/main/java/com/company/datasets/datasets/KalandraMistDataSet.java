@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import static com.company.datasets.annotations.Evaluate.EvaluationMode.PERCENTAGE_BASED_CONFIDENCE;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 
 @NoArgsConstructor(force = true)
@@ -89,7 +90,7 @@ public class KalandraMistDataSet extends DataSet {
         return amountPositive + amountNegative + amountNeutral;
     }
 
-    @Evaluate(order = 0)
+    @Evaluate(order = 0, evaluationMode = PERCENTAGE_BASED_CONFIDENCE)
     public int amountPositives() {
         return Math.max(amountPositive, amountNegative);
     }

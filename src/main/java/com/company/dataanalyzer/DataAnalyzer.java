@@ -127,22 +127,24 @@ public abstract class DataAnalyzer<T extends DataSet> {
                 printList(groupValues, ", ");
 
                 switch (ann.evaluationMode()) {
-                    case PERCENTAGE_BASED -> {
-                        percentageBased(datasets.stream().map(f).toList());
-                        break;
-                    }
-                    case PERCENTAGE_BASED_CONFIDENCE -> {
-                        percentageBasedConfidence(datasets.stream().map(f).toList());
-                        break;
-                    }
-                    case COUNTER_BASED -> {
-                        // TODO casting thing
-                        break;
-                    }
-                    case NUMBER_STATISTIC_GRAPH -> {
-                        // TODO casting thing
-                        break;
-                    }
+                    case PERCENTAGE_BASED -> percentageBased(datasets.stream().map(f).toList());
+                    case PERCENTAGE_BASED_CONFIDENCE -> percentageBasedConfidence(datasets.stream().map(f).toList());
+                    case COUNTER_BASED -> counterBased(datasets.stream().map(f)
+                            .map(o -> {
+                                try {
+                                    return (Iterable<?>) o;
+                                } catch (ClassCastException e) {
+                                    throw new SomethingIsWrongWithMyCodeException("Return type of " + m.getName() + " needs to be an iterable");
+                                }
+                            }).toList());
+                    case NUMBER_STATISTIC_GRAPH -> numberStatisticsGraph(datasets.stream().map(f)
+                            .map(o -> {
+                                try {
+                                    return (Long) o;
+                                } catch (ClassCastException e) {
+                                    throw new SomethingIsWrongWithMyCodeException("Return type of " + m.getName() + " needs to be a long");
+                                }
+                            }).toList());
                     case CUSTOM -> custom(datasets, m);
                 }
                 print("-----");
@@ -184,18 +186,17 @@ public abstract class DataAnalyzer<T extends DataSet> {
         int total = counter.sum();
         counter.forEachNonZero((value, amount) -> print(
                 (value != null ? value.toString() : "null") + ": "
-                        + Utils.toPercentage(amount, total, 1))
-        );
+                        + Utils.toPercentage(amount, total, 1)
+        ));
     }
 
     protected <R> void percentageBasedConfidence(List<R> values) {
         Counter<R> counter = new Counter<>(values);
         int total = counter.sum();
-        // TODO: confidence
         counter.forEachNonZero((value, amount) -> print(
                 (value != null ? value.toString() : "null") + ": "
-                        + Utils.toPercentage(amount, total, 1))
-        );
+                        + Utils.toBinomialConfidenceRange(amount, total, 0.95, 2)
+        ));
     }
 
     protected <R> void counterBased(List<Iterable<R>> values) {

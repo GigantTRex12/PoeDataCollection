@@ -49,7 +49,6 @@ public class Main {
                     case "ultimatum" -> collector = new UltimatumDataCollector();
                     case "boss drops" -> collector = new BossDropDataCollector();
                     case "cadiro" -> collector = new CadiroDataCollector();
-                    case "jun" -> collector = new JunDataCollector(filename);
                     default -> {
                         print("Exiting");
                         return;

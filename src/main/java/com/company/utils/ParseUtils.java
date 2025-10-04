@@ -3,9 +3,6 @@ package com.company.utils;
 import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
 import com.company.datasets.other.UniqueAndGoldCostPair;
-import com.company.datasets.other.jun.Encounter;
-import com.company.datasets.other.jun.Member;
-import com.company.datasets.other.jun.Safehouse;
 import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.loot.LootType;
 import com.company.exceptions.InvalidInputFormatException;
@@ -156,25 +153,6 @@ public class ParseUtils {
             return List.of();
         }
         return toMapDropList(string, ',');
-    }
-
-    public static Safehouse.SafehouseType toSafeHouse(String string) {
-        if (string.length() == 1) {
-            return Safehouse.SafehouseType.fromLetter(string);
-        }
-        return Safehouse.SafehouseType.valueOf(string.toUpperCase());
-    }
-
-    public static Encounter toEncounter(String string) throws InvalidInputFormatException {
-        return ParseUtilsJun.toEncounter(string);
-    }
-
-    public static Member.MemberName toMember(String string) throws InvalidInputFormatException {
-        try {
-            return Member.MemberName.valueOf(string);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidInputFormatException(string + " is not a valid membername");
-        }
     }
 
     public static List<UniqueAndGoldCostPair> toUniqueCostPairs(String string) {

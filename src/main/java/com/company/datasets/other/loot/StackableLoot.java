@@ -11,7 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor(force = true)
 @Getter
 @ToString(callSuper = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @JsonDeserialize()
 public class StackableLoot extends Loot {
     @JsonProperty("stacksize")

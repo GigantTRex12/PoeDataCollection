@@ -14,7 +14,7 @@ import static java.util.Map.entry;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    static void main() throws IOException {
         initLogs();
         final String dataPath = "Data/";
         final Map<String, String> typeToFilename = Map.ofEntries(

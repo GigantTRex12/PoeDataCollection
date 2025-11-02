@@ -17,7 +17,21 @@
         <exec.mainClass>com.company.Main</exec.mainClass>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
+        <!-- Data Collecting Library -->
+        <dependency>
+            <groupId>com.github.GigantTRex12</groupId>
+            <artifactId>DataCollecting</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <!-- JSON handling -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

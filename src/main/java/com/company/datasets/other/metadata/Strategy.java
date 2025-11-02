@@ -6,10 +6,10 @@ import com.company.utils.Utils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import dataset.Metadata;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.io.IOException;
 import java.util.*;
@@ -26,7 +26,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Getter
-public class Strategy {
+public class Strategy extends Metadata {
     private static final String filename = "Data/strategies.txt";
 
     @JsonProperty("id")

@@ -19,7 +19,7 @@ public class Loot {
     private static final LootType[] corrImplicits = {UNIQUE_ITEM_IMPLICIT_CORRUPTED, RARE_ARMOUR_IMPLICIT_CORRUPTED, RARE_WEAPON_IMPLICIT_CORRUPTED, RARE_JEWELLRY_IMPLICIT_CORRUPTED, RARE_ITEM_IMPLICIT_CORRUPTED};
     private static final LootType[] maps = {MAP, UNIQUE_MAP, SYNTH_MAP, ELDER_MAP, SHAPER_MAP, CONQUEROR_MAP, T17_MAP, RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS, ORIGINATOR_MAP, NON_GUARDIAN_ELDER_MAP, NON_GUARDIAN_SHAPER_MAP, ORIGINATOR_ELDER_MAP, ORIGINATOR_SHAPER_MAP, ORIGINATOR_CONQUEROR_MAP, ORIGINATOR_NON_GUARDIAN_ELDER_MAP, ORIGINATOR_NON_GUARDIAN_SHAPER_MAP};
     private static final LootType[] corruptedMaps = {RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS};
-    private static final LootType[] gems = {GEM, GEM_CORRUPTED, GEM_AWAKENED};
+    private static final LootType[] gems = {GEM, GEM_CORRUPTED, GEM_AWAKENED, VAAL_GEM};
     private static final LootType[] crafts = {GUFF_CRAFTING_BENCH, VORICI_CRAFTING_BENCH, TORA_CRAFTING_BENCH, IT_THAT_FLED_BREACHSTONE_CRAFT, SYNDICATE_CRAFTING_BENCH};
 
     @JsonProperty("name")
@@ -155,6 +155,8 @@ public class Loot {
                 type = BOSS_INVITATION;
             } else if (lower.contains("tome")) {
                 type = FORBIDDEN_TOME;
+            } else if (frac && lower.contains("grasping")) {
+                type = FRACTURED_GRASPING_MAIL;
             } else if (lower.contains("map")) {
                 if (lower.contains("synth") || lower.contains("synthesis")) type = SYNTH_MAP;
                 else if (lower.contains("conq")) type = originator ? ORIGINATOR_CONQUEROR_MAP : CONQUEROR_MAP;
@@ -185,8 +187,8 @@ public class Loot {
                 } else if (gem) type = GEM_CORRUPTED;
             } else if (gem) {
                 if (lower.contains("awakened")) type = GEM_AWAKENED;
+                else if (lower.contains("vaal")) type = VAAL_GEM;
                 else type = GEM;
-
             } else if (unique) {
                 if (lower.contains("boss")) type = BOSS_UNIQUE_ITEM;
                 else type = UNIQUE_ITEM;

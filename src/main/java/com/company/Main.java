@@ -1,15 +1,15 @@
 package com.company;
 
-import com.company.dataanalyzer.BossDropDataAnalyzer;
-import com.company.dataanalyzer.DataAnalyzer;
-import com.company.dataanalyzer.KalandraMistDataAnalyzer;
+import com.company.dataanalyzernew.BossDropDataAnalyzer;
+import com.company.dataanalyzernew.DataAnalyzer;
 import com.company.datacollector.*;
 
 import java.io.IOException;
 import java.util.Map;
 
 import static com.company.utils.FileUtils.initLogs;
-import static com.company.utils.IOUtils.*;
+import static com.company.utils.IOUtils.input;
+import static com.company.utils.IOUtils.print;
 import static java.util.Map.entry;
 
 public class Main {
@@ -59,14 +59,13 @@ public class Main {
             } else if (action.equals("a") || action.equals("analyze")) {
                 DataAnalyzer<?> analyzer = null;
                 switch (dataType) {
-                    case "mist" -> analyzer = new KalandraMistDataAnalyzer(filename);
                     case "boss drops" -> analyzer = new BossDropDataAnalyzer(filename);
                     default -> {
                         print("Exiting");
                         return;
                     }
                 }
-                if (analyzer != null) analyzer.analyzeData();
+                analyzer.analyze();
             }
             else {
                 print("Exiting");

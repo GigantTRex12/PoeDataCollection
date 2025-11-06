@@ -1,9 +1,9 @@
 package com.company.datasets.datasetsnew;
 
 import com.company.datasets.other.loot.Loot;
+import com.company.datasets.other.metadata.Strategy;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dataset.BaseDataSet;
-import dataset.Metadata;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -33,7 +33,7 @@ public class BossDropDataSet extends BaseDataSet {
     @JsonProperty("quantity")
     private final Integer quantity;
 
-    public BossDropDataSet(Metadata metadata, String bossName, boolean uber, boolean witnessed, Loot guaranteedDrop, List<Loot> extraDrops, Integer quantity) {
+    public BossDropDataSet(Strategy metadata, String bossName, boolean uber, boolean witnessed, Loot guaranteedDrop, List<Loot> extraDrops, Integer quantity) {
         super(metadata);
         this.bossName = bossName;
         this.uber = uber;
@@ -41,6 +41,14 @@ public class BossDropDataSet extends BaseDataSet {
         this.guaranteedDrop = guaranteedDrop;
         this.extraDrops = extraDrops;
         this.quantity = quantity;
+    }
+
+    public String lowerCaseBossName() {
+        return (isUber() ? "UBER" : "") + getBossName().toLowerCase();
+    }
+
+    public String getLeague() {
+        return ((Strategy) (getMetadata())).getLeague();
     }
 
 }

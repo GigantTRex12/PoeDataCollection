@@ -1,12 +1,11 @@
 package com.company;
 
+import com.company.api.DbReader;
 import com.company.dataanalyzer.BossDropDataAnalyzer;
 import com.company.dataanalyzer.DataAnalyzer;
 import com.company.dataanalyzer.KalandraMistDataAnalyzer;
 import com.company.datacollector.*;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -22,6 +21,7 @@ public class Main {
 
     static void main() throws IOException {
         loadConfig();
+        DbReader.readStrategies();
         initLogs();
         final String dataPath = "Data/";
         final Map<String, String> typeToFilename = Map.ofEntries(

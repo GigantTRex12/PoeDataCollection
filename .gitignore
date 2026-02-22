@@ -4,3 +4,4 @@ target
 Log
 *.iml
 Data
+/src/main/resources/custom.properties

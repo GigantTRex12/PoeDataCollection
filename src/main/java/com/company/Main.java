@@ -5,8 +5,12 @@ import com.company.dataanalyzer.DataAnalyzer;
 import com.company.dataanalyzer.KalandraMistDataAnalyzer;
 import com.company.datacollector.*;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 
 import static com.company.utils.FileUtils.initLogs;
 import static com.company.utils.IOUtils.*;
@@ -14,7 +18,10 @@ import static java.util.Map.entry;
 
 public class Main {
 
+    public static Properties properties;
+
     static void main() throws IOException {
+        loadConfig();
         initLogs();
         final String dataPath = "Data/";
         final Map<String, String> typeToFilename = Map.ofEntries(
@@ -74,6 +81,20 @@ public class Main {
             }
         }
     }
+
+    public static void loadConfig() throws IOException {
+        final Properties defaultProp = new Properties();
+        defaultProp.load(Main.class.getResourceAsStream("/default.properties"));
+        final Properties customProp = new Properties();
+        InputStream f = Main.class.getResourceAsStream("/custom.properties");
+        if (f != null) {
+            customProp.load(f);
+        }
+        properties = new Properties();
+        properties.putAll(defaultProp);
+        properties.putAll(customProp);
+    }
+
 }
 
 // mvn clean compile exec:java

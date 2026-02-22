@@ -5,9 +5,11 @@ import com.company.dataanalyzer.BossDropDataAnalyzer;
 import com.company.dataanalyzer.DataAnalyzer;
 import com.company.dataanalyzer.KalandraMistDataAnalyzer;
 import com.company.datacollector.*;
+import com.company.datasets.other.metadata.Strategy;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -21,7 +23,7 @@ public class Main {
 
     static void main() throws IOException {
         loadConfig();
-        DbReader.readStrategies();
+        List<Strategy> strats = DbReader.readStrategies();
         initLogs();
         final String dataPath = "Data/";
         final Map<String, String> typeToFilename = Map.ofEntries(

@@ -254,4 +254,71 @@ public class Strategy {
             }
         }
     }
+
+    public static class StrategyBuilder {
+        private final Integer id;
+        private String league;
+        private String tree;
+        private String treeUrl;
+        private List<String> scarabs;
+        private String mapLayout;
+        private String mapRolling;
+        private String mapCraft;
+
+        public StrategyBuilder(Integer id) {
+            this.id = id;
+            this.league = null;
+            this.tree = null;
+            this.treeUrl = null;
+            this.scarabs = null;
+            this.mapLayout = null;
+            this.mapRolling = null;
+            this.mapCraft = null;
+        }
+        public StrategyBuilder league(String league) {
+            this.league = league;
+            return this;
+        }
+        public StrategyBuilder tree(String tree) {
+            this.tree = tree;
+            return this;
+        }
+        public StrategyBuilder treeUrl(String treeUrl) {
+            this.treeUrl = treeUrl;
+            return this;
+        }
+        public StrategyBuilder mapLayout(String mapLayout) {
+            this.mapLayout = mapLayout;
+            return this;
+        }
+        public StrategyBuilder mapRolling(String mapRolling) {
+            this.mapRolling = mapRolling;
+            return this;
+        }
+        public StrategyBuilder mapCraft(String mapCraft) {
+            this.mapCraft = mapCraft;
+            return this;
+        }
+        public StrategyBuilder zeroScarabs() {
+            this.scarabs = new ArrayList<>();
+            return this;
+        }
+        public StrategyBuilder scarab(String scarab, int amount) {
+            if (this.scarabs == null) this.scarabs = new ArrayList<>();
+            for (int i = 0; i < amount; i++) this.scarabs.add(scarab);
+            return this;
+        }
+        public Strategy build() {
+            return new Strategy(
+                    this.id,
+                    this.league,
+                    this.tree,
+                    this.treeUrl,
+                    this.scarabs == null ? null : this.scarabs.toArray(new String[0]),
+                    this.mapLayout,
+                    this.mapRolling,
+                    this.mapCraft
+            );
+        }
+    }
 }

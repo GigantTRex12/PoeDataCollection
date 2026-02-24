@@ -197,4 +197,13 @@ public class Utils {
         return before + "." + after;
     }
 
+    public static String joinRepeating(String string, String sep, int amount) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < amount; i++) {
+            if (i != 0) result.append(sep);
+            result.append(string);
+        }
+        return result.toString();
+    }
+
 }

@@ -40,6 +40,10 @@ public class Counter<T> extends HashMap<T, Integer> {
         iterable.forEach(this::add);
     }
 
+    public void add(T t, int amount) {
+        this.put(t, this.getOrDefault(t, 0) + amount);
+    }
+
     public void substract(T t) {
         this.put(t, this.getOrDefault(t, 0) - 1);
     }

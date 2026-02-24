@@ -31,8 +31,7 @@ public class DbReader {
                 if (idsToBuilder.containsKey(currId)) {
                     builder = idsToBuilder.get(currId);
                     builder.scarab(rs.getString("scarabName"), rs.getInt("scarabAmount"));
-                }
-                else {
+                } else {
                     builder = new Strategy.StrategyBuilder(currId)
                             .league(rs.getString("league"))
                             .tree(rs.getString("atlasTreeDescription"))

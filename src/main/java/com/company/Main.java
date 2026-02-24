@@ -1,6 +1,7 @@
 package com.company;
 
 import com.company.api.DbReader;
+import com.company.api.DbWriter;
 import com.company.dataanalyzer.BossDropDataAnalyzer;
 import com.company.dataanalyzer.DataAnalyzer;
 import com.company.dataanalyzer.KalandraMistDataAnalyzer;
@@ -14,7 +15,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import static com.company.utils.FileUtils.initLogs;
-import static com.company.utils.IOUtils.*;
+import static com.company.utils.IOUtils.input;
+import static com.company.utils.IOUtils.print;
 import static java.util.Map.entry;
 
 public class Main {
@@ -23,7 +25,7 @@ public class Main {
 
     static void main() throws IOException {
         loadConfig();
-        List<Strategy> strats = DbReader.readStrategies();
+
         initLogs();
         final String dataPath = "Data/";
         final Map<String, String> typeToFilename = Map.ofEntries(

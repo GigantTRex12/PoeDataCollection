@@ -2,6 +2,7 @@ package com.company.api;
 
 import com.company.Main;
 import com.company.datasets.datasets.BossDropDataSet;
+import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
 import com.company.datasets.other.loot.*;
 import com.company.datasets.other.metadata.Strategy;
@@ -10,10 +11,7 @@ import com.company.exceptions.SqlConnectionException;
 import com.company.exceptions.SqlInvalidDataException;
 
 import java.sql.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -194,6 +192,34 @@ public class DbReader {
                 else builder.bossDrop(LootType.valueOf(rs.getString("typeName")));
             }
             return idsToBuilder.values().stream().map(MapDropDataSet.MapDropDataSetBuilder::build).toList();
+        } catch (SQLException e) {
+            throw new SqlConnectionException(e);
+        }
+    }
+
+    public static Collection<KalandraMistDataSet> readKalandraMistDataSets() {
+        Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
+        try (Connection conn = DriverManager.getConnection(getConnectionString())) {
+            final List<KalandraMistDataSet> data = new ArrayList<>();
+            final Statement stmt = conn.createStatement();
+            final String query = "SELECT * FROM kalandraMistDataSet;";
+            final ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                KalandraMistDataSet.KalandraMistDataSetBuilder builder = KalandraMistDataSet.builder()
+                        .strategy(strategies.get(rs.getInt("strategyId")))
+                        .type(KalandraMistDataSet.MistType.valueOf(rs.getString("mistType")))
+                        .amountPositive(rs.getInt("positive"))
+                        .amountNegative(rs.getInt("negative"))
+                        .amountNeutral(rs.getInt("neutral"))
+                        .itemText(rs.getString("itemText"))
+                        .multiplier(rs.getString("multiplier"));
+                int tier = rs.getInt("tier");
+                if (!rs.wasNull()) builder.tier(tier);
+                String itemType = rs.getString("itemType");
+                if (itemType != null) builder.itemType(LootType.valueOf(itemType));
+                data.add(builder.build());
+            }
+            return data;
         } catch (SQLException e) {
             throw new SqlConnectionException(e);
         }

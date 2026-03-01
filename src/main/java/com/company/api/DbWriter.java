@@ -2,11 +2,13 @@ package com.company.api;
 
 import com.company.Main;
 import com.company.datasets.datasets.BossDropDataSet;
+import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
 import com.company.datasets.other.loot.*;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.SqlConnectionException;
 import com.company.utils.Counter;
+import net.bytebuddy.jar.asm.Type;
 
 import java.sql.*;
 import java.util.*;
@@ -195,7 +197,7 @@ public class DbWriter {
         return lootToId;
     }
 
-    public static void writeBossDropDatasets(Collection<BossDropDataSet> data) {
+    public static void writeBossDropDataSets(Collection<BossDropDataSet> data) {
         try (Connection conn = DriverManager.getConnection(getConnectionString())) {
             Collection<Loot> loot = new ArrayList<>();
             for (BossDropDataSet dataset : data) {
@@ -238,7 +240,7 @@ public class DbWriter {
         }
     }
 
-    public static void writeMapDropDatasets(Collection<MapDropDataSet> data) {
+    public static void writeMapDropDataSets(Collection<MapDropDataSet> data) {
         try (Connection conn = DriverManager.getConnection(getConnectionString())) {
             Set<LootType> allTypes = new HashSet<>();
             for (MapDropDataSet d : data) {
@@ -316,4 +318,27 @@ public class DbWriter {
         return typeToId;
     }
 
+    public static void writeKalandraMistDataSets(Collection<KalandraMistDataSet> data) {
+        try (Connection conn = DriverManager.getConnection(getConnectionString())) {
+            final String query = "INSERT INTO kalandraMistDataSet (strategyId, mistType, tier, positive, negative, neutral, itemText, itemType, multiplier) VALUES (?,?,?,?,?,?,?,?,?);";
+            final PreparedStatement pstmt = conn.prepareStatement(query);
+            for (KalandraMistDataSet d : data) {
+                pstmt.setInt(1, d.getStrategy().getId());
+                pstmt.setString(2, d.getType().name());
+                if (d.getTier() == null) pstmt.setNull(3, Type.INT);
+                else pstmt.setInt(3, d.getTier());
+                pstmt.setInt(4, d.getAmountPositive());
+                pstmt.setInt(5, d.getAmountNegative());
+                pstmt.setInt(6, d.getAmountNeutral());
+                pstmt.setString(7, d.getItemText());
+                if (d.getItemType() == null) pstmt.setNull(8, Types.VARCHAR);
+                else pstmt.setString(8, d.getItemType().name());
+                pstmt.setString(9, d.getMultiplier());
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
+        } catch (SQLException e) {
+            throw new SqlConnectionException(e);
+        }
+    }
 }

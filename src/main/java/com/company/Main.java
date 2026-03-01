@@ -7,6 +7,7 @@ import com.company.dataanalyzer.DataAnalyzer;
 import com.company.dataanalyzer.KalandraMistDataAnalyzer;
 import com.company.datacollector.*;
 import com.company.datasets.datasets.BossDropDataSet;
+import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.utils.FileUtils;
@@ -29,22 +30,22 @@ public class Main {
     static void main() throws IOException {
         loadConfig();
 
-//        List<String> lines = FileUtils.readLines("Data/mapDrops.txt");
-//        List<MapDropDataSet> data = new ArrayList<>();
+//        List<String> lines = FileUtils.readLines("Data/mist.txt");
+//        List<KalandraMistDataSet> data = new ArrayList<>();
 //        Collection<Strategy> strats = DbReader.readStrategies();
 //        int i = -1;
 //        for (String line : lines) {
 //            i++;
 //            if (i < -11) continue;
-//            if (i >= 51) break;
-//            MapDropDataSet set = Utils.parseJson(line, MapDropDataSet.class);
+//            if (i >= 101) break;
+//            KalandraMistDataSet set = Utils.parseJson(line, KalandraMistDataSet.class);
 //            set.setStrategy(strats.stream().filter(s -> s.equals(set.getStrategy())).findAny().orElseThrow(() -> new RuntimeException(set.getStrategy().toString())));
 //            data.add(set);
 //        }
-//        DbWriter.writeMapDropDatasets(data);
-//        Collection<MapDropDataSet> readData = new ArrayList<>(DbReader.readMapDropDataSets());
-//        HashSet<MapDropDataSet> missed = new HashSet<>();
-//        for (MapDropDataSet d : data) {
+//        DbWriter.writeKalandraMistDataSets(data);
+//        Collection<KalandraMistDataSet> readData = new ArrayList<>(DbReader.readKalandraMistDataSets());
+//        HashSet<KalandraMistDataSet> missed = new HashSet<>();
+//        for (KalandraMistDataSet d : data) {
 //            if (!readData.remove(d)) {
 //                missed.add(d);
 //            }

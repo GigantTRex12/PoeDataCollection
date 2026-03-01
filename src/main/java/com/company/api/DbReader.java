@@ -4,6 +4,7 @@ import com.company.Main;
 import com.company.datasets.datasets.BossDropDataSet;
 import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
+import com.company.datasets.datasets.UltimatumDataSet;
 import com.company.datasets.other.loot.*;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
@@ -220,6 +221,45 @@ public class DbReader {
                 data.add(builder.build());
             }
             return data;
+        } catch (SQLException e) {
+            throw new SqlConnectionException(e);
+        }
+    }
+
+    public static Collection<UltimatumDataSet> readUltimatumDataSets() {
+        Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
+        try (Connection conn = DriverManager.getConnection(getConnectionString())) {
+            Map<Integer, Loot> loot = readLoot(conn).entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+            final Statement stmt = conn.createStatement();
+            String query = "SELECT d.rowid, d.strategyId, d.boss, ul.lootId, ul.waveNumber FROM ultimatumDataSet AS d "
+                    + "LEFT JOIN ultimatumRewardList AS ul ON d.rowid = ul.ultimatumDataSetId;";
+            ResultSet rs = stmt.executeQuery(query);
+            final Map<Integer, UltimatumDataSet.UltimatumDataSetBuilder> idsToBuilder = new HashMap<>();
+            while (rs.next()) {
+                int currId = rs.getInt("rowid");
+                UltimatumDataSet.UltimatumDataSetBuilder builder;
+                if (idsToBuilder.containsKey(currId)) {
+                    builder = idsToBuilder.get(currId);
+                    builder.waveLoot(rs.getInt("waveNumber"), loot.get(rs.getInt("lootId")));
+                } else {
+                    builder = UltimatumDataSet.builder()
+                            .strategy(strategies.get(rs.getInt("strategyId")))
+                            .waveLoot(rs.getInt("waveNumber"), loot.get(rs.getInt("lootId")));
+                    if (rs.getBoolean("boss")) builder.boss();
+                    else builder.boss(false);
+                    idsToBuilder.put(currId, builder);
+                }
+            }
+            query = "SELECT d.rowid, b.lootId FROM ultimatumDataSet AS d "
+                    + "LEFT JOIN ultimatumBossDropsList AS b ON d.rowid = b.ultimatumDataSetId "
+                    + "WHERE d.boss;";
+            rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                int currId = rs.getInt("rowid");
+                UltimatumDataSet.UltimatumDataSetBuilder builder = idsToBuilder.get(currId);
+                builder.bossDrop(loot.get(rs.getInt("lootId")));
+            }
+            return idsToBuilder.values().stream().map(UltimatumDataSet.UltimatumDataSetBuilder::build).toList();
         } catch (SQLException e) {
             throw new SqlConnectionException(e);
         }

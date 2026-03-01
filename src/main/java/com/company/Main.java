@@ -9,6 +9,7 @@ import com.company.datacollector.*;
 import com.company.datasets.datasets.BossDropDataSet;
 import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
+import com.company.datasets.datasets.UltimatumDataSet;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.utils.FileUtils;
 import com.company.utils.IOUtils;
@@ -30,26 +31,26 @@ public class Main {
     static void main() throws IOException {
         loadConfig();
 
-//        List<String> lines = FileUtils.readLines("Data/mist.txt");
-//        List<KalandraMistDataSet> data = new ArrayList<>();
-//        Collection<Strategy> strats = DbReader.readStrategies();
-//        int i = -1;
-//        for (String line : lines) {
-//            i++;
-//            if (i < -11) continue;
-//            if (i >= 101) break;
-//            KalandraMistDataSet set = Utils.parseJson(line, KalandraMistDataSet.class);
-//            set.setStrategy(strats.stream().filter(s -> s.equals(set.getStrategy())).findAny().orElseThrow(() -> new RuntimeException(set.getStrategy().toString())));
-//            data.add(set);
-//        }
-//        DbWriter.writeKalandraMistDataSets(data);
-//        Collection<KalandraMistDataSet> readData = new ArrayList<>(DbReader.readKalandraMistDataSets());
-//        HashSet<KalandraMistDataSet> missed = new HashSet<>();
-//        for (KalandraMistDataSet d : data) {
-//            if (!readData.remove(d)) {
-//                missed.add(d);
-//            }
-//        }
+        List<String> lines = FileUtils.readLines("Data/ultimatum.txt");
+        List<UltimatumDataSet> data = new ArrayList<>();
+        Collection<Strategy> strats = DbReader.readStrategies();
+        int i = -1;
+        for (String line : lines) {
+            i++;
+            if (i < -11) continue;
+            if (i >= 101) break;
+            UltimatumDataSet set = Utils.parseJson(line, UltimatumDataSet.class);
+            set.setStrategy(strats.stream().filter(s -> s.equals(set.getStrategy())).findAny().orElseThrow(() -> new RuntimeException(set.getStrategy().toString())));
+            data.add(set);
+        }
+        DbWriter.writeUltimatumDataSets(data);
+        Collection<UltimatumDataSet> readData = new ArrayList<>(DbReader.readUltimatumDataSets());
+        HashSet<UltimatumDataSet> missed = new HashSet<>();
+        for (UltimatumDataSet d : data) {
+            if (!readData.remove(d)) {
+                missed.add(d);
+            }
+        }
 
 
         initLogs();

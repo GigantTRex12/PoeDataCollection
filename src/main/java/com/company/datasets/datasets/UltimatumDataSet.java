@@ -11,7 +11,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor(force = true)
 @Getter
@@ -42,6 +45,26 @@ public class UltimatumDataSet extends DataSet {
     }
 
     public static class UltimatumDataSetBuilder implements DataSetBuilderInterface<UltimatumDataSet> {
+
+        private Map<Integer, Loot> waveToLoot;
+        private int maxIndex;
+
+        public UltimatumDataSetBuilder boss() {
+            boss = true;
+            bossLoot = new ArrayList<>();
+            return this;
+        }
+
+        public UltimatumDataSetBuilder boss(boolean boss) {
+            this.boss = boss;
+            return this;
+        }
+
+        public UltimatumDataSetBuilder bossDrop(Loot loot) {
+            bossLoot.add(loot);
+            return this;
+        }
+
         public boolean canBoss() {
             return this.rewards.size() == 10;
         }
@@ -49,5 +72,25 @@ public class UltimatumDataSet extends DataSet {
         public boolean isBoss() {
             return this.boss;
         }
+
+        public UltimatumDataSetBuilder waveLoot(int wave, Loot loot) {
+            if (waveToLoot == null) waveToLoot = new HashMap<>();
+            waveToLoot.merge(wave, loot, (_, _) -> {
+                throw new IllegalArgumentException("Duplicate key '" + wave + "'.");
+            });
+            if (wave > maxIndex) maxIndex = wave;
+            return this;
+        }
+
+        public UltimatumDataSet build() {
+            if (waveToLoot != null) {
+                rewards = new ArrayList<>();
+                for (int i = 1; i <= maxIndex; i++) {
+                    rewards.add(waveToLoot.get(i));
+                }
+            }
+            return new UltimatumDataSet(strategy, rewards, boss, bossLoot);
+        }
+
     }
 }

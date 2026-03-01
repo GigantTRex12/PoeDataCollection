@@ -4,6 +4,7 @@ import com.company.Main;
 import com.company.datasets.datasets.BossDropDataSet;
 import com.company.datasets.datasets.KalandraMistDataSet;
 import com.company.datasets.datasets.MapDropDataSet;
+import com.company.datasets.datasets.UltimatumDataSet;
 import com.company.datasets.other.loot.*;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.SqlConnectionException;
@@ -206,7 +207,7 @@ public class DbWriter {
             }
             Map<Loot, Integer> lootToId = writeLoot(loot, conn);
 
-            final String query = "INSERT INTO bossDropDataset (strategyId, bossName, uber, witnessed, guaranteedDropLootId, areaQuantity) VALUES (?,?,?,?,?,?)";
+            final String query = "INSERT INTO bossDropDataSet (strategyId, bossName, uber, witnessed, guaranteedDropLootId, areaQuantity) VALUES (?,?,?,?,?,?)";
             final PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             for (BossDropDataSet dataset : data) {
                 pstmt.setInt(1, dataset.getStrategy().getId());
@@ -341,4 +342,52 @@ public class DbWriter {
             throw new SqlConnectionException(e);
         }
     }
+
+    public static void writeUltimatumDataSets(Collection<UltimatumDataSet> data) {
+        try (Connection conn = DriverManager.getConnection(getConnectionString())) {
+            Collection<Loot> loot = new ArrayList<>();
+            for (UltimatumDataSet dataset : data) {
+                loot.addAll(dataset.getRewards());
+                if (dataset.getBossLoot() != null) loot.addAll(dataset.getBossLoot());
+            }
+            Map<Loot, Integer> lootToId = writeLoot(loot, conn);
+
+            final String query = "INSERT INTO ultimatumDataSet (strategyId, boss) VALUES (?,?)";
+            final PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            for (UltimatumDataSet dataset : data) {
+                pstmt.setInt(1, dataset.getStrategy().getId());
+                pstmt.setBoolean(2, dataset.isBoss());
+                pstmt.executeUpdate();
+
+                ResultSet keys = pstmt.getGeneratedKeys();
+                int id;
+                if (keys.next()) id = keys.getInt(1);
+                else throw new SqlConnectionException("Did not generate an index.");
+                final String lootQuery = "INSERT INTO ultimatumRewardList (ultimatumDataSetId, lootId, waveNumber) VALUES (?,?,?);";
+                final PreparedStatement lootPstmt = conn.prepareStatement(lootQuery);
+                for (int i = 0; i < dataset.getRewards().size(); i++) {
+                    Loot l = dataset.getRewards().get(i);
+                    if (l == null) continue;
+                    lootPstmt.setInt(1, id);
+                    lootPstmt.setInt(2, lootToId.get(l));
+                    lootPstmt.setInt(3, i + 1);
+                    lootPstmt.addBatch();
+                }
+                lootPstmt.executeBatch();
+                if (dataset.getBossLoot() != null && !dataset.getBossLoot().isEmpty()) {
+                    final String bossQuery = "INSERT INTO ultimatumBossDropsList (ultimatumDataSetId, lootId) VALUES (?,?);";
+                    final PreparedStatement bossPstmt = conn.prepareStatement(bossQuery);
+                    for (Loot l : dataset.getBossLoot()) {
+                        bossPstmt.setInt(1, id);
+                        bossPstmt.setInt(2, lootToId.get(l));
+                        bossPstmt.addBatch();
+                    }
+                    bossPstmt.executeBatch();
+                }
+            }
+        } catch (SQLException e) {
+            throw new SqlConnectionException(e);
+        }
+    }
+
 }

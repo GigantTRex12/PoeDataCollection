@@ -2,6 +2,7 @@ package com.company.api;
 
 import com.company.Main;
 import com.company.datasets.datasets.BossDropDataSet;
+import com.company.datasets.datasets.MapDropDataSet;
 import com.company.datasets.other.loot.*;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
@@ -125,7 +126,7 @@ public class DbReader {
             final String query = "SELECT d.rowid, d.strategyId, d.bossName, d.uber, d.witnessed, d.guaranteedDropLootId, l.lootId, d.areaQuantity FROM bossDropDataSet AS d "
                     + "LEFT JOIN bossDropExtraLoot AS l ON d.rowid = l.bossDropDataSetId;";
             final ResultSet rs = stmt.executeQuery(query);
-            final Map<Integer, BossDropDataSet.BossDropDataSetBuilder> idsToBuilder = new LinkedHashMap<>();
+            final Map<Integer, BossDropDataSet.BossDropDataSetBuilder> idsToBuilder = new HashMap<>();
             while (rs.next()) {
                 int currId = rs.getInt("rowid");
                 BossDropDataSet.BossDropDataSetBuilder builder;
@@ -148,6 +149,51 @@ public class DbReader {
                 }
             }
             return idsToBuilder.values().stream().map(BossDropDataSet.BossDropDataSetBuilder::build).toList();
+        } catch (SQLException e) {
+            throw new SqlConnectionException(e);
+        }
+    }
+
+    public static Collection<MapDropDataSet> readMapDropDataSets() {
+        Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
+        try (Connection conn = DriverManager.getConnection(getConnectionString())) {
+            final Statement stmt = conn.createStatement();
+            String query = "SELECT d.rowid, d.strategyId, d.conversionChance, d.conversionType, d.bossDropListId, mlt.typeName FROM mapDropDataSet AS d "
+                    + "LEFT JOIN mapDropsList AS ml ON d.rowid = ml.mapDropDataSetId "
+                    + "LEFT JOIN mapType AS mlt ON ml.mapTypeId = mlt.rowid "
+                    + "ORDER BY d.rowid, ml.ordering ASC;";
+            ResultSet rs = stmt.executeQuery(query);
+            final Map<Integer, MapDropDataSet.MapDropDataSetBuilder> idsToBuilder = new HashMap<>();
+            while (rs.next()) {
+                int currId = rs.getInt("rowid");
+                MapDropDataSet.MapDropDataSetBuilder builder;
+                if (idsToBuilder.containsKey(currId)) {
+                    builder = idsToBuilder.get(currId);
+                    String mapDrop = rs.getString("typeName");
+                    if (!rs.wasNull()) builder.mapDrop(LootType.valueOf(mapDrop));
+                } else {
+                    builder = MapDropDataSet.builder()
+                            .strategy(strategies.get(rs.getInt("strategyId")))
+                            .conversionChance(rs.getInt("conversionChance"));
+                    String conversionType = rs.getString("conversionType");
+                    if (!rs.wasNull()) builder.conversionType(LootType.valueOf(conversionType));
+                    String mapDrop = rs.getString("typeName");
+                    if (!rs.wasNull()) builder.mapDrop(LootType.valueOf(mapDrop));
+                    idsToBuilder.put(currId, builder);
+                }
+            }
+            query = "SELECT d.rowid, d.bossDropListId, blt.typeName FROM mapDropDataSet AS d "
+                    + "LEFT JOIN bossMapsDropList AS bl ON d.bossDropListId = bl.bossDropListId "
+                    + "LEFT JOIN mapType AS blt ON bl.mapTypeId = blt.rowid "
+                    + "WHERE NOT d.bossDropListId IS NULL;";
+            rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                int currId = rs.getInt("rowid");
+                MapDropDataSet.MapDropDataSetBuilder builder = idsToBuilder.get(currId);
+                if (rs.getInt("bossDropListId") == 0) builder.zeroBossDrops();
+                else builder.bossDrop(LootType.valueOf(rs.getString("typeName")));
+            }
+            return idsToBuilder.values().stream().map(MapDropDataSet.MapDropDataSetBuilder::build).toList();
         } catch (SQLException e) {
             throw new SqlConnectionException(e);
         }

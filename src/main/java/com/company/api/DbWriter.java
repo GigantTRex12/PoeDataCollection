@@ -2,6 +2,7 @@ package com.company.api;
 
 import com.company.Main;
 import com.company.datasets.datasets.BossDropDataSet;
+import com.company.datasets.datasets.MapDropDataSet;
 import com.company.datasets.other.loot.*;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.SqlConnectionException;
@@ -235,6 +236,84 @@ public class DbWriter {
         } catch (SQLException e) {
             throw new SqlConnectionException(e);
         }
+    }
+
+    public static void writeMapDropDatasets(Collection<MapDropDataSet> data) {
+        try (Connection conn = DriverManager.getConnection(getConnectionString())) {
+            Set<LootType> allTypes = new HashSet<>();
+            for (MapDropDataSet d : data) {
+                allTypes.addAll(d.getMapsInOrder());
+                if (d.getBossDrops() != null) allTypes.addAll(d.getBossDrops());
+            }
+            Map<LootType, Integer> types = writeMapTypes(allTypes, conn);
+            final Statement stmt = conn.createStatement();
+            final String maxIdQuery = "SELECT MAX(bossDropListId) AS max FROM bossMapsDropList;";
+            final ResultSet rs = stmt.executeQuery(maxIdQuery);
+            int bossDropId = 1;
+            if (rs.next()) bossDropId = rs.getInt("max") + 1;
+            final String query = "INSERT INTO mapDropDataSet (strategyId, conversionChance, conversionType, bossDropListId) VALUES (?,?,?,?);";
+            final PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            for (MapDropDataSet d : data) {
+                pstmt.setInt(1, d.getStrategy().getId());
+                pstmt.setInt(2, d.getConversionChance());
+                if (d.getConversionType() == null) pstmt.setNull(3, Types.VARCHAR);
+                else pstmt.setString(3, d.getConversionType().name());
+                if (d.getBossDrops() == null) pstmt.setNull(4, Types.INTEGER);
+                else if (d.getBossDrops().isEmpty()) pstmt.setInt(4, 0);
+                else {
+                    final String bossQuery = "INSERT INTO bossMapsDropList (mapTypeId, bossDropListId) VALUES (?,?);";
+                    final PreparedStatement bossPstmt = conn.prepareStatement(bossQuery);
+                    for (LootType t : d.getBossDrops()) {
+                        bossPstmt.setInt(1, types.get(t));
+                        bossPstmt.setInt(2, bossDropId);
+                        bossPstmt.addBatch();
+                    }
+                    bossPstmt.executeBatch();
+                    pstmt.setInt(4, bossDropId++);
+                }
+                pstmt.executeUpdate();
+                ResultSet keys = pstmt.getGeneratedKeys();
+                int id;
+                if (keys.next()) id = keys.getInt(1);
+                else throw new SqlConnectionException("Did not generate an index.");
+                final String mapQuery = "INSERT INTO mapDropsList (mapDropDataSetId, mapTypeId, ordering) VALUES (?,?,?);";
+                final PreparedStatement mapPstmt = conn.prepareStatement(mapQuery);
+                for (int i = 0; i < d.getMapsInOrder().size(); i++) {
+                    mapPstmt.setInt(1, id);
+                    mapPstmt.setInt(2, types.get(d.getMapsInOrder().get(i)));
+                    mapPstmt.setInt(3, i);
+                    mapPstmt.addBatch();
+                }
+                mapPstmt.executeBatch();
+            }
+        } catch (SQLException e) {
+            throw new SqlConnectionException(e);
+        }
+    }
+
+    private static Map<LootType, Integer> writeMapTypes(Set<LootType> types, Connection conn) throws SQLException {
+        if (types.isEmpty()) return new HashMap<>();
+        Set<LootType> restTypes = new HashSet<>(types);
+        Map<LootType, Integer> typeToId = new HashMap<>();
+        final Statement stmt = conn.createStatement();
+        final String selectQuery = "SELECT rowid, typeName FROM mapType;";
+        final ResultSet rs = stmt.executeQuery(selectQuery);
+        while (rs.next()) {
+            LootType t = LootType.valueOf(rs.getString("typeName"));
+            if (restTypes.remove(t)) typeToId.put(t, rs.getInt("rowid"));
+        }
+        if (!restTypes.isEmpty()) {
+            final String query = "INSERT INTO mapType (typeName) VALUES (?);";
+            final PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            for (LootType t : restTypes) {
+                pstmt.setString(1, t.name());
+                pstmt.executeUpdate();
+                ResultSet keys = pstmt.getGeneratedKeys();
+                if (keys.next()) typeToId.put(t, keys.getInt(1));
+                else throw new SqlConnectionException("Did not generate an index.");
+            }
+        }
+        return typeToId;
     }
 
 }

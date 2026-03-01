@@ -1,10 +1,8 @@
 package com.company.api;
 
 import com.company.Main;
-import com.company.datasets.datasets.BossDropDataSet;
-import com.company.datasets.datasets.KalandraMistDataSet;
-import com.company.datasets.datasets.MapDropDataSet;
-import com.company.datasets.datasets.UltimatumDataSet;
+import com.company.datasets.datasets.*;
+import com.company.datasets.other.UniqueAndGoldCostPair;
 import com.company.datasets.other.loot.*;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.SqlConnectionException;
@@ -384,6 +382,35 @@ public class DbWriter {
                     }
                     bossPstmt.executeBatch();
                 }
+            }
+        } catch (SQLException e) {
+            throw new SqlConnectionException(e);
+        }
+    }
+
+    public static void writeCadiroDataSets(Collection<CadiroDataSet> data) {
+        try (Connection conn = DriverManager.getConnection(getConnectionString())) {
+            final String query = "INSERT INTO cadiroDataSet (strategyId, tier) VALUES (?,?)";
+            final PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            for (CadiroDataSet dataset : data) {
+                pstmt.setInt(1, dataset.getStrategy().getId());
+                if (dataset.getTier() == null) pstmt.setNull(2, Types.INTEGER);
+                else pstmt.setInt(2, dataset.getTier());
+                pstmt.executeUpdate();
+
+                ResultSet keys = pstmt.getGeneratedKeys();
+                int id;
+                if (keys.next()) id = keys.getInt(1);
+                else throw new SqlConnectionException("Did not generate an index.");
+                final String uniquesQuery = "INSERT INTO cadiroUniques (cadiroDataSetId, uniqueItem, coldCost) VALUES (?,?,?);";
+                final PreparedStatement uniquesPstmt = conn.prepareStatement(uniquesQuery);
+                for (UniqueAndGoldCostPair u : dataset.getUniquesWithCost()) {
+                    uniquesPstmt.setInt(1, id);
+                    uniquesPstmt.setString(2, u.getUniqueName());
+                    uniquesPstmt.setInt(3, u.getGoldCost());
+                    uniquesPstmt.addBatch();
+                }
+                uniquesPstmt.executeBatch();
             }
         } catch (SQLException e) {
             throw new SqlConnectionException(e);

@@ -1,10 +1,7 @@
 package com.company.api;
 
 import com.company.Main;
-import com.company.datasets.datasets.BossDropDataSet;
-import com.company.datasets.datasets.KalandraMistDataSet;
-import com.company.datasets.datasets.MapDropDataSet;
-import com.company.datasets.datasets.UltimatumDataSet;
+import com.company.datasets.datasets.*;
 import com.company.datasets.other.loot.*;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
@@ -260,6 +257,34 @@ public class DbReader {
                 builder.bossDrop(loot.get(rs.getInt("lootId")));
             }
             return idsToBuilder.values().stream().map(UltimatumDataSet.UltimatumDataSetBuilder::build).toList();
+        } catch (SQLException e) {
+            throw new SqlConnectionException(e);
+        }
+    }
+
+    public static Collection<CadiroDataSet> readCadiroDataSets() {
+        Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
+        try (Connection conn = DriverManager.getConnection(getConnectionString())) {
+            final Statement stmt = conn.createStatement();
+            final String query = "SELECT d.strategyId, d.tier, c.uniqueItem, c.goldCost FROM cadiroDataSet AS d "
+                    + "LEFT JOIN cadiroUniques AS c ON d.rowid = c.cadiroDataSetId;";
+            final ResultSet rs = stmt.executeQuery(query);
+            final Map<Integer, CadiroDataSet.CadiroDataSetBuilder> idsToBuilder = new HashMap<>();
+            while (rs.next()) {
+                int currId = rs.getInt("rowid");
+                CadiroDataSet.CadiroDataSetBuilder builder;
+                if (idsToBuilder.containsKey(currId)) {
+                    builder = idsToBuilder.get(currId);
+                    builder.uniqueAndCost(rs.getString("uniqueItem"), rs.getInt("goldCost"));
+                } else {
+                    builder = CadiroDataSet.builder()
+                            .uniqueAndCost(rs.getString("uniqueItem"), rs.getInt("goldCost"));
+                    int tier = rs.getInt("tier");
+                    if (!rs.wasNull()) builder.tier(tier);
+                    idsToBuilder.put(currId, builder);
+                }
+            }
+            return idsToBuilder.values().stream().map(CadiroDataSet.CadiroDataSetBuilder::build).toList();
         } catch (SQLException e) {
             throw new SqlConnectionException(e);
         }

@@ -206,4 +206,11 @@ public class Utils {
         return result.toString();
     }
 
+    public static <T> boolean compareCollections(Collection<T> collection1, Collection<T> collection2) {
+        if (collection1.size() != collection2.size()) return false;
+        List<T> copy = new ArrayList<>(collection1);
+        for (T t : collection2) if (!copy.remove(t)) return false;
+        return true;
+    }
+
 }

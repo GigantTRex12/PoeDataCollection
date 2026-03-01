@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor(force = true)
@@ -33,6 +34,16 @@ public class CadiroDataSet extends DataSet {
     }
 
     public static class CadiroDataSetBuilder implements DataSetBuilderInterface<CadiroDataSet> {
+
+        public CadiroDataSetBuilder() {
+            uniquesWithCost = new ArrayList<>();
+        }
+
+        public CadiroDataSetBuilder uniqueAndCost(String unique, int cost) {
+            uniquesWithCost.add(new UniqueAndGoldCostPair(unique, cost));
+            return this;
+        }
+
     }
 
 }

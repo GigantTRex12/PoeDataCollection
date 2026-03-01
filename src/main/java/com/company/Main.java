@@ -6,13 +6,15 @@ import com.company.dataanalyzer.BossDropDataAnalyzer;
 import com.company.dataanalyzer.DataAnalyzer;
 import com.company.dataanalyzer.KalandraMistDataAnalyzer;
 import com.company.datacollector.*;
+import com.company.datasets.datasets.BossDropDataSet;
 import com.company.datasets.other.metadata.Strategy;
+import com.company.utils.FileUtils;
+import com.company.utils.IOUtils;
+import com.company.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static com.company.utils.FileUtils.initLogs;
 import static com.company.utils.IOUtils.input;
@@ -25,6 +27,28 @@ public class Main {
 
     static void main() throws IOException {
         loadConfig();
+
+//        List<String> lines = FileUtils.readLines("Data/bossDrops.txt");
+//        List<BossDropDataSet> data = new ArrayList<>();
+//        Collection<Strategy> strats = DbReader.readStrategies();
+//        int i = -1;
+//        for (String line : lines) {
+//            i++;
+//            if (i < -11) continue;
+//            if (i >= 1200) break;
+//            BossDropDataSet set = Utils.parseJson(line, BossDropDataSet.class);
+//            set.setStrategy(strats.stream().filter(s -> s.equals(set.getStrategy())).findAny().orElseThrow(() -> new RuntimeException(set.getStrategy().toString())));
+//            data.add(set);
+//        }
+//        DbWriter.writeBossDropDatasets(data);
+//        Collection<BossDropDataSet> readData = new ArrayList<>(DbReader.readBossDropDataSets());
+//        HashSet<BossDropDataSet> missed = new HashSet<>();
+//        for (BossDropDataSet d : data) {
+//            if (!readData.remove(d)) {
+//                missed.add(d);
+//            }
+//        }
+
 
         initLogs();
         final String dataPath = "Data/";

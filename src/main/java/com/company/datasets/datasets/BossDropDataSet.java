@@ -8,9 +8,14 @@ import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.metadata.Strategy;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.company.datasets.annotations.Evaluate.EvaluationMode.COUNTER_BASED;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -18,7 +23,6 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @NoArgsConstructor(force = true)
 @Getter
 @ToString(callSuper = true)
-@EqualsAndHashCode // only needed for tests
 public class BossDropDataSet extends DataSet {
 
     @JsonProperty("boss")
@@ -60,6 +64,34 @@ public class BossDropDataSet extends DataSet {
         this.quantity = quantity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BossDropDataSet that = (BossDropDataSet) o;
+        if (extraDrops == null || that.extraDrops == null) {
+            if (!(extraDrops == null && that.extraDrops == null)) return false;
+        }
+        else if (extraDrops.size() == that.extraDrops.size()) {
+            List<Loot> copy = new ArrayList<>(that.extraDrops);
+            for (Loot l : extraDrops) {
+                if (!copy.remove(l)) return false;
+            }
+        }
+        else return false;
+        return witnessed == that.witnessed && Objects.equals(lowerCaseBossname(), that.lowerCaseBossname()) && Objects.equals(guaranteedDrop, that.guaranteedDrop) && Objects.equals(quantity, that.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return 49 * super.hashCode()
+                + 23 * lowerCaseBossname().hashCode()
+                + (witnessed ? 37 : 53)
+                + 17 * (guaranteedDrop == null ? 2 : guaranteedDrop.hashCode())
+                + 29 * (extraDrops.stream().mapToInt(Loot::hashCode).sum() + 5)
+                + 19 * (quantity == null ? 2 : quantity.hashCode());
+    }
+
     @Groupable(order = 1, force = true, filterByValue = true)
     public String lowerCaseBossname() {
         if (uber) return "UBER " + bossName.toLowerCase();
@@ -72,6 +104,16 @@ public class BossDropDataSet extends DataSet {
     }
 
     public static class BossDropDataSetBuilder implements DataSetBuilderInterface<BossDropDataSet> {
+
+        public BossDropDataSetBuilder() {
+            this.extraDrops = new ArrayList<>();
+        }
+
+        public BossDropDataSetBuilder extraDrop(Loot l) {
+            this.extraDrops.add(l);
+            return this;
+        }
+
     }
 
 }

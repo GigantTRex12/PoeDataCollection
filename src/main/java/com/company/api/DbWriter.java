@@ -1,6 +1,8 @@
 package com.company.api;
 
 import com.company.Main;
+import com.company.datasets.datasets.BossDropDataSet;
+import com.company.datasets.other.loot.*;
 import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.SqlConnectionException;
 import com.company.utils.Counter;
@@ -116,6 +118,123 @@ public class DbWriter {
             pstmt.executeBatch();
         }
         return scarabToId;
+    }
+
+    private static Map<Loot, Integer> writeLoot(Collection<Loot> loot, Connection conn) throws SQLException {
+        if (loot.isEmpty()) return new HashMap<>();
+        Set<Loot> restLoot = new HashSet<>();
+        final Map<Loot, Integer> existingLoot = DbReader.readLoot(conn);
+        final Map<Loot, Integer> lootToId = new HashMap<>();
+        for (Loot l : loot) {
+            Integer id = existingLoot.get(l);
+            if (id == null) restLoot.add(l);
+            else lootToId.put(l, id);
+        }
+        final String query = "INSERT INTO loot (name, type) VALUES (?,?);";
+        final PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        for (Loot l : restLoot) {
+            pstmt.setString(1, l.getName());
+            pstmt.setString(2, l.getType().name());
+            pstmt.executeUpdate();
+            ResultSet keys = pstmt.getGeneratedKeys();
+            int id;
+            if (keys.next()) id = keys.getInt(1);
+            else throw new SqlConnectionException("Did not generate an index.");
+            PreparedStatement subPstmt;
+            switch (l) {
+                case StackableLoot sl -> {
+                    final String subQuery = "INSERT INTO stackableLoot (lootId, stacksize) VALUES (?,?);";
+                    subPstmt = conn.prepareStatement(subQuery);
+                    subPstmt.setInt(1, id);
+                    subPstmt.setInt(2, sl.getStackSize());
+                    subPstmt.executeUpdate();
+                }
+                case MapLoot ml -> {
+                    final String subQuery = "INSERT INTO mapLoot (lootId, tier, layout) VALUES (?,?,?);";
+                    subPstmt = conn.prepareStatement(subQuery);
+                    subPstmt.setInt(1, id);
+                    subPstmt.setInt(2, ml.getTier());
+                    subPstmt.setString(3, ml.getLayout());
+                    subPstmt.executeUpdate();
+                }
+                case LootWithLevel ll -> {
+                    final String subQuery = "INSERT INTO levelLoot (lootId, level) VALUES (?,?);";
+                    subPstmt = conn.prepareStatement(subQuery);
+                    subPstmt.setInt(1, id);
+                    subPstmt.setInt(2, ll.getLevel());
+                    subPstmt.executeUpdate();
+                }
+                case ImplicitCorruptedItem cl -> {
+                    final String subQuery = "INSERT INTO implicitCorruptedItemLoot (lootId, implicitAmount) VALUES (?,?);";
+                    subPstmt = conn.prepareStatement(subQuery);
+                    subPstmt.setInt(1, id);
+                    subPstmt.setInt(2, cl.getImplicitAmount());
+                    subPstmt.executeUpdate();
+                }
+                case GemLoot gl -> {
+                    final String subQuery = "INSERT INTO gemLoot (lootId, gemLevel, gemQuality) VALUES (?,?,?);";
+                    subPstmt = conn.prepareStatement(subQuery);
+                    subPstmt.setInt(1, id);
+                    subPstmt.setInt(2, gl.getLevel());
+                    subPstmt.setInt(3, gl.getQuality());
+                    subPstmt.executeUpdate();
+                }
+                case CraftingBenchLoot bl -> {
+                    final String subQuery = "INSERT INTO craftingBenchLoot (lootId, description) VALUES (?,?);";
+                    subPstmt = conn.prepareStatement(subQuery);
+                    subPstmt.setInt(1, id);
+                    subPstmt.setString(2, bl.getDescription());
+                    subPstmt.executeUpdate();
+                }
+                default -> {
+                }
+            }
+            lootToId.put(l, id);
+        }
+        return lootToId;
+    }
+
+    public static void writeBossDropDatasets(Collection<BossDropDataSet> data) {
+        try (Connection conn = DriverManager.getConnection(getConnectionString())) {
+            Collection<Loot> loot = new ArrayList<>();
+            for (BossDropDataSet dataset : data) {
+                if (dataset.getGuaranteedDrop() != null) loot.add(dataset.getGuaranteedDrop());
+                if (dataset.getExtraDrops() != null) loot.addAll(dataset.getExtraDrops());
+            }
+            Map<Loot, Integer> lootToId = writeLoot(loot, conn);
+
+            final String query = "INSERT INTO bossDropDataset (strategyId, bossName, uber, witnessed, guaranteedDropLootId, areaQuantity) VALUES (?,?,?,?,?,?)";
+            final PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            for (BossDropDataSet dataset : data) {
+                pstmt.setInt(1, dataset.getStrategy().getId());
+                pstmt.setString(2, dataset.getBossName());
+                pstmt.setBoolean(3, dataset.isUber());
+                pstmt.setBoolean(4, dataset.isWitnessed());
+                Loot gd = dataset.getGuaranteedDrop();
+                if (gd == null) pstmt.setNull(5, Types.INTEGER);
+                else pstmt.setInt(5, lootToId.get(gd));
+                if (dataset.getQuantity() == null) pstmt.setNull(6, Types.INTEGER);
+                else pstmt.setInt(6, dataset.getQuantity());
+                pstmt.executeUpdate();
+
+                ResultSet keys = pstmt.getGeneratedKeys();
+                int id;
+                if (keys.next()) id = keys.getInt(1);
+                else throw new SqlConnectionException("Did not generate an index.");
+                if (dataset.getExtraDrops() != null && !dataset.getExtraDrops().isEmpty()) {
+                    final String lootQuery = "INSERT INTO bossDropExtraLoot (bossDropDataSetId, lootId) VALUES (?,?);";
+                    final PreparedStatement lootPstmt = conn.prepareStatement(lootQuery);
+                    for (Loot l : dataset.getExtraDrops()) {
+                        lootPstmt.setInt(1, id);
+                        lootPstmt.setInt(2, lootToId.get(l));
+                        lootPstmt.addBatch();
+                    }
+                    lootPstmt.executeBatch();
+                }
+            }
+        } catch (SQLException e) {
+            throw new SqlConnectionException(e);
+        }
     }
 
 }

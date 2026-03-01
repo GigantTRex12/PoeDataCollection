@@ -18,9 +18,9 @@ public class Loot {
     private static final LootType[] stackable = {CATALYSTS, ESSENCES, DIVINATIONCARDS, CURRENCY, FRAGMENT, SCARAB, FOSSILS, SPLINTERS, SPLINTERS_BREACH, SPLINTERS_LEGION, OIL, INCUBATOR, SCOUTING_REPORT};
     private static final LootType[] corrImplicits = {UNIQUE_ITEM_IMPLICIT_CORRUPTED, RARE_ARMOUR_IMPLICIT_CORRUPTED, RARE_WEAPON_IMPLICIT_CORRUPTED, RARE_JEWELLRY_IMPLICIT_CORRUPTED, RARE_ITEM_IMPLICIT_CORRUPTED};
     private static final LootType[] maps = {MAP, UNIQUE_MAP, SYNTH_MAP, ELDER_MAP, SHAPER_MAP, CONQUEROR_MAP, T17_MAP, RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS, ORIGINATOR_MAP, NON_GUARDIAN_ELDER_MAP, NON_GUARDIAN_SHAPER_MAP, ORIGINATOR_ELDER_MAP, ORIGINATOR_SHAPER_MAP, ORIGINATOR_CONQUEROR_MAP, ORIGINATOR_NON_GUARDIAN_ELDER_MAP, ORIGINATOR_NON_GUARDIAN_SHAPER_MAP};
-    private static final LootType[] corruptedMaps = {RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS};
     private static final LootType[] gems = {GEM, GEM_CORRUPTED, GEM_AWAKENED};
     private static final LootType[] crafts = {GUFF_CRAFTING_BENCH, VORICI_CRAFTING_BENCH, TORA_CRAFTING_BENCH, IT_THAT_FLED_BREACHSTONE_CRAFT, SYNDICATE_CRAFTING_BENCH};
+    private static final LootType[] lootWithLevel = {FORBIDDEN_TOME};
 
     @JsonProperty("name")
     protected final String name;
@@ -65,17 +65,6 @@ public class Loot {
                 throw new InvalidLootFormatException("Invalid Format to parse Loot: tier is not an integer");
             }
             if (split.length >= 4) {
-                if (contains(corruptedMaps, type)) {
-                    int implicits = 0;
-                    if (split.length >= 5) {
-                        try {
-                            implicits = Integer.parseInt(split[4]);
-                        } catch (NumberFormatException e) {
-                            throw new InvalidLootFormatException("Invalid Format to parse Loot: implicit amount is not an integer");
-                        }
-                    }
-                    return new CorruptedMapLoot(name, type, tier, split[3], implicits);
-                }
                 return new MapLoot(name, type, tier, split[3]);
             }
             return new MapLoot(name, type, tier, null);
@@ -107,14 +96,14 @@ public class Loot {
                 return new CraftingBenchLoot(name, type, null);
             }
             return new CraftingBenchLoot(name, type, split[2]);
-        } else if (FORBIDDEN_TOME == type) {
+        } else if (contains(lootWithLevel, type)) {
             if (split.length < 3) {
                 throw new InvalidLootFormatException("Invalid Format to parse Loot: not enough Arguments");
             }
             int level;
             try {
                 level = Integer.parseInt(split[2]);
-                return new ForbiddenTome(name, type, level);
+                return new LootWithLevel(name, type, level);
             } catch (NumberFormatException e) {
                 throw new InvalidLootFormatException("Invalid Format to parse Loot: level is not an integer");
             }
@@ -225,9 +214,6 @@ public class Loot {
         if (contains(corrImplicits, type)) {
             return ImplicitCorruptedItem.class;
         }
-        if (contains(corruptedMaps, type)) {
-            return CorruptedMapLoot.class;
-        }
         if (contains(maps, type)) {
             return MapLoot.class;
         }
@@ -238,7 +224,7 @@ public class Loot {
             return CraftingBenchLoot.class;
         }
         if (FORBIDDEN_TOME == type) {
-            return ForbiddenTome.class;
+            return LootWithLevel.class;
         }
         return Loot.class;
     }

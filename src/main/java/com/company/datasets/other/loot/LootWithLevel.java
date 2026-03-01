@@ -10,13 +10,13 @@ import lombok.ToString;
 @NoArgsConstructor(force = true)
 @Getter
 @ToString(callSuper = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @JsonDeserialize()
-public class ForbiddenTome extends Loot {
+public class LootWithLevel extends Loot {
     @JsonProperty("level")
     private final int level;
 
-    public ForbiddenTome(String name, LootType type, int level) {
+    public LootWithLevel(String name, LootType type, int level) {
         super(name, type);
         this.level = level;
     }

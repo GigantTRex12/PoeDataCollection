@@ -266,7 +266,7 @@ public class DbReader {
         Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
         try (Connection conn = DriverManager.getConnection(getConnectionString())) {
             final Statement stmt = conn.createStatement();
-            final String query = "SELECT d.strategyId, d.tier, c.uniqueItem, c.goldCost FROM cadiroDataSet AS d "
+            final String query = "SELECT d.rowid, d.strategyId, d.tier, c.uniqueItem, c.goldCost FROM cadiroDataSet AS d "
                     + "LEFT JOIN cadiroUniques AS c ON d.rowid = c.cadiroDataSetId;";
             final ResultSet rs = stmt.executeQuery(query);
             final Map<Integer, CadiroDataSet.CadiroDataSetBuilder> idsToBuilder = new HashMap<>();
@@ -278,6 +278,7 @@ public class DbReader {
                     builder.uniqueAndCost(rs.getString("uniqueItem"), rs.getInt("goldCost"));
                 } else {
                     builder = CadiroDataSet.builder()
+                            .strategy(strategies.get(rs.getInt("strategyId")))
                             .uniqueAndCost(rs.getString("uniqueItem"), rs.getInt("goldCost"));
                     int tier = rs.getInt("tier");
                     if (!rs.wasNull()) builder.tier(tier);

@@ -402,7 +402,7 @@ public class DbWriter {
                 int id;
                 if (keys.next()) id = keys.getInt(1);
                 else throw new SqlConnectionException("Did not generate an index.");
-                final String uniquesQuery = "INSERT INTO cadiroUniques (cadiroDataSetId, uniqueItem, coldCost) VALUES (?,?,?);";
+                final String uniquesQuery = "INSERT INTO cadiroUniques (cadiroDataSetId, uniqueItem, goldCost) VALUES (?,?,?);";
                 final PreparedStatement uniquesPstmt = conn.prepareStatement(uniquesQuery);
                 for (UniqueAndGoldCostPair u : dataset.getUniquesWithCost()) {
                     uniquesPstmt.setInt(1, id);

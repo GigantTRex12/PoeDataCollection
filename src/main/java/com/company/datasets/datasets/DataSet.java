@@ -23,7 +23,7 @@ public abstract class DataSet {
     }
 
     public DataSet(Strategy strategy) {
-        this.strategy = strategy;
+        this.strategy = strategy.copyWithoutId();
     }
 
     @Groupable(order = -1, filterByValue = true, ignoreNulls = true)

@@ -18,7 +18,7 @@ public class Loot {
     private static final LootType[] stackable = {CATALYSTS, ESSENCES, DIVINATIONCARDS, CURRENCY, FRAGMENT, SCARAB, FOSSILS, SPLINTERS, SPLINTERS_BREACH, SPLINTERS_LEGION, OIL, INCUBATOR, SCOUTING_REPORT};
     private static final LootType[] corrImplicits = {UNIQUE_ITEM_IMPLICIT_CORRUPTED, RARE_ARMOUR_IMPLICIT_CORRUPTED, RARE_WEAPON_IMPLICIT_CORRUPTED, RARE_JEWELLRY_IMPLICIT_CORRUPTED, RARE_ITEM_IMPLICIT_CORRUPTED};
     private static final LootType[] maps = {MAP, UNIQUE_MAP, SYNTH_MAP, ELDER_MAP, SHAPER_MAP, CONQUEROR_MAP, T17_MAP, RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS, ORIGINATOR_MAP, NON_GUARDIAN_ELDER_MAP, NON_GUARDIAN_SHAPER_MAP, ORIGINATOR_ELDER_MAP, ORIGINATOR_SHAPER_MAP, ORIGINATOR_CONQUEROR_MAP, ORIGINATOR_NON_GUARDIAN_ELDER_MAP, ORIGINATOR_NON_GUARDIAN_SHAPER_MAP};
-    private static final LootType[] gems = {GEM, GEM_CORRUPTED, GEM_AWAKENED};
+    private static final LootType[] gems = {GEM, GEM_CORRUPTED, GEM_AWAKENED, VAAL_GEM};
     private static final LootType[] crafts = {GUFF_CRAFTING_BENCH, VORICI_CRAFTING_BENCH, TORA_CRAFTING_BENCH, IT_THAT_FLED_BREACHSTONE_CRAFT, SYNDICATE_CRAFTING_BENCH};
     private static final LootType[] lootWithLevel = {FORBIDDEN_TOME};
 
@@ -174,13 +174,15 @@ public class Loot {
                 } else if (gem) type = GEM_CORRUPTED;
             } else if (gem) {
                 if (lower.contains("awakened")) type = GEM_AWAKENED;
+                else if (lower.contains("vaal")) type = VAAL_GEM;
                 else type = GEM;
 
             } else if (unique) {
                 if (lower.contains("boss")) type = BOSS_UNIQUE_ITEM;
                 else type = UNIQUE_ITEM;
             } else if (rare) {
-                if (weapon) type = synth ? RARE_WEAPON_SYNTHESISED : (frac ? RARE_WEAPON_FRACTURED : RARE_WEAPON);
+                if (lower.contains("grasping")) type = FRACTURED_GRASPING_MAIL;
+                else if (weapon) type = synth ? RARE_WEAPON_SYNTHESISED : (frac ? RARE_WEAPON_FRACTURED : RARE_WEAPON);
                 else if (armour) type = synth ? RARE_ARMOUR_SYNTHESISED : (frac ? RARE_ARMOUR_FRACTURED : RARE_ARMOUR);
                 else if (jewellry) type = synth ? RARE_JEWELLRY_SYNTHESISED : (frac ? RARE_JEWELLRY_FRACTURED : RARE_JEWELLRY);
                 else if (lower.contains("jewel")) {

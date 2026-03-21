@@ -1,5 +1,6 @@
 package com.company.datacollector_lib;
 
+import com.company.datasets.other.UniqueAndGoldCostPair;
 import com.company.datasets.other.loot.Loot;
 import com.company.datasets.other.loot.LootType;
 import com.company.exceptions.InvalidLootFormatException;
@@ -7,6 +8,8 @@ import exceptions.InvalidInputFormatException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.company.utils.IOUtils.print;
 
@@ -46,6 +49,17 @@ public class Normalizers {
         }
 
         return loot;
+    }
+
+    public static List<UniqueAndGoldCostPair> toUniqueCostPairs(String string) {
+        if (string.isEmpty()) return List.of();
+        List<UniqueAndGoldCostPair> pairs = new ArrayList<>();
+        for (String s : string.split("\n")) {
+            Matcher matcher = Pattern.compile("^(.*) (\\d+)$").matcher(s);
+            if (matcher.find()) pairs.add(new UniqueAndGoldCostPair(matcher.group(1), Integer.parseInt(matcher.group(2))));
+            else print("Couldn't parse \"" + s + "\" to Cost. (skipped)");
+        }
+        return pairs;
     }
 
     private Normalizers() {}

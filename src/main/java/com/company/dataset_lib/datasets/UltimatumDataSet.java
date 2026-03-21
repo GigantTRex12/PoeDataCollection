@@ -21,8 +21,8 @@ public class UltimatumDataSet extends DataSet {
     private final List<Loot> bossLoot;
 
     @Builder
-    public UltimatumDataSet(Strategy metadata, List<Loot> rewards, boolean boss, List<Loot> bossLoot) {
-        super(metadata);
+    public UltimatumDataSet(Strategy strategy, List<Loot> rewards, boolean boss, List<Loot> bossLoot) {
+        super(strategy);
         this.rewards = rewards;
         this.boss = boss;
         this.bossLoot = bossLoot;
@@ -30,14 +30,8 @@ public class UltimatumDataSet extends DataSet {
 
     public static class UltimatumDataSetBuilder {
 
-        private Strategy strategy;
         private Map<Integer, Loot> waveToLoot;
         private int maxIndex;
-
-        public UltimatumDataSetBuilder strategy(Strategy strategy) {
-            this.strategy = strategy;
-            return this;
-        }
 
         public UltimatumDataSetBuilder boss() {
             boss = true;

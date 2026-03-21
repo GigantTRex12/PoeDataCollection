@@ -1,10 +1,10 @@
 package com.company.api;
 
 import com.company.Main;
-import com.company.datasets.datasets.*;
-import com.company.datasets.other.UniqueAndGoldCostPair;
+import com.company.dataset_lib.Strategy;
+import com.company.dataset_lib.datasets.*;
+import com.company.dataset_lib.other.UniqueAndGoldCostPair;
 import com.company.datasets.other.loot.*;
-import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.SqlConnectionException;
 import com.company.utils.Counter;
 import net.bytebuddy.jar.asm.Type;
@@ -244,7 +244,7 @@ public class DbWriter {
             Set<LootType> allTypes = new HashSet<>();
             for (MapDropDataSet d : data) {
                 allTypes.addAll(d.getMapsInOrder());
-                if (d.getBossDrops() != null) allTypes.addAll(d.getBossDrops());
+                if (d.getBossMapDrops() != null) allTypes.addAll(d.getBossMapDrops());
             }
             Map<LootType, Integer> types = writeMapTypes(allTypes, conn);
             final Statement stmt = conn.createStatement();
@@ -259,12 +259,12 @@ public class DbWriter {
                 pstmt.setInt(2, d.getConversionChance());
                 if (d.getConversionType() == null) pstmt.setNull(3, Types.VARCHAR);
                 else pstmt.setString(3, d.getConversionType().name());
-                if (d.getBossDrops() == null) pstmt.setNull(4, Types.INTEGER);
-                else if (d.getBossDrops().isEmpty()) pstmt.setInt(4, 0);
+                if (d.getBossMapDrops() == null) pstmt.setNull(4, Types.INTEGER);
+                else if (d.getBossMapDrops().isEmpty()) pstmt.setInt(4, 0);
                 else {
                     final String bossQuery = "INSERT INTO bossMapsDropList (mapTypeId, bossDropListId) VALUES (?,?);";
                     final PreparedStatement bossPstmt = conn.prepareStatement(bossQuery);
-                    for (LootType t : d.getBossDrops()) {
+                    for (LootType t : d.getBossMapDrops()) {
                         bossPstmt.setInt(1, types.get(t));
                         bossPstmt.setInt(2, bossDropId);
                         bossPstmt.addBatch();

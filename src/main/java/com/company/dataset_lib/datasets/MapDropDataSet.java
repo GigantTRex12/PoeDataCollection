@@ -21,8 +21,8 @@ public class MapDropDataSet extends DataSet {
     private final Collection<LootType> bossMapDrops;
 
     @Builder
-    public MapDropDataSet(Strategy metadata, int conversionChance, LootType conversionType, List<LootType> mapsInOrder, Collection<LootType> bossMapDrops) {
-        super(metadata);
+    public MapDropDataSet(Strategy strategy, int conversionChance, LootType conversionType, List<LootType> mapsInOrder, Collection<LootType> bossMapDrops) {
+        super(strategy);
         this.conversionChance = conversionChance;
         this.conversionType = conversionType;
         this.mapsInOrder = mapsInOrder;

@@ -22,8 +22,8 @@ public class KalandraMistDataSet extends DataSet {
     private final Boolean inMap;
 
     @Builder
-    public KalandraMistDataSet(Strategy metadata, MistType type, Integer tier, int amountPositive, int amountNegative, int amountNeutral, String itemText, LootType itemType, String multiplier, Boolean inMap) {
-        super(metadata);
+    public KalandraMistDataSet(Strategy strategy, MistType type, Integer tier, int amountPositive, int amountNegative, int amountNeutral, String itemText, LootType itemType, String multiplier, Boolean inMap) {
+        super(strategy);
         this.type = type;
         this.tier = tier;
         this.amountPositive = amountPositive;

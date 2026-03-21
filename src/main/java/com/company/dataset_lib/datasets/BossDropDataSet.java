@@ -22,8 +22,8 @@ public class BossDropDataSet extends DataSet {
     private final Integer quantity;
 
     @Builder
-    public BossDropDataSet(Strategy metadata, String bossName, boolean uber, boolean witnessed, Loot guaranteedDrop, List<Loot> extraDrops, Integer quantity) {
-        super(metadata);
+    public BossDropDataSet(Strategy strategy, String bossName, boolean uber, boolean witnessed, Loot guaranteedDrop, List<Loot> extraDrops, Integer quantity) {
+        super(strategy);
         this.bossName = bossName;
         this.uber = uber;
         this.witnessed = witnessed;

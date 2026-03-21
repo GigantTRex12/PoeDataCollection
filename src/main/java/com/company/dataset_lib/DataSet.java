@@ -13,6 +13,10 @@ public class DataSet extends BaseDataSet {
         return (Strategy) this.metadata;
     }
 
+    public Strategy getStrategy() {
+        return this.getMetadata();
+    }
+
     @Override
     public String toString() {
         return "DataSet{" +

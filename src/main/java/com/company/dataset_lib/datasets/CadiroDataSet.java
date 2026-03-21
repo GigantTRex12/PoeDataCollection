@@ -18,8 +18,8 @@ public class CadiroDataSet extends DataSet {
     private final List<UniqueAndGoldCostPair> uniquesWithCost;
 
     @Builder
-    public CadiroDataSet(Strategy metadata, Integer tier, List<UniqueAndGoldCostPair> uniquesWithCost) {
-        super(metadata);
+    public CadiroDataSet(Strategy strategy, Integer tier, List<UniqueAndGoldCostPair> uniquesWithCost) {
+        super(strategy);
         this.tier = tier;
         this.uniquesWithCost = uniquesWithCost;
     }

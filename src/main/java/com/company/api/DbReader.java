@@ -1,9 +1,9 @@
 package com.company.api;
 
 import com.company.Main;
-import com.company.datasets.datasets.*;
+import com.company.dataset_lib.Strategy;
+import com.company.dataset_lib.datasets.*;
 import com.company.datasets.other.loot.*;
-import com.company.datasets.other.metadata.Strategy;
 import com.company.exceptions.SomethingIsWrongWithMyCodeException;
 import com.company.exceptions.SqlConnectionException;
 import com.company.exceptions.SqlInvalidDataException;

@@ -3,9 +3,11 @@ package com.company.dataset_lib.datasets;
 import com.company.dataset_lib.DataSet;
 import com.company.dataset_lib.Strategy;
 import com.company.datasets.other.loot.Loot;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -19,6 +21,7 @@ public class BossDropDataSet extends DataSet {
     private final List<Loot> extraDrops;
     private final Integer quantity;
 
+    @Builder
     public BossDropDataSet(Strategy metadata, String bossName, boolean uber, boolean witnessed, Loot guaranteedDrop, List<Loot> extraDrops, Integer quantity) {
         super(metadata);
         this.bossName = bossName;
@@ -36,6 +39,19 @@ public class BossDropDataSet extends DataSet {
 
     public Integer quantInStepsOfTen() {
         return quantity != null ? (quantity / 10) * 10 : null;
+    }
+
+    public static class BossDropDataSetBuilder {
+
+        public BossDropDataSetBuilder() {
+            this.extraDrops = new ArrayList<>();
+        }
+
+        public BossDropDataSetBuilder extraDrop(Loot l) {
+            this.extraDrops.add(l);
+            return this;
+        }
+
     }
 
 }

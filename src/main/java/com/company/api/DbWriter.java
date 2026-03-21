@@ -241,12 +241,12 @@ public class DbWriter {
 
     public static void writeMapDropDataSets(Collection<MapDropDataSet> data) {
         try (Connection conn = DriverManager.getConnection(getConnectionString())) {
-            Set<LootType> allTypes = new HashSet<>();
+            Set<MapDropDataSet.MapType> allTypes = new HashSet<>();
             for (MapDropDataSet d : data) {
                 allTypes.addAll(d.getMapsInOrder());
                 if (d.getBossMapDrops() != null) allTypes.addAll(d.getBossMapDrops());
             }
-            Map<LootType, Integer> types = writeMapTypes(allTypes, conn);
+            Map<MapDropDataSet.MapType, Integer> types = writeMapTypes(allTypes, conn);
             final Statement stmt = conn.createStatement();
             final String maxIdQuery = "SELECT MAX(bossDropListId) AS max FROM bossMapsDropList;";
             final ResultSet rs = stmt.executeQuery(maxIdQuery);
@@ -264,7 +264,7 @@ public class DbWriter {
                 else {
                     final String bossQuery = "INSERT INTO bossMapsDropList (mapTypeId, bossDropListId) VALUES (?,?);";
                     final PreparedStatement bossPstmt = conn.prepareStatement(bossQuery);
-                    for (LootType t : d.getBossMapDrops()) {
+                    for (MapDropDataSet.MapType t : d.getBossMapDrops()) {
                         bossPstmt.setInt(1, types.get(t));
                         bossPstmt.setInt(2, bossDropId);
                         bossPstmt.addBatch();
@@ -292,21 +292,21 @@ public class DbWriter {
         }
     }
 
-    private static Map<LootType, Integer> writeMapTypes(Set<LootType> types, Connection conn) throws SQLException {
+    private static Map<MapDropDataSet.MapType, Integer> writeMapTypes(Set<MapDropDataSet.MapType> types, Connection conn) throws SQLException {
         if (types.isEmpty()) return new HashMap<>();
-        Set<LootType> restTypes = new HashSet<>(types);
-        Map<LootType, Integer> typeToId = new HashMap<>();
+        Set<MapDropDataSet.MapType> restTypes = new HashSet<>(types);
+        Map<MapDropDataSet.MapType, Integer> typeToId = new HashMap<>();
         final Statement stmt = conn.createStatement();
         final String selectQuery = "SELECT rowid, typeName FROM mapType;";
         final ResultSet rs = stmt.executeQuery(selectQuery);
         while (rs.next()) {
-            LootType t = LootType.valueOf(rs.getString("typeName"));
+            MapDropDataSet.MapType t = MapDropDataSet.MapType.valueOf(rs.getString("typeName"));
             if (restTypes.remove(t)) typeToId.put(t, rs.getInt("rowid"));
         }
         if (!restTypes.isEmpty()) {
             final String query = "INSERT INTO mapType (typeName) VALUES (?);";
             final PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            for (LootType t : restTypes) {
+            for (MapDropDataSet.MapType t : restTypes) {
                 pstmt.setString(1, t.name());
                 pstmt.executeUpdate();
                 ResultSet keys = pstmt.getGeneratedKeys();

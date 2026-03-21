@@ -150,6 +150,7 @@ public class DbReader {
         }
     }
 
+    // TODO: change values to accept loottype and maptype
     public static Collection<MapDropDataSet> readMapDropDataSets() {
         Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
         try (Connection conn = DriverManager.getConnection(getConnectionString())) {
@@ -166,15 +167,15 @@ public class DbReader {
                 if (idsToBuilder.containsKey(currId)) {
                     builder = idsToBuilder.get(currId);
                     String mapDrop = rs.getString("typeName");
-                    if (!rs.wasNull()) builder.mapDrop(LootType.valueOf(mapDrop));
+                    if (!rs.wasNull()) builder.mapDrop(MapDropDataSet.MapType.valueOf(mapDrop));
                 } else {
                     builder = MapDropDataSet.builder()
                             .strategy(strategies.get(rs.getInt("strategyId")))
                             .conversionChance(rs.getInt("conversionChance"));
                     String conversionType = rs.getString("conversionType");
-                    if (!rs.wasNull()) builder.conversionType(LootType.valueOf(conversionType));
+                    if (!rs.wasNull()) builder.conversionType(MapDropDataSet.MapType.valueOf(conversionType));
                     String mapDrop = rs.getString("typeName");
-                    if (!rs.wasNull()) builder.mapDrop(LootType.valueOf(mapDrop));
+                    if (!rs.wasNull()) builder.mapDrop(MapDropDataSet.MapType.valueOf(mapDrop));
                     idsToBuilder.put(currId, builder);
                 }
             }
@@ -187,7 +188,7 @@ public class DbReader {
                 int currId = rs.getInt("rowid");
                 MapDropDataSet.MapDropDataSetBuilder builder = idsToBuilder.get(currId);
                 if (rs.getInt("bossDropListId") == 0) builder.zeroBossDrops();
-                else builder.bossDrop(LootType.valueOf(rs.getString("typeName")));
+                else builder.bossDrop(MapDropDataSet.MapType.valueOf(rs.getString("typeName")));
             }
             return idsToBuilder.values().stream().map(MapDropDataSet.MapDropDataSetBuilder::build).toList();
         } catch (SQLException e) {

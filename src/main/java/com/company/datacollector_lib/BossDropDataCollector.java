@@ -1,6 +1,7 @@
 package com.company.datacollector_lib;
 
 import collector.Question;
+import com.company.api.DbWriter;
 import com.company.dataset_lib.datasets.BossDropDataSet;
 import com.company.datasets.other.loot.Loot;
 
@@ -54,6 +55,6 @@ public class BossDropDataCollector extends DataCollector<BossDropDataSet>{
 
     @Override
     protected void saveData() {
-
+        DbWriter.writeBossDropDataSets(this.data);
     }
 }

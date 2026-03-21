@@ -28,6 +28,8 @@ public class Strategy extends Metadata {
 
         private List<String> scarabs;
 
+        public StrategyBuilder() {}
+
         public StrategyBuilder(Integer id) {
             this.id = id;
         }

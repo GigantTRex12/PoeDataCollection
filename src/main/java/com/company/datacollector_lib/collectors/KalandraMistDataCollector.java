@@ -9,6 +9,10 @@ import exceptions.InvalidInputFormatException;
 import java.util.List;
 import java.util.Map;
 
+import static com.company.dataset_lib.datasets.KalandraMistDataSet.ItemType.AMULET;
+import static com.company.dataset_lib.datasets.KalandraMistDataSet.ItemType.RING;
+import static com.company.dataset_lib.datasets.KalandraMistDataSet.MistType.*;
+
 public class KalandraMistDataCollector extends DataCollector<KalandraMistDataSet> {
 
     @Override
@@ -68,28 +72,24 @@ public class KalandraMistDataCollector extends DataCollector<KalandraMistDataSet
             throw new InvalidInputFormatException("Answer should not be null");
         }
         if ("in map".equalsIgnoreCase(answer)) {
-            map.put("itemType", KalandraMistDataSet.MistType.IN_MAP);
-        }
-        else if (answer.toLowerCase().startsWith("itemized guff")) {
-            map.put("itemType", KalandraMistDataSet.MistType.ITEMIZED_GUFF);
+            map.put("itemType", IN_MAP);
+        } else if (answer.toLowerCase().startsWith("itemized guff")) {
+            map.put("itemType", ITEMIZED_GUFF);
             map.put("tier", Integer.parseInt(answer.substring(14)));
-        }
-        else if ("itemized".equalsIgnoreCase(answer)) {
-            map.put("itemType", KalandraMistDataSet.MistType.ITEMIZED);
-        }
-        else if (answer.toLowerCase().startsWith("lake")) {
-            map.put("itemType", KalandraMistDataSet.MistType.LAKE);
+        } else if ("itemized".equalsIgnoreCase(answer)) {
+            map.put("itemType", ITEMIZED);
+        } else if (answer.toLowerCase().startsWith("lake")) {
+            map.put("itemType", LAKE);
             map.put("tier", Integer.parseInt(answer.substring(5)));
-        }
-        else {
+        } else {
             throw new InvalidInputFormatException("Could not parse answer " + answer);
         }
     }
 
     public static KalandraMistDataSet.ItemType parseItemType(String string) {
         return switch (string.toLowerCase()) {
-            case ("a"), ("amulet") -> KalandraMistDataSet.ItemType.AMULET;
-            case ("r"), ("ring") -> KalandraMistDataSet.ItemType.RING;
+            case ("a"), ("amulet") -> AMULET;
+            case ("r"), ("ring") -> RING;
             default -> null;
         };
     }

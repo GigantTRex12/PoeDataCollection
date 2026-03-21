@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.company.datasets.other.loot.LootType.BOSS_UNIQUE_ITEM;
+
 public class BossDropDataCollector extends DataCollector<BossDropDataSet> {
 
     @Override
@@ -27,7 +29,7 @@ public class BossDropDataCollector extends DataCollector<BossDropDataSet> {
                         .normalize(Normalizers::toBool)
                         .build(),
                 Question.ask("guaranteedDrop", "Which unique was the guaranteed drop?")
-                        .normalize(Normalizers::parseToBossLoot)
+                        .normalize(string -> new Loot(string, BOSS_UNIQUE_ITEM))
                         .emptyToNull()
                         .build(),
                 Question.ask("extraDrops", "Input extra drops to track.")

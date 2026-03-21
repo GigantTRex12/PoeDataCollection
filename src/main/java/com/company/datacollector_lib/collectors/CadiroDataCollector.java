@@ -1,7 +1,9 @@
-package com.company.datacollector_lib;
+package com.company.datacollector_lib.collectors;
 
 import collector.Question;
 import com.company.api.DbWriter;
+import com.company.datacollector_lib.DataCollector;
+import com.company.datacollector_lib.Normalizers;
 import com.company.dataset_lib.datasets.CadiroDataSet;
 import com.company.dataset_lib.other.UniqueAndGoldCostPair;
 

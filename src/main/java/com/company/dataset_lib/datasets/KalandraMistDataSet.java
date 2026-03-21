@@ -2,7 +2,6 @@ package com.company.dataset_lib.datasets;
 
 import com.company.dataset_lib.DataSet;
 import com.company.dataset_lib.Strategy;
-import com.company.datasets.other.loot.LootType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -17,12 +16,11 @@ public class KalandraMistDataSet extends DataSet {
     private final int amountNegative;
     private final int amountNeutral;
     private final String itemText;
-    private final LootType itemType;
+    private final ItemType itemType;
     private final String multiplier;
-    private final Boolean inMap;
 
     @Builder
-    public KalandraMistDataSet(Strategy strategy, MistType type, Integer tier, int amountPositive, int amountNegative, int amountNeutral, String itemText, LootType itemType, String multiplier, Boolean inMap) {
+    public KalandraMistDataSet(Strategy strategy, MistType type, Integer tier, int amountPositive, int amountNegative, int amountNeutral, String itemText, ItemType itemType, String multiplier) {
         super(strategy);
         this.type = type;
         this.tier = tier;
@@ -32,7 +30,6 @@ public class KalandraMistDataSet extends DataSet {
         this.itemText = itemText;
         this.itemType = itemType;
         this.multiplier = multiplier;
-        this.inMap = inMap;
     }
 
     public int totalMods() {
@@ -45,6 +42,10 @@ public class KalandraMistDataSet extends DataSet {
 
     public enum MistType {
         IN_MAP, ITEMIZED, LAKE, ITEMIZED_GUFF
+    }
+
+    public enum ItemType {
+        RING, AMULET
     }
 
 }

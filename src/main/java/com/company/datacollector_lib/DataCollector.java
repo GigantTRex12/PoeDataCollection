@@ -16,7 +16,7 @@ public abstract class DataCollector<T extends DataSet> extends BaseDataCollector
     public DataCollector() {
         super();
         strategies = null;
-        this.actions.put("AddStrat", this::addStrategy, List.of("as"));
+        //this.actions.put("AddStrat", this::addStrategy, List.of("as"));
     }
 
     protected Strategy getMetadata() {

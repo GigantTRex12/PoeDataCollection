@@ -214,7 +214,7 @@ public class DbReader {
                 int tier = rs.getInt("tier");
                 if (!rs.wasNull()) builder.tier(tier);
                 String itemType = rs.getString("itemType");
-                if (itemType != null) builder.itemType(LootType.valueOf(itemType));
+                if (itemType != null) builder.itemType(KalandraMistDataSet.ItemType.valueOf(itemType));
                 data.add(builder.build());
             }
             return data;

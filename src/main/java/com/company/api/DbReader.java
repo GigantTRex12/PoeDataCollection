@@ -114,7 +114,7 @@ public class DbReader {
         return lootToId;
     }
 
-    public static Collection<BossDropDataSet> readBossDropDataSets() {
+    public static List<BossDropDataSet> readBossDropDataSets() {
         Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
         try (Connection conn = DriverManager.getConnection(getConnectionString())) {
             Map<Integer, Loot> loot = readLoot(conn).entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
@@ -151,7 +151,7 @@ public class DbReader {
     }
 
     // TODO: change values to accept loottype and maptype
-    public static Collection<MapDropDataSet> readMapDropDataSets() {
+    public static List<MapDropDataSet> readMapDropDataSets() {
         Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
         try (Connection conn = DriverManager.getConnection(getConnectionString())) {
             final Statement stmt = conn.createStatement();
@@ -196,7 +196,7 @@ public class DbReader {
         }
     }
 
-    public static Collection<KalandraMistDataSet> readKalandraMistDataSets() {
+    public static List<KalandraMistDataSet> readKalandraMistDataSets() {
         Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
         try (Connection conn = DriverManager.getConnection(getConnectionString())) {
             final List<KalandraMistDataSet> data = new ArrayList<>();
@@ -224,7 +224,7 @@ public class DbReader {
         }
     }
 
-    public static Collection<UltimatumDataSet> readUltimatumDataSets() {
+    public static List<UltimatumDataSet> readUltimatumDataSets() {
         Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
         try (Connection conn = DriverManager.getConnection(getConnectionString())) {
             Map<Integer, Loot> loot = readLoot(conn).entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
@@ -263,7 +263,7 @@ public class DbReader {
         }
     }
 
-    public static Collection<CadiroDataSet> readCadiroDataSets() {
+    public static List<CadiroDataSet> readCadiroDataSets() {
         Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
         try (Connection conn = DriverManager.getConnection(getConnectionString())) {
             final Statement stmt = conn.createStatement();

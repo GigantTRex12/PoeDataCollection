@@ -65,6 +65,7 @@ public class KalandraMistDataCollector extends DataCollector<KalandraMistDataSet
     @Override
     protected void saveData() {
         DbWriter.writeKalandraMistDataSets(this.data);
+        this.data.clear();
     }
 
     private static void normalizeMistType(String answer, Map<String, Object> map) throws InvalidInputFormatException {

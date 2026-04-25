@@ -63,6 +63,7 @@ public class MapDropDataCollector extends DataCollector<MapDropDataSet> {
     @Override
     protected void saveData() {
         DbWriter.writeMapDropDataSets(this.data);
+        this.data.clear();
     }
 
     private static MapDropDataSet.MapType getMapType(String string) {

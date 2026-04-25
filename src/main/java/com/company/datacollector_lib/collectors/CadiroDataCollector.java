@@ -44,6 +44,7 @@ public class CadiroDataCollector extends DataCollector<CadiroDataSet> {
     @Override
     protected void saveData() {
         DbWriter.writeCadiroDataSets(this.data);
+        this.data.clear();
     }
 
     private static List<UniqueAndGoldCostPair> toUniqueCostPairs(String string) {

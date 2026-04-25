@@ -1,9 +1,9 @@
 package com.company;
 
-import com.company.dataanalyzer.BossDropDataAnalyzer;
-import com.company.dataanalyzer.DataAnalyzer;
-import com.company.dataanalyzer.KalandraMistDataAnalyzer;
-import com.company.datacollector.*;
+import com.company.dataanalyzer_lib.DataAnalyzer;
+import com.company.dataanalyzer_lib.analyzers.BossDropDataAnalyzer;
+import com.company.datacollector_lib.DataCollector;
+import com.company.datacollector_lib.collectors.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,29 +50,27 @@ public class Main {
             if (action.equals("c") || action.equals("collect")) {
                 DataCollector<?> collector;
                 switch (dataType) {
-                    case "mist" -> collector = new KalandraMistDatacollector();
+                    case "mist" -> collector = new KalandraMistDataCollector();
                     case "map drops" -> collector = new MapDropDataCollector();
                     case "ultimatum" -> collector = new UltimatumDataCollector();
                     case "boss drops" -> collector = new BossDropDataCollector();
                     case "cadiro" -> collector = new CadiroDataCollector();
-                    case "jun" -> collector = new JunDataCollector(filename);
                     default -> {
                         print("Exiting");
                         return;
                     }
                 }
-                collector.collectData(filename);
+                collector.collect();
             } else if (action.equals("a") || action.equals("analyze")) {
                 DataAnalyzer<?> analyzer = null;
                 switch (dataType) {
-                    case "mist" -> analyzer = new KalandraMistDataAnalyzer(filename);
-                    case "boss drops" -> analyzer = new BossDropDataAnalyzer(filename);
+                    case "boss drops" -> analyzer = new BossDropDataAnalyzer();
                     default -> {
                         print("Exiting");
                         return;
                     }
                 }
-                if (analyzer != null) analyzer.analyzeData();
+                if (analyzer != null) analyzer.analyze();
             } else {
                 print("Exiting");
                 return;

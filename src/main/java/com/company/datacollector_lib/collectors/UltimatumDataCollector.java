@@ -46,6 +46,7 @@ public class UltimatumDataCollector extends DataCollector<UltimatumDataSet> {
     @Override
     protected void saveData() {
         DbWriter.writeUltimatumDataSets(this.data);
+        this.data.clear();
     }
 
 }

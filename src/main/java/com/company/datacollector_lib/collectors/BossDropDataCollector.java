@@ -29,8 +29,8 @@ public class BossDropDataCollector extends DataCollector<BossDropDataSet> {
                         .normalize(Normalizers::toBool)
                         .build(),
                 Question.ask("guaranteedDrop", "Which unique was the guaranteed drop?")
-                        .normalize(string -> new Loot(string, BOSS_UNIQUE_ITEM))
-                        .emptyToNull()
+                        .normalize(string -> string.isEmpty() ? null : new Loot(string, BOSS_UNIQUE_ITEM))
+                        //.emptyToNull()
                         .build(),
                 Question.ask("extraDrops", "Input extra drops to track.")
                         .multiline()
@@ -38,8 +38,8 @@ public class BossDropDataCollector extends DataCollector<BossDropDataSet> {
                         .build(),
                 Question.ask("quantity", "Enter the area quantity.")
                         .regex("^$|^\\d+$")
-                        .normalize(str -> Integer.parseInt(str))
-                        .emptyToNull()
+                        .normalize(string -> string.isEmpty() ? null : Integer.parseInt(string))
+                        //.emptyToNull()
                         .build()
         );
     }
@@ -60,5 +60,6 @@ public class BossDropDataCollector extends DataCollector<BossDropDataSet> {
     @Override
     protected void saveData() {
         DbWriter.writeBossDropDataSets(this.data);
+        this.data.clear();
     }
 }

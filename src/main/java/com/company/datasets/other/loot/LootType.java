@@ -73,5 +73,6 @@ public enum LootType {
     @Legacy(legacySince = "3.28") SCOUTING_REPORT,
     BOSS_INVITATION,
     FORBIDDEN_TOME,
-    CONTRACT
+    CONTRACT,
+    CORPSE
 }

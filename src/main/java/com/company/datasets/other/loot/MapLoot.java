@@ -13,7 +13,7 @@ import lombok.ToString;
 @JsonDeserialize()
 public class MapLoot extends Loot {
     @JsonProperty("tier")
-    protected final int tier;
+    protected final Integer tier;
     @JsonProperty("layout")
     @Legacy(legacySince = "3.28")
     protected final String layout;
@@ -33,6 +33,12 @@ public class MapLoot extends Loot {
     public MapLoot(String name, LootType type, int tier) {
         super(name, type);
         this.tier = tier;
+        this.layout = null;
+    }
+
+    public MapLoot(String name, LootType type) {
+        super(name, type);
+        this.tier = null;
         this.layout = null;
     }
 }

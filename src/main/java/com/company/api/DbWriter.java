@@ -11,6 +11,7 @@ import net.bytebuddy.jar.asm.Type;
 
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DbWriter {
 
@@ -412,6 +413,25 @@ public class DbWriter {
                 }
                 uniquesPstmt.executeBatch();
             }
+        } catch (SQLException e) {
+            throw new SqlConnectionException(e);
+        }
+    }
+
+    public static void writeDivCardDataSets(Collection<DivCardDataSet> data) {
+        try (Connection conn = DriverManager.getConnection(getConnectionString())) {
+            Map<Loot, Integer> lootToId = writeLoot(data.stream().map(DivCardDataSet::getResult).collect(Collectors.toSet()), conn);
+            final String query = "INSERT INTO divCardDataSet (strategyId, card, lootId, characterLevel) VALUES (?,?,?,?);";
+            final PreparedStatement pstmt = conn.prepareStatement(query);
+            for (DivCardDataSet dataset : data) {
+                pstmt.setInt(1, dataset.getStrategy().getId());
+                pstmt.setString(2, dataset.getCardName());
+                pstmt.setInt(3, lootToId.get(dataset.getResult()));
+                if (dataset.getCharacterLevel() == null) pstmt.setNull(4, Types.INTEGER);
+                else pstmt.setInt(4, dataset.getCharacterLevel());
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
         } catch (SQLException e) {
             throw new SqlConnectionException(e);
         }

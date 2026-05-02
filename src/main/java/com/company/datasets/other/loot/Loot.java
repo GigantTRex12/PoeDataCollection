@@ -117,7 +117,7 @@ public class Loot {
         LootType type = null;
         try {
             type = valueOf(rep.toUpperCase());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) { // TODO if/else instead of exception
             String lower = rep.toLowerCase();
             boolean unique = lower.contains("unique");
             boolean rare = lower.contains("rare");
@@ -202,7 +202,10 @@ public class Loot {
                 type = SCOUTING_REPORT;
             } else if (lower.contains("contract")) {
                 type = CONTRACT;
-            } if (type == null) {
+            } else if (lower.contains("corpse")) {
+                type = CORPSE;
+            }
+            if (type == null) {
                 throw new InvalidLootFormatException("Invalid Format to parse Loot: Cannot parse Loottype");
             }
         }

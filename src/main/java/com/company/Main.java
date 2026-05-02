@@ -28,7 +28,8 @@ public class Main {
                 entry("ultimatum", "ultimatum.txt"),
                 entry("map drops", "mapDrops.txt"),
                 entry("boss drops", "bossDrops.txt"),
-                entry("cadiro", "cadiro.txt")
+                entry("cadiro", "cadiro.txt"),
+                entry("div cards", "divcards.txt")
                 //entry("jun", "junEncounters.txt")
         );
 
@@ -45,7 +46,6 @@ public class Main {
                 return;
             }
             String dataType = input("Which type of Data would you like to work with?", typeToFilename.keySet()).toLowerCase();
-            String filename = dataPath + typeToFilename.get(dataType.toLowerCase());
 
             if (action.equals("c") || action.equals("collect")) {
                 DataCollector<?> collector;
@@ -55,6 +55,7 @@ public class Main {
                     case "ultimatum" -> collector = new UltimatumDataCollector();
                     case "boss drops" -> collector = new BossDropDataCollector();
                     case "cadiro" -> collector = new CadiroDataCollector();
+                    case "div cards" -> collector = new DivCardDataCollector();
                     default -> {
                         print("Exiting");
                         return;

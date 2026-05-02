@@ -292,4 +292,26 @@ public class DbReader {
         }
     }
 
+    public static List<DivCardDataSet> readDivCardDataSets() {
+        Map<Integer, Strategy> strategies = readStrategies().stream().collect(Collectors.toMap(Strategy::getId, Function.identity()));
+        try (Connection conn = DriverManager.getConnection(getConnectionString())) {
+            Map<Integer, Loot> loot = readLoot(conn).entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+            final Statement stmt = conn.createStatement();
+            final String query = "SELECT d.strategyId, d.card, d.lootId, d.characterLevel FROM divCardDataSet AS d;";
+            final ResultSet rs = stmt.executeQuery(query);
+            List<DivCardDataSet> datasets = new ArrayList<>();
+            while (rs.next()) {
+                datasets.add(new DivCardDataSet(
+                        strategies.get(rs.getInt("strategyId")),
+                        rs.getString("card"),
+                        loot.get(rs.getInt("lootId")),
+                        rs.getInt("characterLevel")
+                ));
+            }
+            return datasets;
+        } catch (SQLException e) {
+            throw new SqlConnectionException(e);
+        }
+    }
+
 }

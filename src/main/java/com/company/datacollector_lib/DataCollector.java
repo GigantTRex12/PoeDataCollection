@@ -24,7 +24,7 @@ public abstract class DataCollector<T extends DataSet> extends BaseDataCollector
     }
 
     @Override
-    protected boolean validateDataSet(BaseDataSet dataSet) {
+    protected boolean validateDataSet(T dataSet) {
         if (dataSet == null || dataSet.getMetadata() == null) {
             return false;
         }

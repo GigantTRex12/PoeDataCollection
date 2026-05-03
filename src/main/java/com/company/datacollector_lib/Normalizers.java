@@ -6,6 +6,8 @@ import exceptions.InvalidInputFormatException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.company.utils.IOUtils.print;
 
@@ -45,14 +47,10 @@ public class Normalizers {
 
     public static Loot toDivCardLoot(String string, String cardName) throws InvalidInputFormatException {
         switch (cardName.toLowerCase()) {
-            case "buried treasure":
-            case "cameria's cut": return new StackableLoot(string, LootType.SCARAB, 1);
+            case "buried treasure", "cameria's cut": return new StackableLoot(string, LootType.SCARAB, 1);
             case "disdain": return new StackableLoot(string, LootType.CURRENCY, 1);
             case "emperor's luck": return new StackableLoot(string, LootType.CURRENCY, 5);
-            case "prejudice":
-            case "the forward gaze":
-            case "the undaunted":
-            case "jack in the box": return new Loot(string, LootType.UNIQUE_ITEM);
+            case "prejudice", "the forward gaze", "the undaunted", "jack in the box": return new Loot(string, LootType.UNIQUE_ITEM);
             case "justified ambition": return new MapLoot(string, LootType.SYNTH_MAP);
             case "more is never enough": return new StackableLoot(string, LootType.SCARAB, 4);
             case "runic luck": return new StackableLoot(string, LootType.CURRENCY, 10);
@@ -79,7 +77,15 @@ public class Normalizers {
         String[] reps = string.strip().split("\n");
         List<Loot> loot = new ArrayList<>();
 
-        for (String rep : reps) loot.add(toDivCardLoot(rep, cardName));
+        for (String rep : reps) {
+            Matcher matcher = Pattern.compile("^([1-9]\\d*);(.+)$").matcher(rep);
+            if (matcher.find()) {
+                int amount = Integer.parseInt(matcher.group(1));
+                String itemName = matcher.group(2);
+                Loot l = toDivCardLoot(itemName, cardName);
+                for (int i = 0; i < amount; i++) loot.add(l);
+            } else loot.add(toDivCardLoot(rep, cardName));
+        }
 
         return loot;
     }

@@ -29,7 +29,7 @@
         <dependency>
             <groupId>com.github.GigantTRex12</groupId>
             <artifactId>DataCollecting</artifactId>
-            <version>v1.2.0</version>
+            <version>v1.3.0</version>
         </dependency>
 
         <!-- JSON handling -->

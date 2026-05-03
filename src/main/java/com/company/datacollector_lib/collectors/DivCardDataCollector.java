@@ -1,6 +1,7 @@
 package com.company.datacollector_lib.collectors;
 
 import collector.Question;
+import collector.Survey;
 import com.company.api.DbWriter;
 import com.company.datacollector_lib.DataCollector;
 import com.company.datacollector_lib.Normalizers;
@@ -13,16 +14,38 @@ import java.util.Optional;
 
 public class DivCardDataCollector extends DataCollector<DivCardDataSet> {
 
+    private static final String CARD_NAME = "cardName";
+    private static final String RESULT = "result";
+    private static final String RESULTS = "results";
+    private static final String CHARACTER_LEVEL = "characterLevel";
+
+
+    private final Survey multipleSurvey = new Survey(List.of(
+            Question.ask(CARD_NAME, "Enter the name of the card")
+                    .validate((s, _) -> s.isBlank() ? Optional.of("The card name cannot be empty") : Optional.empty())
+                    .build(),
+            Question.ask(RESULTS, "Enter the rewards from the card")
+                    .multiline()
+                    .normalize((s, m) -> m.put(RESULTS, Normalizers.toDivCardLootList(s, (String) m.get(CARD_NAME))))
+                    .build(),
+            Question.ask(CHARACTER_LEVEL, "What level is the character that turned the card in?")
+                    .regex("^\\d+$|^$")
+                    .normalize(s -> s.isEmpty() ? null : Integer.parseInt(s))
+                    //.emptyToNull()
+                    .build()
+
+    ));
+
     @Override
     protected List<Question> getQuestions() {
         return List.of(
-                Question.ask("cardName", "Enter the name of the card")
+                Question.ask(CARD_NAME, "Enter the name of the card")
                         .validate((s, _) -> s.isBlank() ? Optional.of("The card name cannot be empty") : Optional.empty())
                         .build(),
-                Question.ask("result", "Enter the reward from the card")
-                        .normalize((s, m) -> m.put("result", Normalizers.toDivCardLoot(s, (String) m.get("cardName"))))
+                Question.ask(RESULT, "Enter the reward from the card")
+                        .normalize((s, m) -> m.put(RESULT, Normalizers.toDivCardLoot(s, (String) m.get(CARD_NAME))))
                         .build(),
-                Question.ask("characterLevel", "What level is the character that turned the card in")
+                Question.ask(CHARACTER_LEVEL, "What level is the character that turned the card in?")
                         .regex("^\\d+$|^$")
                         .normalize(s -> s.isEmpty() ? null : Integer.parseInt(s))
                         //.emptyToNull()
@@ -34,9 +57,9 @@ public class DivCardDataCollector extends DataCollector<DivCardDataSet> {
     protected DivCardDataSet mapToDataset(Map<String, Object> map) {
         return new DivCardDataSet(
                 this.getMetadata(),
-                (String) map.get("cardName"),
-                (Loot) map.get("result"),
-                (Integer) map.get("characterLevel")
+                (String) map.get(CARD_NAME),
+                (Loot) map.get(RESULT),
+                (Integer) map.get(CHARACTER_LEVEL)
         );
     }
 
@@ -46,4 +69,12 @@ public class DivCardDataCollector extends DataCollector<DivCardDataSet> {
         this.data.clear();
     }
 
+    @Override
+    protected void addMultipleDatasets() {
+        Map<String, Object> map = multipleSurvey.run();
+        String name = (String) map.get(CARD_NAME);
+        Integer level = (Integer) map.get(CHARACTER_LEVEL);
+        List<Loot> results = (List) map.get(RESULTS);
+        results.forEach(l -> this.data.add(new DivCardDataSet(this.getMetadata(), name, l, level)));
+    }
 }

@@ -72,6 +72,18 @@ public class Normalizers {
         }
     }
 
+    public static List<Loot> toDivCardLootList(String string, String cardName) throws InvalidInputFormatException {
+        if (string.trim().isEmpty()) {
+            return List.of();
+        }
+        String[] reps = string.strip().split("\n");
+        List<Loot> loot = new ArrayList<>();
+
+        for (String rep : reps) loot.add(toDivCardLoot(rep, cardName));
+
+        return loot;
+    }
+
     private Normalizers() {
     }
 

@@ -1,21 +1,19 @@
 package com.company.dataset_lib;
 
 import dataset.Metadata;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
 @Getter
+@Setter
 @ToString
 @Builder
 public class Strategy extends Metadata {
 
-    private final Integer id;
+    private Integer id;
     private final String league;
     private final String tree;
     private final String treeUrl;

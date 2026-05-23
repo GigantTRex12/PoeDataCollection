@@ -74,5 +74,6 @@ public enum LootType {
     BOSS_INVITATION,
     FORBIDDEN_TOME,
     CONTRACT,
-    CORPSE
+    CORPSE,
+    ALLFLAME_EMBER
 }

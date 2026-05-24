@@ -1,16 +1,12 @@
 package com.company;
 
-import com.company.api.DbReader;
-import com.company.api.DbWriter;
-import com.company.dataanalyzer.BossDropDataAnalyzer;
-import com.company.dataanalyzer.DataAnalyzer;
-import com.company.dataanalyzer.KalandraMistDataAnalyzer;
-import com.company.datacollector.*;
-import com.company.datasets.other.metadata.Strategy;
+import com.company.dataanalyzer_lib.DataAnalyzer;
+import com.company.dataanalyzer_lib.analyzers.BossDropDataAnalyzer;
+import com.company.datacollector_lib.DataCollector;
+import com.company.datacollector_lib.collectors.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -25,7 +21,6 @@ public class Main {
 
     static void main() throws IOException {
         loadConfig();
-
         initLogs();
         final String dataPath = "Data/";
         final Map<String, String> typeToFilename = Map.ofEntries(
@@ -33,7 +28,8 @@ public class Main {
                 entry("ultimatum", "ultimatum.txt"),
                 entry("map drops", "mapDrops.txt"),
                 entry("boss drops", "bossDrops.txt"),
-                entry("cadiro", "cadiro.txt")
+                entry("cadiro", "cadiro.txt"),
+                entry("div cards", "divcards.txt")
                 //entry("jun", "junEncounters.txt")
         );
 
@@ -50,36 +46,33 @@ public class Main {
                 return;
             }
             String dataType = input("Which type of Data would you like to work with?", typeToFilename.keySet()).toLowerCase();
-            String filename = dataPath + typeToFilename.get(dataType.toLowerCase());
 
             if (action.equals("c") || action.equals("collect")) {
                 DataCollector<?> collector;
                 switch (dataType) {
-                    case "mist" -> collector = new KalandraMistDatacollector();
+                    case "mist" -> collector = new KalandraMistDataCollector();
                     case "map drops" -> collector = new MapDropDataCollector();
                     case "ultimatum" -> collector = new UltimatumDataCollector();
                     case "boss drops" -> collector = new BossDropDataCollector();
                     case "cadiro" -> collector = new CadiroDataCollector();
-                    case "jun" -> collector = new JunDataCollector(filename);
+                    case "div cards" -> collector = new DivCardDataCollector();
                     default -> {
                         print("Exiting");
                         return;
                     }
                 }
-                collector.collectData(filename);
+                collector.collect();
             } else if (action.equals("a") || action.equals("analyze")) {
                 DataAnalyzer<?> analyzer = null;
                 switch (dataType) {
-                    case "mist" -> analyzer = new KalandraMistDataAnalyzer(filename);
-                    case "boss drops" -> analyzer = new BossDropDataAnalyzer(filename);
+                    case "boss drops" -> analyzer = new BossDropDataAnalyzer();
                     default -> {
                         print("Exiting");
                         return;
                     }
                 }
-                if (analyzer != null) analyzer.analyzeData();
-            }
-            else {
+                if (analyzer != null) analyzer.analyze();
+            } else {
                 print("Exiting");
                 return;
             }

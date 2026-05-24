@@ -15,12 +15,12 @@ import static com.company.utils.Utils.contains;
 @EqualsAndHashCode
 @JsonDeserialize(using = LootDeserializer.class)
 public class Loot {
-    private static final LootType[] stackable = {CATALYSTS, ESSENCES, DIVINATIONCARDS, CURRENCY, FRAGMENT, SCARAB, FOSSILS, SPLINTERS, SPLINTERS_BREACH, SPLINTERS_LEGION, OIL, INCUBATOR, SCOUTING_REPORT};
+    private static final LootType[] stackable = {CATALYSTS, ESSENCES, DIVINATIONCARDS, CURRENCY, FRAGMENT, SCARAB, FOSSILS, SPLINTERS, SPLINTERS_BREACH, SPLINTERS_LEGION, OIL, INCUBATOR, SCOUTING_REPORT, ALLFLAME_EMBER};
     private static final LootType[] corrImplicits = {UNIQUE_ITEM_IMPLICIT_CORRUPTED, RARE_ARMOUR_IMPLICIT_CORRUPTED, RARE_WEAPON_IMPLICIT_CORRUPTED, RARE_JEWELLRY_IMPLICIT_CORRUPTED, RARE_ITEM_IMPLICIT_CORRUPTED};
     private static final LootType[] maps = {MAP, UNIQUE_MAP, SYNTH_MAP, ELDER_MAP, SHAPER_MAP, CONQUEROR_MAP, T17_MAP, RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS, ORIGINATOR_MAP, NON_GUARDIAN_ELDER_MAP, NON_GUARDIAN_SHAPER_MAP, ORIGINATOR_ELDER_MAP, ORIGINATOR_SHAPER_MAP, ORIGINATOR_CONQUEROR_MAP, ORIGINATOR_NON_GUARDIAN_ELDER_MAP, ORIGINATOR_NON_GUARDIAN_SHAPER_MAP};
-    private static final LootType[] corruptedMaps = {RARE_MAP_CORRUPTED, RARE_MAP_CORRUPTED_8MOD, RARE_MAP_CORRUPTED_IMPLICITS};
-    private static final LootType[] gems = {GEM, GEM_CORRUPTED, GEM_AWAKENED};
+    private static final LootType[] gems = {GEM, GEM_CORRUPTED, GEM_AWAKENED, VAAL_GEM};
     private static final LootType[] crafts = {GUFF_CRAFTING_BENCH, VORICI_CRAFTING_BENCH, TORA_CRAFTING_BENCH, IT_THAT_FLED_BREACHSTONE_CRAFT, SYNDICATE_CRAFTING_BENCH};
+    private static final LootType[] lootWithLevel = {FORBIDDEN_TOME};
 
     @JsonProperty("name")
     protected final String name;
@@ -65,17 +65,6 @@ public class Loot {
                 throw new InvalidLootFormatException("Invalid Format to parse Loot: tier is not an integer");
             }
             if (split.length >= 4) {
-                if (contains(corruptedMaps, type)) {
-                    int implicits = 0;
-                    if (split.length >= 5) {
-                        try {
-                            implicits = Integer.parseInt(split[4]);
-                        } catch (NumberFormatException e) {
-                            throw new InvalidLootFormatException("Invalid Format to parse Loot: implicit amount is not an integer");
-                        }
-                    }
-                    return new CorruptedMapLoot(name, type, tier, split[3], implicits);
-                }
                 return new MapLoot(name, type, tier, split[3]);
             }
             return new MapLoot(name, type, tier, null);
@@ -107,14 +96,14 @@ public class Loot {
                 return new CraftingBenchLoot(name, type, null);
             }
             return new CraftingBenchLoot(name, type, split[2]);
-        } else if (FORBIDDEN_TOME == type) {
+        } else if (contains(lootWithLevel, type)) {
             if (split.length < 3) {
                 throw new InvalidLootFormatException("Invalid Format to parse Loot: not enough Arguments");
             }
             int level;
             try {
                 level = Integer.parseInt(split[2]);
-                return new ForbiddenTome(name, type, level);
+                return new LootWithLevel(name, type, level);
             } catch (NumberFormatException e) {
                 throw new InvalidLootFormatException("Invalid Format to parse Loot: level is not an integer");
             }
@@ -128,7 +117,7 @@ public class Loot {
         LootType type = null;
         try {
             type = valueOf(rep.toUpperCase());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) { // TODO if/else instead of exception
             String lower = rep.toLowerCase();
             boolean unique = lower.contains("unique");
             boolean rare = lower.contains("rare");
@@ -185,13 +174,15 @@ public class Loot {
                 } else if (gem) type = GEM_CORRUPTED;
             } else if (gem) {
                 if (lower.contains("awakened")) type = GEM_AWAKENED;
+                else if (lower.contains("vaal")) type = VAAL_GEM;
                 else type = GEM;
 
             } else if (unique) {
                 if (lower.contains("boss")) type = BOSS_UNIQUE_ITEM;
                 else type = UNIQUE_ITEM;
             } else if (rare) {
-                if (weapon) type = synth ? RARE_WEAPON_SYNTHESISED : (frac ? RARE_WEAPON_FRACTURED : RARE_WEAPON);
+                if (lower.contains("grasping")) type = FRACTURED_GRASPING_MAIL;
+                else if (weapon) type = synth ? RARE_WEAPON_SYNTHESISED : (frac ? RARE_WEAPON_FRACTURED : RARE_WEAPON);
                 else if (armour) type = synth ? RARE_ARMOUR_SYNTHESISED : (frac ? RARE_ARMOUR_FRACTURED : RARE_ARMOUR);
                 else if (jewellry) type = synth ? RARE_JEWELLRY_SYNTHESISED : (frac ? RARE_JEWELLRY_FRACTURED : RARE_JEWELLRY);
                 else if (lower.contains("jewel")) {
@@ -211,7 +202,12 @@ public class Loot {
                 type = SCOUTING_REPORT;
             } else if (lower.contains("contract")) {
                 type = CONTRACT;
-            } if (type == null) {
+            } else if (lower.contains("corpse")) {
+                type = CORPSE;
+            } else if (lower.contains("allflame")) {
+                type = ALLFLAME_EMBER;
+            }
+            if (type == null) {
                 throw new InvalidLootFormatException("Invalid Format to parse Loot: Cannot parse Loottype");
             }
         }
@@ -225,9 +221,6 @@ public class Loot {
         if (contains(corrImplicits, type)) {
             return ImplicitCorruptedItem.class;
         }
-        if (contains(corruptedMaps, type)) {
-            return CorruptedMapLoot.class;
-        }
         if (contains(maps, type)) {
             return MapLoot.class;
         }
@@ -238,7 +231,7 @@ public class Loot {
             return CraftingBenchLoot.class;
         }
         if (FORBIDDEN_TOME == type) {
-            return ForbiddenTome.class;
+            return LootWithLevel.class;
         }
         return Loot.class;
     }

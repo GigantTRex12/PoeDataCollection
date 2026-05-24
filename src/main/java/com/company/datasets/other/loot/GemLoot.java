@@ -1,7 +1,6 @@
 package com.company.datasets.other.loot;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,7 +8,7 @@ import lombok.ToString;
 
 @Getter
 @ToString(callSuper = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @JsonDeserialize()
 public class GemLoot extends Loot {
     @JsonProperty("level")

@@ -2,14 +2,13 @@ package com.company.datasets.datasets;
 
 import com.company.datasets.annotations.InputProperty;
 import com.company.datasets.builder.DataSetBuilderInterface;
-import com.company.datasets.datasets.DataSet;
+import com.company.datasets.other.loot.LootType;
+import com.company.datasets.other.metadata.Strategy;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import com.company.datasets.other.loot.LootType;
-import com.company.datasets.other.metadata.Strategy;
 
 import java.util.*;
 
@@ -26,17 +25,17 @@ public class MapDropDataSet extends DataSet {
 
     @JsonProperty("conversionType")
     @InputProperty(message = "Enter the chance for converting maps from Influencing Scarab of conversion and conversion type.\ns:shaper, e:elder, c:conqueror, y:synthesis",
-    regex = "^\\s*$|^[1-9]\\d*[secy]$", order = 0, parsingFunc = "toMapConversionType")
+            regex = "^\\s*$|^[1-9]\\d*[secy]$", order = 0, parsingFunc = "toMapConversionType")
     private final LootType conversionType;
 
     @JsonProperty("mapsInOrder")
     @InputProperty(message = "Enter maps dropped.\nr:regular, s:shaper, e:elder, c:conqueror, y:synthesis, t:t17, u:unique, o: originator",
-    regex = "^$|^[rsecytuo\\-]*$", order = 1, parsingFunc = "toMapDropList")
+            regex = "^$|^[rsecytuo\\-]*$", order = 1, parsingFunc = "toMapDropList")
     private final List<LootType> mapsInOrder;
 
     @JsonProperty("bossDrops")
     @InputProperty(message = "Enter maps dropped by boss.\nEmpty for not killing boss, - for no drops",
-    regex = "^-?$|^[rsecytuo,]*$", order = 2, parsingFunc = "toBossMapDropList")
+            regex = "^-?$|^[rsecytuo,]*$", order = 2, parsingFunc = "toBossMapDropList")
     private final Collection<LootType> bossDrops;
 
     @Builder
@@ -59,13 +58,37 @@ public class MapDropDataSet extends DataSet {
         }
         if (bossDrops == null) {
             this.bossDrops = null;
-        }
-        else {
+        } else {
             this.bossDrops = new ArrayList<>();
             for (char c : bossDrops) {
                 this.bossDrops.add(lootTypesMap.get(c));
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        MapDropDataSet that = (MapDropDataSet) o;
+        if (bossDrops == null || that.bossDrops == null) {
+            if (!(bossDrops == null && that.bossDrops == null)) return false;
+        } else if (bossDrops.size() == that.bossDrops.size()) {
+            List<LootType> copy = new ArrayList<>(that.bossDrops);
+            for (LootType l : bossDrops) {
+                if (!copy.remove(l)) return false;
+            }
+        } else return false;
+        return conversionChance == that.conversionChance && conversionType == that.conversionType && Objects.equals(mapsInOrder, that.mapsInOrder);
+    }
+
+    @Override
+    public int hashCode() {
+        return 49 * super.hashCode()
+                + 23 * conversionChance
+                + 37 * (conversionType == null ? 41 : conversionType.hashCode())
+                + 53 * mapsInOrder.hashCode()
+                + 29 * (bossDrops.stream().mapToInt(LootType::hashCode).sum() + 5);
     }
 
     private static void initializeMap() {
@@ -98,6 +121,27 @@ public class MapDropDataSet extends DataSet {
         return lootTypesMap.get(key);
     }
 
-    public static class MapDropDataSetBuilder implements DataSetBuilderInterface<MapDropDataSet> {}
+    public static class MapDropDataSetBuilder implements DataSetBuilderInterface<MapDropDataSet> {
+
+        public MapDropDataSetBuilder() {
+            mapsInOrder = new ArrayList<>();
+        }
+
+        public MapDropDataSetBuilder mapDrop(LootType newMap) {
+            mapsInOrder.add(newMap);
+            return this;
+        }
+
+        public MapDropDataSetBuilder zeroBossDrops() {
+            bossDrops = new ArrayList<>();
+            return this;
+        }
+
+        public MapDropDataSetBuilder bossDrop(LootType bossDrop) {
+            if (bossDrops == null) bossDrops = new ArrayList<>();
+            bossDrops.add(bossDrop);
+            return this;
+        }
+    }
 
 }

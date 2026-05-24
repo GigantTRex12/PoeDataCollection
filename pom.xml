@@ -17,18 +17,32 @@
         <exec.mainClass>com.company.Main</exec.mainClass>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
+        <!-- Data Collecting Library -->
+        <dependency>
+            <groupId>com.github.GigantTRex12</groupId>
+            <artifactId>DataCollecting</artifactId>
+            <version>v1.3.0</version>
+        </dependency>
+
         <!-- JSON handling -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.20.0</version>
+            <version>2.21.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.20.0</version>
+            <version>2.21.1</version>
         </dependency>
 
         <!-- SQLite -->

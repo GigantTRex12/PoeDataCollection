@@ -1,14 +1,10 @@
-package com.company.datasets.datasets;
+package com.company.dataset_lib.datasets;
 
-import com.company.datasets.annotations.InputProperty;
-import com.company.datasets.builder.DataSetBuilderInterface;
-import com.company.datasets.datasets.DataSet;
+import com.company.dataset_lib.DataSet;
+import com.company.dataset_lib.Strategy;
 import com.company.datasets.other.loot.Loot;
-import com.company.datasets.other.metadata.Strategy;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.ArrayList;
@@ -16,24 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@NoArgsConstructor(force = true)
 @Getter
 @ToString(callSuper = true)
 public class UltimatumDataSet extends DataSet {
 
-    @JsonProperty("rewardList")
-    @InputProperty(message = "Enter rewards from Ultimatum in order. (one line per reward)\nEnter \"-\" to skip reward.",
-            order = 0, parsingFunc = "toLootList", multiline = true)
     private final List<Loot> rewards;
-
-    @JsonProperty("boss")
-    @InputProperty(message = "Was a boss encountered?", options = {"y", "n"}, options2 = {"yes", "no"}, order = 1,
-            parsingFunc = "toBool", checkCondition = "canBoss")
     private final boolean boss;
-
-    @JsonProperty("bossLoot")
-    @InputProperty(message = "Enter drops from boss.", order = 2, parsingFunc = "toLootList", multiline = true,
-            checkCondition = "isBoss")
     private final List<Loot> bossLoot;
 
     @Builder
@@ -44,7 +28,7 @@ public class UltimatumDataSet extends DataSet {
         this.bossLoot = bossLoot;
     }
 
-    public static class UltimatumDataSetBuilder implements DataSetBuilderInterface<UltimatumDataSet> {
+    public static class UltimatumDataSetBuilder {
 
         private Map<Integer, Loot> waveToLoot;
         private int maxIndex;
@@ -63,10 +47,6 @@ public class UltimatumDataSet extends DataSet {
         public UltimatumDataSetBuilder bossDrop(Loot loot) {
             bossLoot.add(loot);
             return this;
-        }
-
-        public boolean canBoss() {
-            return this.rewards.size() == 10;
         }
 
         public boolean isBoss() {
@@ -93,4 +73,5 @@ public class UltimatumDataSet extends DataSet {
         }
 
     }
+
 }
